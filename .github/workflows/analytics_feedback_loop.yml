@@ -1,0 +1,33 @@
+name: Analytics Telemetry & Feedback Loop
+
+on:
+  schedule:
+    # Runs every Monday at 02:00 UTC (07:30 IST) to calibrate weekly learning weights
+    - cron: '0 2 * * 1'
+  workflow_dispatch:
+
+jobs:
+  harvest_and_calibrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          pip install -r backend/requirements.txt
+
+      - name: Run Analytics Feedback Calibration
+        run: |
+          python -c "
+from backend.app.modules.analytics.metrics_collector import AnalyticsCollector
+from backend.app.modules.analytics.feedback_learner import FeedbackLearner
+metrics = [AnalyticsCollector.harvest_video_analytics('yt_auto', 'SHORT')]
+feedback = FeedbackLearner.evaluate_retention_and_adapt(metrics)
+print('Analytics Feedback Calibrated:', feedback)
+"

@@ -1,0 +1,29 @@
+{
+  "description": "Sanskrit and mythological proper nouns pronunciation dictionary for Hindi TTS narration",
+  "mappings": {
+    "दशरथ": {"ipa": "d̪əʃ.rət̪ʰ", "ssml_sub": "दशरथ", "phonetic": "Dasharatha"},
+    "कौशल्या": {"ipa": "kɔː.ʃəl.jaː", "ssml_sub": "कौशल्या", "phonetic": "Kaushalya"},
+    "विश्वामित्र": {"ipa": "ʋɪʃ.ʋaː.mɪt̪.rə", "ssml_sub": "विश्वामित्र", "phonetic": "Vishwamitra"},
+    "रावण": {"ipa": "raː.ʋəɳ", "ssml_sub": "रावण", "phonetic": "Ravana"},
+    "विभीषण": {"ipa": "ʋɪ.bʱiː.ʂəɳ", "ssml_sub": "विभीषण", "phonetic": "Vibhishana"},
+    "अर्जुन": {"ipa": "ər.d͡ʒʊn", "ssml_sub": "अर्जुन", "phonetic": "Arjuna"},
+    "भीष्म": {"ipa": "bʱiːʂ.mə", "ssml_sub": "भीष्म", "phonetic": "Bhishma"},
+    "हनुमान": {"ipa": "ɦə.nʊ.maːn", "ssml_sub": "हनुमान", "phonetic": "Hanuman"},
+    "लक्ष्मण": {"ipa": "ləkʂ.məɳ", "ssml_sub": "लक्ष्मण", "phonetic": "Lakshmana"},
+    "भरत": {"ipa": "bʱə.rət̪", "ssml_sub": "भरत", "phonetic": "Bharata"},
+    "शत्रुघ्न": {"ipa": "ʃət̪.rʊɡʱ.nə", "ssml_sub": "शत्रुघ्न", "phonetic": "Shatrughna"},
+    "कुंभकर्ण": {"ipa": "kʊmbʱ.kər.ɳə", "ssml_sub": "कुम्भकर्ण", "phonetic": "Kumbhakarna"},
+    "मेघनाद": {"ipa": "meːɡʱ.naːd̪", "ssml_sub": "मेघनाद", "phonetic": "Meghanada"},
+    "इंद्रजीत": {"ipa": "ɪn.d̪rə.d͡ʒiːt̪", "ssml_sub": "इन्द्रजीत", "phonetic": "Indrajit"},
+    "सुग्रीव": {"ipa": "sʊɡ.riːʋ", "ssml_sub": "सुग्रीव", "phonetic": "Sugriva"},
+    "अंगद": {"ipa": "əŋ.ɡəd̪", "ssml_sub": "अंगद", "phonetic": "Angada"},
+    "युधिष्ठिर": {"ipa": "jʊ.d̪ʱɪʂ.ʈʰɪr", "ssml_sub": "युधिष्ठिर", "phonetic": "Yudhishthira"},
+    "दुर्योधन": {"ipa": "d̪ʊr.joː.d̪ʱən", "ssml_sub": "दुर्योधन", "phonetic": "Duryodhana"},
+    "कर्ण": {"ipa": "kər.ɳə", "ssml_sub": "कर्ण", "phonetic": "Karna"},
+    "द्रोणाचार्य": {"ipa": "d̪roː.ɳaː.t͡ʃaːr.jə", "ssml_sub": "द्रोणाचार्य", "phonetic": "Dronacharya"},
+    "कृष्ण": {"ipa": "krɪʂ.ɳə", "ssml_sub": "श्री कृष्ण", "phonetic": "Krishna"},
+    "महादेव": {"ipa": "mə.ɦaː.d̪eːʋ", "ssml_sub": "महादेव", "phonetic": "Mahadeva"},
+    "त्रिशूल": {"ipa": "t̪rɪ.ʃuːl", "ssml_sub": "त्रिशूल", "phonetic": "Trishula"},
+    "सुदर्शन": {"ipa": "sʊ.d̪ər.ʃən", "ssml_sub": "सुदर्शन चक्र", "phonetic": "Sudarshana"}
+  }
+}

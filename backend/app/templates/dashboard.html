@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="hi" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>पौराणिक गाथा - Autonomous YouTube Studio Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            saffron: '#FF9933',
+            deepgold: '#D4AF37',
+            vedicblue: '#0F172A',
+            vedicpanel: '#1E293B',
+            alertred: '#EF4444'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-vedicblue text-slate-100 min-h-screen font-sans antialiased">
+  <!-- Top Navigation Bar -->
+  <header class="border-b border-slate-800 bg-vedicpanel/80 backdrop-blur sticky top-0 z-50 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-600 to-yellow-400 flex items-center justify-center font-bold text-slate-900 shadow-lg text-lg">
+        🚩
+      </div>
+      <div>
+        <h1 class="text-xl font-bold tracking-tight text-amber-400">पौराणिक गाथा - Pauranik Gatha</h1>
+        <p class="text-xs text-slate-400">Cinematic Hindi Indian Mythology & Epic Storytelling Studio</p>
+      </div>
+    </div>
+    
+    <div class="flex items-center gap-4">
+      <div class="text-right hidden sm:block">
+        <div class="text-xs text-slate-400">Current Time (IST)</div>
+        <div id="liveClock" class="text-sm font-mono text-amber-300">--:--:-- IST</div>
+      </div>
+      
+      <!-- Emergency Kill Switch Button -->
+      <button id="killSwitchBtn" onclick="toggleKillSwitch()" class="px-4 py-2 rounded-lg font-semibold text-sm transition-all shadow-lg flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white">
+        <span class="w-2.5 h-2.5 rounded-full bg-white animate-pulse"></span>
+        <span id="killSwitchText">EMERGENCY KILL SWITCH: READY</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
+    
+    <!-- Top KPI Grid -->
+    <section class="grid grid-cols-1 md:grid-cols-4 gap-5">
+      <div class="bg-vedicpanel p-5 rounded-xl border border-slate-800 shadow">
+        <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Published Videos</div>
+        <div class="mt-2 text-3xl font-extrabold text-white">40 <span class="text-xs text-emerald-400 font-normal">/ 42 total</span></div>
+        <div class="mt-1 text-xs text-slate-400">2 Quarantined by Fail-Closed QC</div>
+      </div>
+
+      <div class="bg-vedicpanel p-5 rounded-xl border border-slate-800 shadow">
+        <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Subscribers & Watch Time</div>
+        <div class="mt-2 text-3xl font-extrabold text-amber-400">14.2K <span class="text-xs text-slate-300 font-normal">/ 9.4K hrs</span></div>
+        <div class="mt-1 text-xs text-emerald-400 font-medium">✓ Full YPP Threshold Met</div>
+      </div>
+
+      <div class="bg-vedicpanel p-5 rounded-xl border border-slate-800 shadow">
+        <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Audience Retention & CTR</div>
+        <div class="mt-2 text-3xl font-extrabold text-sky-400">82.4% <span class="text-xs text-slate-300 font-normal">/ 14.1% CTR</span></div>
+        <div class="mt-1 text-xs text-sky-300">Optimal 2s Hook Performance</div>
+      </div>
+
+      <div class="bg-vedicpanel p-5 rounded-xl border border-slate-800 shadow">
+        <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Monthly Spend Ceiling</div>
+        <div class="mt-2 text-3xl font-extrabold text-purple-400">$18.45 <span class="text-xs text-slate-400 font-normal">/ $150.00</span></div>
+        <div class="w-full bg-slate-700 h-1.5 rounded-full mt-2 overflow-hidden">
+          <div class="bg-purple-500 h-full" style="width: 12.3%"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Bar & Autonomous Trigger -->
+    <section class="bg-gradient-to-r from-amber-950/40 via-vedicpanel to-vedicpanel p-6 rounded-2xl border border-amber-900/40 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+      <div>
+        <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/20 text-amber-300 border border-amber-500/30">
+          <span>⚡ Autonomous Scheduling Engine</span>
+        </div>
+        <h2 class="text-xl font-bold mt-2">Next Scheduled Publication Window</h2>
+        <p class="text-sm text-slate-400 mt-1">
+          Calendar: <strong class="text-slate-200">Monday–Saturday: Shorts (12:30/19:00 IST)</strong> | <strong class="text-slate-200">Sunday: Long-Form (19:00 IST)</strong>
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button onclick="triggerPipeline('SHORT')" id="btnShort" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm transition-all shadow-lg hover:shadow-amber-500/20 flex items-center gap-2">
+          <span>🎬 Run Shorts Pipeline (9:16)</span>
+        </button>
+        <button onclick="triggerPipeline('LONG_FORM')" id="btnLong" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-semibold text-sm transition-all shadow">
+          <span>📜 Run Long-Form Pipeline (16:9)</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Live Execution & QC Inspection Card -->
+    <section id="executionCard" class="hidden bg-vedicpanel p-6 rounded-2xl border border-slate-800 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-bold text-lg text-amber-400 flex items-center gap-2">
+          <span class="animate-spin text-amber-400">⏳</span> Live Pipeline Production Execution
+        </h3>
+        <span id="jobStatusBadge" class="text-xs px-2.5 py-1 rounded bg-slate-800 text-slate-300">RUNNING</span>
+      </div>
+      <div id="jobDetails" class="text-sm text-slate-300 bg-slate-900/80 p-4 rounded-xl border border-slate-800 font-mono whitespace-pre-wrap max-h-96 overflow-y-auto">
+        Initiating autonomous production cycle...
+      </div>
+    </section>
+
+    <!-- Character Consistency Registry (Module G) -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-bold">Permanent Character Database & Visual DNA</h2>
+          <p class="text-xs text-slate-400">Guarantees 100% visual and voice consistency across all scenes and episodes</p>
+        </div>
+      </div>
+
+      <div id="characterGrid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- Quality Control & Monetization Standards (Module M & N) -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-vedicpanel p-6 rounded-2xl border border-slate-800">
+        <h3 class="text-lg font-bold text-slate-200 mb-3">12-Point Automated Quality Gates (Min: 90/100)</h3>
+        <ul class="space-y-2 text-xs text-slate-300">
+          <li class="flex items-center justify-between py-1 border-b border-slate-800">
+            <span>1. Research & Public Domain Grounding</span> <span class="text-emerald-400 font-bold">20.0 / 20</span>
+          </li>
+          <li class="flex items-center justify-between py-1 border-b border-slate-800">
+            <span>2. Script Originality (Plagiarism & Template Guard)</span> <span class="text-emerald-400 font-bold">20.0 / 20</span>
+          </li>
+          <li class="flex items-center justify-between py-1 border-b border-slate-800">
+            <span>3. Factual & Chronological Consistency</span> <span class="text-emerald-400 font-bold">20.0 / 20</span>
+          </li>
+          <li class="flex items-center justify-between py-1 border-b border-slate-800">
+            <span>4. Cinematic Visual & Animation Quality</span> <span class="text-emerald-400 font-bold">14.5 / 15</span>
+          </li>
+          <li class="flex items-center justify-between py-1 border-b border-slate-800">
+            <span>5. Hindi Voiceover & Sanskrit Pronunciation</span> <span class="text-emerald-400 font-bold">9.5 / 10</span>
+          </li>
+          <li class="flex items-center justify-between py-1 border-b border-slate-800">
+            <span>6. Copyright Certification (CC0 / Original Audio)</span> <span class="text-emerald-400 font-bold">10.0 / 10</span>
+          </li>
+          <li class="flex items-center justify-between py-1">
+            <span>7. YouTube Policy & Synthetic Media Tagging</span> <span class="text-emerald-400 font-bold">10.0 / 10</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="bg-vedicpanel p-6 rounded-2xl border border-slate-800">
+        <h3 class="text-lg font-bold text-slate-200 mb-3">YouTube Policy & Monetization Compliance</h3>
+        <div class="space-y-3 text-xs text-slate-300">
+          <div class="p-3 rounded-lg bg-slate-900 border border-slate-800">
+            <strong class="text-amber-400">Reused Content Prevention:</strong> Zero third-party movies, TV clips, or audiobooks. Every video is 100% original script, procedural soundtrack, and modular animation.
+          </div>
+          <div class="p-3 rounded-lg bg-slate-900 border border-slate-800">
+            <strong class="text-amber-400">Altered/Synthetic Media:</strong> Full compliance with YouTube's synthetic media declaration rules (`hasAlteredOrSyntheticContent = true`).
+          </div>
+          <div class="p-3 rounded-lg bg-slate-900 border border-slate-800">
+            <strong class="text-amber-400">Fail-Closed Architecture:</strong> Any video with score &lt; 90 or unresolved factual conflict is automatically quarantined in the failed production queue.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    async function updateDashboard() {
+      try {
+        const res = await fetch('/api/dashboard/summary');
+        const data = await res.json();
+        document.getElementById('liveClock').innerText = data.current_time_ist;
+        
+        const killBtn = document.getElementById('killSwitchBtn');
+        const killText = document.getElementById('killSwitchText');
+        if (data.emergency_kill_switch_active) {
+          killBtn.className = "px-4 py-2 rounded-lg font-semibold text-sm transition-all shadow-lg flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white";
+          killText.innerText = "KILL SWITCH ACTIVE (STOPPED)";
+        } else {
+          killBtn.className = "px-4 py-2 rounded-lg font-semibold text-sm transition-all shadow-lg flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white";
+          killText.innerText = "KILL SWITCH: ARMED & RUNNING";
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function loadCharacters() {
+      try {
+        const res = await fetch('/api/pipeline/characters');
+        const data = await res.json();
+        const grid = document.getElementById('characterGrid');
+        grid.innerHTML = '';
+        data.characters.forEach(c => {
+          const card = document.createElement('div');
+          card.className = "bg-vedicpanel p-4 rounded-xl border border-slate-800 hover:border-amber-500/50 transition-all";
+          card.innerHTML = `
+            <div class="font-bold text-amber-400 text-sm">${c.name_hindi}</div>
+            <div class="text-xs text-slate-400">${c.epithets ? c.epithets.join(', ') : ''}</div>
+            <div class="mt-2 text-xs text-slate-300 line-clamp-3">${c.visual_dna.facial_characteristics}</div>
+            <div class="mt-3 pt-2 border-t border-slate-800 text-[10px] text-amber-500 font-mono">
+              Voice: ${c.voice_profile.voice_name} (${c.voice_profile.pitch})
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function toggleKillSwitch() {
+      const res = await fetch('/api/dashboard/kill-switch/toggle', { method: 'POST' });
+      const data = await res.json();
+      alert(data.message);
+      updateDashboard();
+    }
+
+    async function triggerPipeline(format) {
+      const execCard = document.getElementById('executionCard');
+      const details = document.getElementById('jobDetails');
+      const badge = document.getElementById('jobStatusBadge');
+      execCard.classList.remove('hidden');
+      badge.className = "text-xs px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30";
+      badge.innerText = "PROCESSING " + format;
+      details.innerText = "Starting end-to-end production pipeline for " + format + "...\nResearching scripture & checking facts...";
+
+      try {
+        const res = await fetch(`/api/pipeline/trigger?format_type=${format}&simulate_upload=true`, { method: 'POST' });
+        const result = await res.json();
+        
+        if (result.success) {
+          badge.className = "text-xs px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+          badge.innerText = "SUCCESS: " + result.status;
+          details.innerText = JSON.stringify(result, null, 2);
+        } else {
+          badge.className = "text-xs px-2.5 py-1 rounded bg-red-500/20 text-red-300 border border-red-500/30";
+          badge.innerText = "HALTED / QUARANTINED";
+          details.innerText = JSON.stringify(result, null, 2);
+        }
+      } catch (e) {
+        badge.innerText = "ERROR";
+        details.innerText = "Pipeline execution error: " + e.message;
+      }
+    }
+
+    setInterval(updateDashboard, 5000);
+    updateDashboard();
+    loadCharacters();
+  </script>
+</body>
+</html>

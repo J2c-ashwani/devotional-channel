@@ -1,0 +1,55 @@
+{
+  "channel_id": "UC_CINEMATIC_MYTHOLOGY_HINDI",
+  "channel_name": "पौराणिक गाथा - Pauranik Gatha",
+  "niche": "CINEMATIC HINDI INDIAN MYTHOLOGY AND EPIC STORYTELLING",
+  "tagline": "भारतीय महाकाव्यों और पौराणिक इतिहास की अमर गाथाएं",
+  "language": {
+    "primary": "hi",
+    "script": "Devanagari",
+    "tone": "Dignified, dramatic, poetic, emotionally compelling conversational Hindi"
+  },
+  "audience": {
+    "primary_age": "16-45",
+    "regions": ["IN", "Worldwide Hindi Diaspora"],
+    "interests": ["Indian Epics", "Ramayana", "Mahabharata", "Puranas", "Cinematic Storytelling", "Dharma & Moral Philosophy"]
+  },
+  "publishing_schedule": {
+    "timezone": "Asia/Kolkata",
+    "shorts": {
+      "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      "target_times": ["12:30", "19:00"],
+      "target_duration_range": [30, 60],
+      "aspect_ratio": "9:16",
+      "resolution": [1080, 1920]
+    },
+    "longform": {
+      "days": ["Sunday"],
+      "target_time": "19:00",
+      "target_duration_range": [480, 900],
+      "aspect_ratio": "16:9",
+      "resolution": [1920, 1080]
+    },
+    "monthly_special": {
+      "frequency": "end_of_month",
+      "target_time": "19:00",
+      "target_duration_range": [1800, 2700],
+      "aspect_ratio": "16:9",
+      "resolution": [1920, 1080]
+    }
+  },
+  "cultural_festivals": [
+    {"name": "Maha Shivratri", "deity": "Lord Shiva", "themes": ["Tandava", "Neelkanth", "Shiva-Parvati Vivah"], "priority_boost": 25},
+    {"name": "Ram Navami", "deity": "Lord Rama", "themes": ["Maryada Purushottam", "Valmiki Ramayana", "Dharma"], "priority_boost": 25},
+    {"name": "Hanuman Jayanti", "deity": "Lord Hanuman", "themes": ["Sankat Mochan", "Devotion", "Sundarakanda"], "priority_boost": 25},
+    {"name": "Krishna Janmashtami", "deity": "Lord Krishna", "themes": ["Bhagavad Gita", "Kurukshetra", "Mathura-Vrindavan"], "priority_boost": 25},
+    {"name": "Navratri & Durga Puja", "deity": "Maa Durga", "themes": ["Mahishasuramardini", "Shakti", "Chandi"], "priority_boost": 25},
+    {"name": "Diwali", "deity": "Lord Rama / Lakshmi", "themes": ["Ayodhya Agaman", "Victory of Light over Darkness"], "priority_boost": 25}
+  ],
+  "monetization_compliance": {
+    "strict_originality": true,
+    "require_scriptural_grounding": true,
+    "synthetic_media_disclosure": true,
+    "minimum_qc_score": 90,
+    "fail_closed": true
+  }
+}

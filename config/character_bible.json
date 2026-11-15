@@ -1,0 +1,165 @@
+{
+  "characters": [
+    {
+      "id": "char_shiva",
+      "name": "भगवान शिव (Mahadeva)",
+      "epithets": ["Neelkanth", "Nataraja", "Mahakaal", "Trinetra"],
+      "visual_dna": {
+        "facial_characteristics": "Calm, serene yogic face, intense third eye on forehead (closed in meditation, slightly luminous), sharp jawline, compassionate yet formidable gaze",
+        "clothing": "Tiger skin wrap (Vyaghrambara) around waist, sacred rudraksha garland across muscular chest",
+        "jewellery": "Vasuki serpent coiled gracefully around the throat, sacred rudraksha beads on wrists and arms",
+        "body_proportions": "Athletic, muscular, statuesque yogic physique, broad shoulders, serene posture",
+        "hairstyle": "Matted locks of hair (Jata) piled atop the head, crescent moon (Chandrama) nestled in hair, sacred Ganga cascading",
+        "skin_tone": "Ash-smeared pale blue-grey complexion (Bhasma aura), vibrant blue throat (Neelkanth)",
+        "age_representation": "Timeless, immortal appearance resembling prime of youth (mid 30s)",
+        "accessories": ["Trishula (Trident) adorned with a Damru", "Kamandalu"]
+      },
+      "voice_profile": {
+        "voice_name": "hi-IN-MadhurNeural",
+        "pitch": "-4Hz",
+        "rate": "-5%",
+        "style": "Deep, resonant, calm, authoritative, cosmic"
+      },
+      "personality": "Ascetic, supreme asceticism, unbounded compassion for devotees, righteous fury against adharma",
+      "prompt_keywords": "Lord Shiva, Neelkanth, cinematic 3D lighting, ash-smeared blue complexion, trishula with damru, crescent moon in matted hair, photorealistic 8k octane render, dramatic mythical realism"
+    },
+    {
+      "id": "char_rama",
+      "name": "भगवान श्री राम (Maryada Purushottam)",
+      "epithets": ["Raghunandana", "Ramachandra", "Kausalya-Nandana"],
+      "visual_dna": {
+        "facial_characteristics": "Nobly carved features, lotus-shaped compassionate eyes (Kamal-nayana), gentle benevolent smile radiating unwavering virtue",
+        "clothing": "Forest exile: simple ochre bark garments (Valkala) with leather archer quiver strap; Ayodhya prince: royal golden-embroidered silk pitambara",
+        "jewellery": "Subtle royal kundala (earrings), armlets, sacred thread (Yajnopavita) across chest",
+        "body_proportions": "Tall, well-proportioned, athletic warrior build, long arms reaching knees (Ajanubahu), noble posture",
+        "hairstyle": "Neatly tied ascetic bun during exile, lustrous dark black hair",
+        "skin_tone": "Shyamavarna - dark cloud blue-grey complexion radiant with inner light",
+        "age_representation": "Youthful prince / king in his late 20s to mid 30s",
+        "accessories": ["Kodanda bow in left hand", "Quiver full of feathered arrows slung over right shoulder"]
+      },
+      "voice_profile": {
+        "voice_name": "hi-IN-MadhurNeural",
+        "pitch": "-2Hz",
+        "rate": "-3%",
+        "style": "Noble, measured, warm, virtuous, resolute"
+      },
+      "personality": "Maryada Purushottam, embodiment of Dharma, serene humility, formidable battlefield prowess",
+      "prompt_keywords": "Lord Rama, Kodanda bow, dark cloud skin tone, noble ascetic warrior prince, Valmiki Ramayana authenticity, photorealistic 3D cinematic lighting, detailed embroidery"
+    },
+    {
+      "id": "char_hanuman",
+      "name": "पवनपुत्र हनुमान (Lord Hanuman)",
+      "epithets": ["Marutinandan", "Bajrangbali", "Sankat Mochan", "Kesarinandan"],
+      "visual_dna": {
+        "facial_characteristics": "Vanara facial structure with noble, wise expression, large luminous golden-brown eyes, prominent jaw with divine glow",
+        "clothing": "Red-orange dhoti secured with a golden waistband",
+        "jewellery": "Golden kundala earrings shining like morning sun, golden sacred thread, rudraksha armbands",
+        "body_proportions": "Vajra-like muscular frame (Vajra-anga), colossal yet nimble, broad chest, powerful tail moving with expression",
+        "hairstyle": "Lustrous golden-brown fur framing head and body, neat hair crest",
+        "skin_tone": "Warm golden-coppery sheen",
+        "age_representation": "Vibrant, eternal strength (immortal Chiranjivi)",
+        "accessories": ["Heavy golden Gada (Mace) held firmly in right hand"]
+      },
+      "voice_profile": {
+        "voice_name": "hi-IN-MadhurNeural",
+        "pitch": "+0Hz",
+        "rate": "+0%",
+        "style": "Humble, deep devotion, booming heroic resonance when in battle"
+      },
+      "personality": "Selfless devotion (Bhakti), supreme intellect, boundless courage, playful innocence coupled with catastrophic strength",
+      "prompt_keywords": "Lord Hanuman, golden-hued mighty Vanara warrior, golden mace gada, divine aura, detailed fur texture, dramatic cinematic rim lighting, 3D animated octane render"
+    },
+    {
+      "id": "char_krishna",
+      "name": "भगवान श्री कृष्ण (Yogeshwara)",
+      "epithets": ["Govinda", "Vasudeva", "Parthasarathi", "Madhusudana"],
+      "visual_dna": {
+        "facial_characteristics": "Enchanting, mesmerizing face, mischievous and all-knowing smile, dark lotus petal eyes",
+        "clothing": "Brilliant yellow silk dhoti (Pitambara), peacock feather (Mayur pankh) crowned headpiece",
+        "jewellery": "Kaustubha gem glowing on chest, Vaijayanti garland of forest flowers, pearls and golden bracelets",
+        "body_proportions": "Graceful, agile, supreme elegance in tribhanga stance or driving warrior chariot",
+        "hairstyle": "Dark curly tresses flowing past shoulders, bound partially with floral garland",
+        "skin_tone": "Meghashyama - deep midnight monsoon-blue complexion with an ethereal golden glow",
+        "age_representation": "Youthful warrior-philosopher in his early 30s during Kurukshetra",
+        "accessories": ["Divine flute (Bansuri) or Sudarshana Chakra hovering in golden light above index finger"]
+      },
+      "voice_profile": {
+        "voice_name": "hi-IN-MadhurNeural",
+        "pitch": "-1Hz",
+        "rate": "-2%",
+        "style": "Eloquent, philosophical, enchanting, profound, reassuring"
+      },
+      "personality": "Supreme strategist, master philosopher, playful yet detached, defender of cosmic balance",
+      "prompt_keywords": "Lord Krishna, peacock feather crown, glowing blue monsoon complexion, yellow silk pitambara, divine philosopher of Bhagavad Gita, ultra-detailed 3D animation, cinematic lighting"
+    },
+    {
+      "id": "char_ravana",
+      "name": "दशानन रावण (King of Lanka)",
+      "epithets": ["Dashanana", "Lankapati", "Paulastya"],
+      "visual_dna": {
+        "facial_characteristics": "Fierce, majestic face of profound scholarly intellect and towering pride, thick dark moustache, piercing crimson eyes, royal tilak",
+        "clothing": "Regal black and crimson silk robes adorned with golden armor plates",
+        "jewellery": "Heavy golden crown (Mukut), ruby-encrusted necklaces, golden armlets",
+        "body_proportions": "Imposing giant warrior physique, towering height, broad chest, commanding posture",
+        "hairstyle": "Voluminous jet black mane and trimmed beard, regal crown",
+        "skin_tone": "Dusk-gold complexion with warrior scars",
+        "age_representation": "Mature king in the zenith of power (mid 40s appearance)",
+        "accessories": ["Chandrahasa divine sword gifted by Shiva"]
+      },
+      "voice_profile": {
+        "voice_name": "hi-IN-MadhurNeural",
+        "pitch": "-6Hz",
+        "rate": "-4%",
+        "style": "Thunderous, arrogant, brilliant, booming baritone"
+      },
+      "personality": "Master of four Vedas and six Shastras, blinded by ego and hubris, formidable warrior",
+      "prompt_keywords": "King Ravana of Lanka, majestic demon king, Chandrahasa sword, royal golden armor, intense pride, cinematic dark fantasy, dramatic lighting, detailed 3D octane render"
+    },
+    {
+      "id": "char_arjuna",
+      "name": "धनुर्धर अर्जुन (Maharathi Arjuna)",
+      "epithets": ["Partha", "Dhananjaya", "Savyasachi", "Gudakesha"],
+      "visual_dna": {
+        "facial_characteristics": "Focused, determined eyes of supreme concentration, regal jawline, calm warrior intensity",
+        "clothing": "Warrior armor with silver-white mail and dark green or blue tunic",
+        "jewellery": "Silver and gold wrist-guards (Kavacha), warrior armlets, archer finger-guards",
+        "body_proportions": "Athletic, ambidextrous physique, broad back, archer stance",
+        "hairstyle": "Dark hair bound in warrior topknot",
+        "skin_tone": "Wheatish golden complexion",
+        "age_representation": "Veteran warrior in mid 30s",
+        "accessories": ["Gandiva bow glowing with celestial energy", "Endless quivers (Akshaya Tunira)"]
+      },
+      "voice_profile": {
+        "voice_name": "hi-IN-MadhurNeural",
+        "pitch": "-2Hz",
+        "rate": "-2%",
+        "style": "Intense, earnest, conflicted student seeking truth, formidable in battle"
+      },
+      "personality": "Supreme dedication, intense moral contemplation, peerless archer, devotee of Krishna",
+      "prompt_keywords": "Maharathi Arjuna, Gandiva bow glowing, epic Kurukshetra battlefield background, warrior armor, cinematic 3D animation, wind-swept dramatic composition"
+    },
+    {
+      "id": "char_karna",
+      "name": "दानवीर कर्ण (Radheya / Vaikartana)",
+      "epithets": ["Danaveer", "Suryaputra", "Radheya", "Angaraj"],
+      "visual_dna": {
+        "facial_characteristics": "Sun-like radiant face, melancholic proud gaze, sharp aristocratic features inherited from Surya",
+        "clothing": "Crimson and gold tunic, red cape, royal armor",
+        "jewellery": "Divine natural golden armor (Kavacha) fused to chest and glowing earrings (Kundala) before giving them away",
+        "body_proportions": "Tall, lion-like majestic build, powerful shoulders, stately bearing",
+        "hairstyle": "Flowing dark brown/black locks",
+        "skin_tone": "Golden sun-kissed radiant complexion",
+        "age_representation": "Tragic hero in his 30s",
+        "accessories": ["Vijaya bow", "Golden sun insignia chariot"]
+      },
+      "voice_profile": {
+        "voice_name": "hi-IN-MadhurNeural",
+        "pitch": "-3Hz",
+        "rate": "-3%",
+        "style": "Proud, wounded nobility, fiercely loyal, deeply tragic"
+      },
+      "personality": "Unrivalled generosity (Danaveer), tragic hero torn by destiny, steadfast loyalty to Duryodhana",
+      "prompt_keywords": "Danaveer Karna, son of Surya, radiant golden armor and kundala, Vijaya bow, tragic warrior hero, dramatic sunset backlight, 3D cinematic animation"
+    }
+  ]
+}
