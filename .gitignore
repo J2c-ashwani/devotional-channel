@@ -24,6 +24,8 @@ wheels/
 .installed.cfg
 *.egg
 .env
+.env.local
+.env.*
 .pytest_cache/
 storage/*.db
 storage/rendered/*
