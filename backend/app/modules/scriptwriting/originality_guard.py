@@ -26,7 +26,14 @@ class OriginalityGuard:
             return []
         try:
             with open(cls.HISTORY_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
+                data = json.load(f)
+                if isinstance(data, list):
+                    return [d for d in data if isinstance(d, dict)]
+                elif isinstance(data, dict):
+                    episodes = data.get("published_episodes", [])
+                    if isinstance(episodes, list):
+                        return [d for d in episodes if isinstance(d, dict)]
+                return []
         except Exception:
             return []
 
@@ -66,8 +73,16 @@ class OriginalityGuard:
             historical_scripts = custom_history
             historical_hooks = []
         else:
-            historical_scripts = [h["full_script"] for h in history_records if h.get("full_script") != new_script]
-            historical_hooks = [h["hook_hindi"] for h in history_records if h.get("hook_hindi") != new_hook]
+            historical_scripts = []
+            historical_hooks = []
+            for h in history_records:
+                if isinstance(h, dict):
+                    if h.get("full_script") and h.get("full_script") != new_script:
+                        historical_scripts.append(h["full_script"])
+                    if h.get("hook_hindi") and h.get("hook_hindi") != new_hook:
+                        historical_hooks.append(h["hook_hindi"])
+                elif isinstance(h, str) and h != new_script:
+                    historical_scripts.append(h)
 
         # 1. Formulaic Clickbait Hook Check
         formula_violations = []
