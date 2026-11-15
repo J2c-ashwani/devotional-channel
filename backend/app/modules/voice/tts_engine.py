@@ -10,13 +10,10 @@ from backend.app.modules.voice.audio_validator import AudioValidator
 
 class HindiVoiceoverEngine:
     """
-    Module I: Bold Hindi AI Voiceover Engine with Authentic Kathavachak / Pravachan Prosody.
-    Generates passionate, deep baritone, commanding Devanagari narration (ओजस् और भक्ति रस).
-    Employs a broadcast DSP mastering chain:
-    - Pitch formant lowering (-1.5 semitones) for deep chest resonance.
-    - 115Hz warm proximity bass boost.
-    - 3.2kHz crisp treble clarity for pristine consonant articulation.
-    - Broadcast compressor / limiter to eliminate clipping and add punch.
+    Module I: High-Energy Hindi Oral Storytelling Engine.
+    Generates passionate, high-pitch, flowing Devanagari narration (ओजस्वी और प्रवाहमयी कथावाचन शैली).
+    Eliminates awkward textbook pauses by maintaining continuous phrasing momentum,
+    higher vocal pitch (+10Hz), and brisk storytelling rate (+15%).
     """
 
     DEFAULT_VOICE = "hi-IN-MadhurNeural"
@@ -49,46 +46,26 @@ class HindiVoiceoverEngine:
             vol = f"{vol}%"
         return vol
 
-    def convert_to_kathavachak_cadence(self, text: str) -> str:
+    def convert_to_flowing_katha_cadence(self, text: str) -> str:
         """
-        Transforms flat textbook prose into oral Kathavachak pravachan rhythm:
-        - Replaces full stops (।) with dramatic storytelling pauses (...)
-        - Preserves and sharpens exclamations (!) and dialogue dashes (—)
-        - Prevents flat monotonous end-of-sentence resets
+        Transforms flat textbook prose into flowing, high-energy oral narration:
+        - Replaces flat danda (।) with dynamic exclamations or natural commas
+        - Removes dragging ellipsis (...) that inject robotic 750ms silences
+        - Preserves fast, breath-supported narrative momentum
         """
         cadence_text = text.strip()
-        cadence_text = cadence_text.replace("।", "... ")
-        cadence_text = cadence_text.replace("! ", "! ... ")
-        cadence_text = cadence_text.replace("—", " ... ")
+        # Remove artificial ellipses that cause long robotic pauses
+        cadence_text = cadence_text.replace("...", "")
+        cadence_text = cadence_text.replace("…", "")
+        # Replace mechanical full stops with exclamations or commas to keep vocal tone high
+        cadence_text = cadence_text.replace("।", "!")
+        cadence_text = cadence_text.replace("—", ", ")
+        # Clean double spaces or duplicate punctuation
+        while "!!" in cadence_text:
+            cadence_text = cadence_text.replace("!!", "!")
+        while "  " in cadence_text:
+            cadence_text = cadence_text.replace("  ", " ")
         return cadence_text
-
-    @classmethod
-    def apply_bold_baritone_mastering(cls, input_audio: Path, output_audio: Path) -> Path:
-        """
-        Applies professional broadcast DSP chain to transform standard neural voice
-        into a commanding, deep, resonant mythological baritone (महाभारत/रामायण सूत्रधार शैली).
-        """
-        # DSP chain:
-        # 1. Pitch-shift down by ~1.5 semitones (asetrate=24000*0.92,atempo=1.087) without slowing down
-        # 2. Bass shelf boost +7dB at 115Hz for deep chest authority
-        # 3. Treble boost +2.5dB at 3.2kHz for crisp Sanskrit/Hindi enunciation
-        # 4. Broadcast compand (compressor/limiter) for punchy presence
-        dsp_filter = (
-            "asetrate=24000*0.92,atempo=1.087,aresample=24000,"
-            "bass=g=7:f=115:w=0.6,"
-            "treble=g=2.5:f=3200:w=0.8,"
-            "compand=attacks=0.02:decays=0.2:points=-60/-60|-24/-12|0/-3:soft-knee=6,"
-            "volume=1.2"
-        )
-        cmd = [
-            "ffmpeg", "-y",
-            "-i", str(input_audio),
-            "-af", dsp_filter,
-            "-c:a", "pcm_s16le",
-            str(output_audio)
-        ]
-        subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        return output_audio
 
     async def generate_narration_audio(
         self,
@@ -96,26 +73,27 @@ class HindiVoiceoverEngine:
         output_audio_path: Path,
         voice_profile: Optional[Dict[str, Any]] = None,
         target_duration: Optional[float] = None,
-        use_bold_baritone: bool = True
+        use_bold_baritone: bool = False
     ) -> Dict[str, Any]:
         output_audio_path.parent.mkdir(parents=True, exist_ok=True)
         
         # 1. Apply Sanskrit-to-Hindi phonetics normalization
         normalized_text = self.pronunciation_mgr.apply_pronunciation_rules(hindi_text)
         
-        # 2. Transform into rhythmic oral Kathavachak delivery
-        kathavachak_text = self.convert_to_kathavachak_cadence(normalized_text)
+        # 2. Transform into high-energy, flowing oral delivery
+        flowing_text = self.convert_to_flowing_katha_cadence(normalized_text)
         
+        # Default to High-Pitch Energetic Narration (+10Hz pitch, +15% rate, +20% volume)
         voice_name = self.DEFAULT_VOICE
-        raw_pitch = "+1Hz"
-        raw_rate = "+5%"
-        raw_volume = "+15%"
+        raw_pitch = "+10Hz"
+        raw_rate = "+15%"
+        raw_volume = "+20%"
 
         if voice_profile:
             voice_name = voice_profile.get("voice_name", self.DEFAULT_VOICE)
-            raw_pitch = voice_profile.get("pitch", "+1Hz")
-            raw_rate = voice_profile.get("rate", "+5%")
-            raw_volume = voice_profile.get("volume", "+15%")
+            raw_pitch = voice_profile.get("pitch", "+10Hz")
+            raw_rate = voice_profile.get("rate", "+15%")
+            raw_volume = voice_profile.get("volume", "+20%")
 
         pitch = self.format_pitch(raw_pitch)
         rate = self.format_rate(raw_rate)
@@ -123,13 +101,12 @@ class HindiVoiceoverEngine:
 
         success = False
         temp_mp3 = output_audio_path.with_suffix(".temp.mp3")
-        temp_wav = output_audio_path.with_suffix(".raw.wav")
         final_wav = output_audio_path.with_suffix(".wav")
 
         try:
             # Generate real Neural Hindi speech via edge_tts
             communicate = edge_tts.Communicate(
-                text=kathavachak_text,
+                text=flowing_text,
                 voice=voice_name,
                 rate=rate,
                 pitch=pitch,
@@ -142,15 +119,9 @@ class HindiVoiceoverEngine:
                 "ffmpeg", "-y",
                 "-i", str(temp_mp3),
                 "-c:a", "pcm_s16le",
-                str(temp_wav)
+                str(final_wav)
             ], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             temp_mp3.unlink(missing_ok=True)
-
-            if use_bold_baritone:
-                self.apply_bold_baritone_mastering(temp_wav, final_wav)
-                temp_wav.unlink(missing_ok=True)
-            else:
-                temp_wav.rename(final_wav)
 
             # If caller explicitly asked for .aac, convert
             if output_audio_path.suffix.lower() == ".aac":
@@ -194,7 +165,7 @@ class HindiVoiceoverEngine:
             "duration": exact_duration,
             "transcript_hindi": normalized_text,
             "voice": voice_name,
-            "style": "bold_baritone_kathavachak",
+            "style": "high_energy_flowing_katha",
             "quality_score": 98.0
         }
 
@@ -217,7 +188,6 @@ class HindiVoiceoverEngine:
             for line in reversed(res.stderr.splitlines()):
                 if "time=" in line:
                     part = line.split("time=")[1].split()[0]
-                    # Format HH:MM:SS.xx
                     h, m, s = part.split(":")
                     total_s = float(h) * 3600 + float(m) * 60 + float(s)
                     return round(total_s, 3)

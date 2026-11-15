@@ -182,7 +182,7 @@ class ProductionPipelineOrchestrator:
                 output_audio_path=raw_voice,
                 voice_profile=primary_char.get("voice_profile") if primary_char else None,
                 target_duration=scene.get("duration_sec"),
-                use_bold_baritone=True
+                use_bold_baritone=False
             )
             raw_dur = float(voice_res.get("duration", scene.get("duration_sec", 6.0)))
             scene["voice_duration"] = round(raw_dur, 2)

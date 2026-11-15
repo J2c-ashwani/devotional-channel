@@ -16,10 +16,10 @@
       },
       "voice_profile": {
         "voice_name": "hi-IN-MadhurNeural",
-        "pitch": "+2Hz",
-        "rate": "+5%",
-        "volume": "+15%",
-        "style": "Kathavachak Ojas: Booming, resonant, cosmic authority with devotional fervor"
+        "pitch": "+10Hz",
+        "rate": "+15%",
+        "volume": "+20%",
+        "style": "High-Energy Flowing Katha: Bright, passionate, authoritative oral delivery"
       },
       "personality": "Ascetic, supreme asceticism, unbounded compassion for devotees, righteous fury against adharma",
       "prompt_keywords": "Lord Shiva, Neelkanth, cinematic 3D lighting, ash-smeared blue complexion, trishula with damru, crescent moon in matted hair, photorealistic 8k octane render, dramatic mythical realism"
@@ -40,10 +40,10 @@
       },
       "voice_profile": {
         "voice_name": "hi-IN-MadhurNeural",
-        "pitch": "+2Hz",
-        "rate": "+6%",
-        "volume": "+15%",
-        "style": "Kathavachak Veerya: Noble, measured, energetic, virtuous, resolute with rhythmic cadence"
+        "pitch": "+10Hz",
+        "rate": "+15%",
+        "volume": "+20%",
+        "style": "High-Energy Flowing Katha: Bright, resonant, compelling epic storytelling"
       },
       "personality": "Maryada Purushottam, embodiment of Dharma, serene humility, formidable battlefield prowess",
       "prompt_keywords": "Lord Rama, Kodanda bow, dark cloud skin tone, noble ascetic warrior prince, Valmiki Ramayana authenticity, photorealistic 3D cinematic lighting, detailed embroidery"
@@ -64,10 +64,10 @@
       },
       "voice_profile": {
         "voice_name": "hi-IN-MadhurNeural",
-        "pitch": "+3Hz",
-        "rate": "+6%",
-        "volume": "+20%",
-        "style": "Kathavachak Bhakti-Veera: Humble, boundless energy, booming heroic resonance"
+        "pitch": "+12Hz",
+        "rate": "+16%",
+        "volume": "+25%",
+        "style": "High-Energy Flowing Katha: Booming, enthusiastic heroic storytelling"
       },
       "personality": "Selfless devotion (Bhakti), supreme intellect, boundless courage, playful innocence coupled with catastrophic strength",
       "prompt_keywords": "Lord Hanuman, golden-hued mighty Vanara warrior, golden mace gada, divine aura, detailed fur texture, dramatic cinematic rim lighting, 3D animated octane render"
