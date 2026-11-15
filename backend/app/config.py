@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     
     # AI API Keys (Configurable via environment variables)
     GEMINI_API_KEY: str = ""
+    GOOGLE_CLOUD_PROJECT: str = ""
+    GOOGLE_CLOUD_LOCATION: str = "us-central1"
+    GOOGLE_APPLICATION_CREDENTIALS: str = ""
     OPENAI_API_KEY: str = ""
     ELEVENLABS_API_KEY: str = ""
     IMAGE_GEN_PROVIDER: str = "modular_gemini"  # "modular_gemini", "mock", "flux"
