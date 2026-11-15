@@ -1,0 +1,77 @@
+{
+  "job_id": "job_66736b75b26b",
+  "stage": "04_STORYBOARD",
+  "saved_at": "2026-11-15T19:26:50.565118",
+  "payload": {
+    "format": "SHORT",
+    "aspect_ratio": "9:16",
+    "resolution": [
+      1080,
+      1920
+    ],
+    "total_scenes": 4,
+    "estimated_duration_sec": 45,
+    "scenes": [
+      {
+        "scene_index": 1,
+        "scene_name": "Opening Dramatic Hook",
+        "duration_sec": 8.0,
+        "aspect_ratio": "9:16",
+        "resolution": [
+          1080,
+          1920
+        ],
+        "narration_hindi": "राजा जनक की भरी सभा में जब पांच हजार बलिष्ठ पुरुष भी जिस शिव धनुष को हिला न सके—तब महर्षि विश्वामित्र ने सुकुमार श्री राम की ओर देखा!",
+        "camera_movement": "Rapid zoom in with subtle camera shake",
+        "lighting": "High-contrast dramatic rim lighting, volcanic or divine cosmic glow",
+        "visual_prompt": "Cinematic 9:16 vertical shot, dramatic opening scene, Masterpiece 3D cinematic render of भगवान शिव (Mahadeva). Angle: [three_quarter_heroic], Expression: [focused_archer_dhyana]. Visual DNA: [Face: Calm, serene yogic face, intense third eye on forehead (closed in meditation, slightly luminous), sharp jawline, compassionate yet formidable gaze | Skin: Ash-smeared pale blue-grey complexion (Bhasma aura), vibrant blue throat (Neelkanth) | Hair: Matted locks of hair (Jata) piled atop the head, crescent moon (Chandrama) nestled in hair, sacred Ganga cascading | Attire: Tiger skin wrap (Vyaghrambara) around waist, sacred rudraksha garland across muscular chest | Jewellery: Vasuki serpent coiled gracefully around the throat, sacred rudraksha beads on wrists and arms | Physique: Athletic, muscular, statuesque yogic physique, broad shoulders, serene posture | Iconography: Trishula (Trident) adorned with a Damru, Kamandalu]. Action in Scene: approaching the sacred Pinaka bow with majestic humility and calm determination. Rendering Specs: Octane 3D hyper-detail, volumetric god-rays, cinematic photorealism, subsurface skin scattering, zero anatomical deformities, exact reference match., photorealistic 8k octane render, dramatic atmospheric fog, epic lighting",
+        "sfx_cue": "thunder_rumble"
+      },
+      {
+        "scene_index": 2,
+        "scene_name": "Crisis & Narrative Tension",
+        "duration_sec": 14.0,
+        "aspect_ratio": "9:16",
+        "resolution": [
+          1080,
+          1920
+        ],
+        "narration_hindi": "आठ पहियों वाले विशाल लोहे के संदूक में रखे भगवान पिनाक के उस धनुष को बड़े-बड़े महारथी छूने से भी कांप रहे थे। सभा में सन्नाटा था। विश्वामित्र का धीर गंभीर स्वर गूंजा—'वत्स राम! उठो, और इस धनुष पर प्रत्यंचा चढ़ाओ!'",
+        "camera_movement": "Slow upward tilt revealing colossal scale",
+        "lighting": "Moody deep shadows, mystical atmospheric haze",
+        "visual_prompt": "Cinematic 9:16 vertical shot, mythic tension, Masterpiece 3D cinematic render of भगवान शिव (Mahadeva). Angle: [wide_action_stance], Expression: [serene_yogic]. Visual DNA: [Face: Calm, serene yogic face, intense third eye on forehead (closed in meditation, slightly luminous), sharp jawline, compassionate yet formidable gaze | Skin: Ash-smeared pale blue-grey complexion (Bhasma aura), vibrant blue throat (Neelkanth) | Hair: Matted locks of hair (Jata) piled atop the head, crescent moon (Chandrama) nestled in hair, sacred Ganga cascading | Attire: Tiger skin wrap (Vyaghrambara) around waist, sacred rudraksha garland across muscular chest | Jewellery: Vasuki serpent coiled gracefully around the throat, sacred rudraksha beads on wrists and arms | Physique: Athletic, muscular, statuesque yogic physique, broad shoulders, serene posture | Iconography: Trishula (Trident) adorned with a Damru, Kamandalu]. Action in Scene: stringing the bow effortlessly as celestial light breaks through the palace. Rendering Specs: Octane 3D hyper-detail, volumetric god-rays, cinematic photorealism, subsurface skin scattering, zero anatomical deformities, exact reference match., golden hour mystical lighting, hyper-detailed environment",
+        "sfx_cue": "ambient_drone"
+      },
+      {
+        "scene_index": 3,
+        "scene_name": "Climax Turning Point",
+        "duration_sec": 14.0,
+        "aspect_ratio": "9:16",
+        "resolution": [
+          1080,
+          1920
+        ],
+        "narration_hindi": "श्री राम ने मंद मुस्कान के साथ उस विशाल धनुष को एक हाथ से ऐसे उठा लिया जैसे कोई खेल हो। पर जैसे ही उन्होंने प्रत्यंचा को कान तक खींचा—धनुष बीच से भयंकर वज्रपात जैसी गर्जना के साथ टूट गया! तीनों लोक उस महाध्वनि से कांप उठे!",
+        "camera_movement": "Dynamic rotational orbit around character",
+        "lighting": "Radiant divine aura, incandescent energy bursting from center",
+        "visual_prompt": "Cinematic 9:16 vertical shot, peak climax, divine intervention, Masterpiece 3D cinematic render of भगवान शिव (Mahadeva). Angle: [three_quarter_heroic], Expression: [focused_archer_dhyana]. Visual DNA: [Face: Calm, serene yogic face, intense third eye on forehead (closed in meditation, slightly luminous), sharp jawline, compassionate yet formidable gaze | Skin: Ash-smeared pale blue-grey complexion (Bhasma aura), vibrant blue throat (Neelkanth) | Hair: Matted locks of hair (Jata) piled atop the head, crescent moon (Chandrama) nestled in hair, sacred Ganga cascading | Attire: Tiger skin wrap (Vyaghrambara) around waist, sacred rudraksha garland across muscular chest | Jewellery: Vasuki serpent coiled gracefully around the throat, sacred rudraksha beads on wrists and arms | Physique: Athletic, muscular, statuesque yogic physique, broad shoulders, serene posture | Iconography: Trishula (Trident) adorned with a Damru, Kamandalu]. Action in Scene: approaching the sacred Pinaka bow with majestic humility and calm determination. Rendering Specs: Octane 3D hyper-detail, volumetric god-rays, cinematic photorealism, subsurface skin scattering, zero anatomical deformities, exact reference match., intense particle effects, glowing aura",
+        "sfx_cue": "divine_chime_bell"
+      },
+      {
+        "scene_index": 4,
+        "scene_name": "Resolution & Philosophical Ending",
+        "duration_sec": 9.0,
+        "aspect_ratio": "9:16",
+        "resolution": [
+          1080,
+          1920
+        ],
+        "narration_hindi": "यह शक्ति का प्रदर्शन नहीं, बल्कि मर्यादा और धर्म का दैवीय संतुलन था। जिस धनुष को अहंकार हिला न सका, उसे मर्यादा पुरुषोत्तम की विनम्रता ने वश में कर लिया।",
+        "camera_movement": "Slow pullback into wide majestic panorama",
+        "lighting": "Golden dawn twilight, serene celestial calm",
+        "visual_prompt": "Cinematic 9:16 vertical shot, peaceful divine aftermath, sacred Himalayas or holy river at sunrise, spiritual glow, photorealistic 8k",
+        "sfx_cue": "shankh_conch"
+      }
+    ]
+  }
+}

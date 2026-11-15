@@ -1,0 +1,36 @@
+{
+  "job_id": "job_9233bb743680",
+  "stage": "08_QC",
+  "saved_at": "2026-11-15T19:25:54.857068",
+  "payload": {
+    "overall_score": 54.0,
+    "minimum_required": 90,
+    "is_passed": false,
+    "hard_blocker_triggered": true,
+    "hard_blocker_reason": "Copyright Safety Failure: Script failed originality check; resembles modern translations or competitor scripts.",
+    "status": "QUARANTINED",
+    "factor_breakdown": {
+      "1_research_validation": 19.0,
+      "2_script_originality": 0.0,
+      "3_factual_consistency": 16.0,
+      "4_copyright_licensing": 0.0,
+      "5_character_consistency": 14.5,
+      "6_visual_quality": 14.0,
+      "7_audio_quality": 9.5,
+      "8_subtitle_sync": 9.5,
+      "9_technical_rendering": 10.0,
+      "10_youtube_policy_compliance": 0.0,
+      "11_metadata_validation": 10.0,
+      "12_duplicate_detection": 0.0
+    },
+    "component_scores": {
+      "story_originality": 0.0,
+      "factual_reliability": 16.0,
+      "storytelling_quality": 14.5,
+      "visual_quality": 14.0,
+      "audio_quality": 9.5,
+      "copyright_safety": 0.0,
+      "policy_compliance": 0.0
+    }
+  }
+}

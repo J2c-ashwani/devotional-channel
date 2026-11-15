@@ -1,0 +1,53 @@
+{
+  "job_id": "job_90321b2e0ff7",
+  "stage": "05_VISUALS",
+  "saved_at": "2026-11-15T19:27:19.502974",
+  "payload": {
+    "scenes": [
+      {
+        "scene_index": 1,
+        "scene_name": "Opening Dramatic Hook",
+        "production_tier": "ESTABLISHING",
+        "production_method": "IMAGE_PLUS_2.5D_MOTION",
+        "image_path": "/Users/ashwanikumar/Downloads/devotional/storage/visuals/scenes/job_90321b2e0ff7/scene_01_keyframe.jpg",
+        "video_path": "/Users/ashwanikumar/Downloads/devotional/storage/visuals/scenes/job_90321b2e0ff7/scene_01_motion.mp4",
+        "duration_sec": 8.0,
+        "narration_hindi": "राजा जनक की भरी सभा में जब पांच हजार बलिष्ठ पुरुष भी जिस शिव धनुष को हिला न सके—तब महर्षि विश्वामित्र ने सुकुमार श्री राम की ओर देखा!",
+        "sfx_cue": "thunder_rumble"
+      },
+      {
+        "scene_index": 2,
+        "scene_name": "Crisis & Narrative Tension",
+        "production_tier": "ESTABLISHING",
+        "production_method": "IMAGE_PLUS_2.5D_MOTION",
+        "image_path": "/Users/ashwanikumar/Downloads/devotional/storage/visuals/scenes/job_90321b2e0ff7/scene_02_keyframe.jpg",
+        "video_path": "/Users/ashwanikumar/Downloads/devotional/storage/visuals/scenes/job_90321b2e0ff7/scene_02_motion.mp4",
+        "duration_sec": 14.0,
+        "narration_hindi": "आठ पहियों वाले विशाल लोहे के संदूक में रखे भगवान पिनाक के उस धनुष को बड़े-बड़े महारथी छूने से भी कांप रहे थे। सभा में सन्नाटा था। विश्वामित्र का धीर गंभीर स्वर गूंजा—'वत्स राम! उठो, और इस धनुष पर प्रत्यंचा चढ़ाओ!'",
+        "sfx_cue": "ambient_drone"
+      },
+      {
+        "scene_index": 3,
+        "scene_name": "Climax Turning Point",
+        "production_tier": "ESTABLISHING",
+        "production_method": "IMAGE_PLUS_2.5D_MOTION",
+        "image_path": "/Users/ashwanikumar/Downloads/devotional/storage/visuals/scenes/job_90321b2e0ff7/scene_03_keyframe.jpg",
+        "video_path": "/Users/ashwanikumar/Downloads/devotional/storage/visuals/scenes/job_90321b2e0ff7/scene_03_motion.mp4",
+        "duration_sec": 14.0,
+        "narration_hindi": "श्री राम ने मंद मुस्कान के साथ उस विशाल धनुष को एक हाथ से ऐसे उठा लिया जैसे कोई खेल हो। पर जैसे ही उन्होंने प्रत्यंचा को कान तक खींचा—धनुष बीच से भयंकर वज्रपात जैसी गर्जना के साथ टूट गया! तीनों लोक उस महाध्वनि से कांप उठे!",
+        "sfx_cue": "divine_chime_bell"
+      },
+      {
+        "scene_index": 4,
+        "scene_name": "Resolution & Philosophical Ending",
+        "production_tier": "ESTABLISHING",
+        "production_method": "IMAGE_PLUS_2.5D_MOTION",
+        "image_path": "/Users/ashwanikumar/Downloads/devotional/storage/visuals/scenes/job_90321b2e0ff7/scene_04_keyframe.jpg",
+        "video_path": "/Users/ashwanikumar/Downloads/devotional/storage/visuals/scenes/job_90321b2e0ff7/scene_04_motion.mp4",
+        "duration_sec": 9.0,
+        "narration_hindi": "यह शक्ति का प्रदर्शन नहीं, बल्कि मर्यादा और धर्म का दैवीय संतुलन था। जिस धनुष को अहंकार हिला न सका, उसे मर्यादा पुरुषोत्तम की विनम्रता ने वश में कर लिया।",
+        "sfx_cue": "shankh_conch"
+      }
+    ]
+  }
+}

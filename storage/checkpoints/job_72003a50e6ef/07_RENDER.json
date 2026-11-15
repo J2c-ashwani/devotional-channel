@@ -1,0 +1,16 @@
+{
+  "job_id": "job_72003a50e6ef",
+  "stage": "07_RENDER",
+  "saved_at": "2026-11-15T19:25:07.212332",
+  "payload": {
+    "success": true,
+    "video_path": "/Users/ashwanikumar/Downloads/devotional/storage/rendered/job_72003a50e6ef/final_short_job_72003a50e6ef.mp4",
+    "subtitles_path": "/Users/ashwanikumar/Downloads/devotional/storage/rendered/job_72003a50e6ef/subtitles_job_72003a50e6ef.srt",
+    "resolution": [
+      1080,
+      1920
+    ],
+    "duration_sec": 44.96,
+    "file_size_bytes": 14971440
+  }
+}

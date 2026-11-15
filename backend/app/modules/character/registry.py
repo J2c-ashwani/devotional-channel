@@ -4,8 +4,9 @@ from backend.app.config import settings
 
 class CharacterRegistry:
     """
-    Module G: Permanent Character Database Registry.
-    Maintains canonical visual DNA, iconography, and voice traits.
+    Module G (Enhanced): Character Consistency & Multi-Angle Sheet Engine.
+    Stores approved reference portraits, angles (front, 3/4, side),
+    expressions (serene, raudra, compassionate), and clothing reference sheets.
     """
 
     def __init__(self):
@@ -23,12 +24,11 @@ class CharacterRegistry:
             name_str = char.get("name", char.get("name_hindi", ""))
             short_id = char_id.replace("char_", "")
             
-            # Check direct match
             if name_str in topic_title or short_id in topic_title.lower():
                 matched.append(char)
-            elif "शिव" in topic_title and "shiva" in char_id:
+            elif ("राम" in topic_title or "धनुष" in topic_title or "जनक" in topic_title or "सीता" in topic_title) and "rama" in char_id:
                 matched.append(char)
-            elif "राम" in topic_title and "rama" in char_id:
+            elif "शिव" in topic_title and "shiva" in char_id:
                 matched.append(char)
             elif "कृष्ण" in topic_title and "krishna" in char_id:
                 matched.append(char)
@@ -36,7 +36,7 @@ class CharacterRegistry:
                 matched.append(char)
             elif "अर्जुन" in topic_title and "arjuna" in char_id:
                 matched.append(char)
-            elif "भीष्म" in topic_title and "arjuna" in char_id: # kurukshetra warrior group
+            elif "भीष्म" in topic_title and "arjuna" in char_id:
                 matched.append(char)
             elif "हनुमान" in topic_title and "hanuman" in char_id:
                 matched.append(char)
@@ -49,13 +49,23 @@ class CharacterRegistry:
 
 class CharacterPromptBuilder:
     """
-    Injects immutable visual DNA into scene generation prompts to ensure 100% character consistency.
+    Constructs multi-angle, expression-conditioned image prompts with strict visual conditioning.
     """
 
+    APPROVED_ANGLES = ["front_portrait", "three_quarter_heroic", "profile_determined", "wide_action_stance"]
+    APPROVED_EXPRESSIONS = ["serene_yogic", "raudra_battle_fury", "karuna_compassion", "focused_archer_dhyana"]
+
     @classmethod
-    def build_consistent_prompt(cls, character: Dict[str, Any], scene_action: str, camera_angle: str) -> str:
+    def build_consistent_prompt(
+        cls,
+        character: Dict[str, Any],
+        scene_action: str,
+        camera_angle: str = "three_quarter_heroic",
+        expression: str = "serene_yogic",
+        attire_variant: str = "standard"
+    ) -> str:
         dna = character.get("visual_dna", {})
-        char_name = character.get("name", character.get("name_hindi", "Lord Shiva"))
+        char_name = character.get("name", character.get("name_hindi", "Lord Rama"))
         
         dna_clauses = [
             f"Face: {dna.get('facial_characteristics', '')}",
@@ -64,16 +74,16 @@ class CharacterPromptBuilder:
             f"Attire: {dna.get('clothing', '')}",
             f"Jewellery: {dna.get('jewellery', '')}",
             f"Physique: {dna.get('body_proportions', '')}",
-            f"Key Attributes: {', '.join(dna.get('accessories', []))}"
+            f"Iconography: {', '.join(dna.get('accessories', []))}"
         ]
         
         full_dna_spec = " | ".join(dna_clauses)
         
         prompt = (
-            f"Hyper-detailed 3D cinematic rendering of {char_name}. "
+            f"Masterpiece 3D cinematic render of {char_name}. "
+            f"Angle: [{camera_angle}], Expression: [{expression}]. "
             f"Visual DNA: [{full_dna_spec}]. "
-            f"Action: {scene_action}. "
-            f"Camera & Composition: {camera_angle}. "
-            f"Style: Cinematic 3D octane render, photorealistic mythological realism, dramatic volumetric lighting, 8k resolution, no distortions, no extra limbs."
+            f"Action in Scene: {scene_action}. "
+            f"Rendering Specs: Octane 3D hyper-detail, volumetric god-rays, cinematic photorealism, subsurface skin scattering, zero anatomical deformities, exact reference match."
         )
         return prompt

@@ -1,0 +1,16 @@
+{
+  "job_id": "job_6ab279e620f5",
+  "stage": "09_UPLOAD",
+  "saved_at": "2026-11-15T19:27:05.838622",
+  "payload": {
+    "success": true,
+    "youtube_video_id": "yt_f6ba293f7ea",
+    "youtube_url": "https://www.youtube.com/watch?v=yt_f6ba293f7ea",
+    "file_sha256": "e154571be7214fc5ad5f29c9ecbc072956122ca58ab8ee4c6592bac65a52d6b6",
+    "privacy_status": "private",
+    "scheduled_publish_at_utc": "2026-11-16T13:30:00Z",
+    "scheduled_publish_at_ist": "19:00 IST",
+    "uploaded_at": "2026-11-15T19:27:05.838562",
+    "has_thumbnail": true
+  }
+}

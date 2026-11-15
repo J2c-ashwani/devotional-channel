@@ -1,0 +1,73 @@
+{
+  "job_id": "job_306d23a6d61d",
+  "stage": "04_STORYBOARD",
+  "saved_at": "2026-11-15T19:25:07.314215",
+  "payload": {
+    "format": "LONG_FORM",
+    "aspect_ratio": "16:9",
+    "resolution": [
+      1920,
+      1080
+    ],
+    "total_scenes": 4,
+    "estimated_duration_sec": 12.0,
+    "scenes": [
+      {
+        "scene_index": 1,
+        "scene_name": "Act 1: Aftermath & Cosmic Moral Dilemma",
+        "duration_sec": 3.0,
+        "aspect_ratio": "16:9",
+        "resolution": [
+          1920,
+          1080
+        ],
+        "narration_hindi": "मिथिला की वह स्वर्णिम सुबह, जब राजा जनक के विशाल प्रांगण में आठ पहियों वाली लोहे की मंजूषा को पांच हजार बलिष्ठ पुरुष खींचते हुए लाए—धरा थरथरा उठी थी।",
+        "camera_movement": "Slow sweeping panoramic crane shot across Kurukshetra",
+        "lighting": "Smoky twilight amber embers, tragic melancholic dusk",
+        "visual_prompt": "Cinematic 16:9 widescreen, epic historical battlefield of Kurukshetra at sunset, broken chariots, banners in the wind, melancholic golden mist, ultra-realistic 8k render"
+      },
+      {
+        "scene_index": 2,
+        "scene_name": "Act 2: The Path to the Patriarch",
+        "duration_sec": 3.0,
+        "aspect_ratio": "16:9",
+        "resolution": [
+          1920,
+          1080
+        ],
+        "narration_hindi": "राजा जनक ने घोषणा की थी कि जो भी वीर भगवान शिव के इस पिनाक धनुष को उठाकर उस पर प्रत्यंचा चढ़ाएगा, विदेह कुमारी सीता का विवाह उसी पराक्रमी के साथ होगा।",
+        "camera_movement": "Tracking medium shot following Krishna and Yudhishthira walking",
+        "lighting": "Ethereal glow from Krishna's presence",
+        "visual_prompt": "Cinematic 16:9, Lord Krishna guiding the Pandavas through sacred battlefield, dignified grief, golden rim lighting, 3D animated film quality"
+      },
+      {
+        "scene_index": 3,
+        "scene_name": "Act 3: The Discourse on the Bed of Arrows",
+        "duration_sec": 3.0,
+        "aspect_ratio": "16:9",
+        "resolution": [
+          1920,
+          1080
+        ],
+        "narration_hindi": "श्री राम ने एक ही क्षण में उस वज्र समान भारी पिनाक धनुष को बीच से पकड़कर सहजता से उठा लिया, जैसे कोई गजराज कमल की डंडी को उठा ले। जैसे ही उन्होंने प्रत्यंचा को कान तक खींचा—प्रचंड वज्रपात जैसी गर्जना के साथ धनुष दो टुकड़ों में विभक्त हो गया! पूरी मिथिला नगरी जयकारों से गूंज उठी।",
+        "camera_movement": "Intimate close-up on Bhishma's serene face, then cutting to listening listeners",
+        "lighting": "Celestial sun rays penetrating the gloom",
+        "visual_prompt": "Cinematic 16:9, Grandfather Bhishma resting on bed of arrows, divine countenance, serene yogic calm, surrounded by reverent Pandavas and sages, dramatic lighting"
+      },
+      {
+        "scene_index": 4,
+        "scene_name": "Act 4: Liberation and the Eternal Truth of Dharma",
+        "duration_sec": 3.0,
+        "aspect_ratio": "16:9",
+        "resolution": [
+          1920,
+          1080
+        ],
+        "narration_hindi": "यह केवल सीता-राम का मिलन नहीं था, बल्कि अधर्म के विनाश और धर्म की पुनर्स्थापना का प्रथम शंखनाद था। वाल्मीकि रामायण की यह अमर गाथा हमें सिखाती है कि अहंकार बल को क्षीण करता है, जबकि विनम्रता और धर्म साक्षात परमात्मा को भी वशीभूत कर लेते हैं।",
+        "camera_movement": "Slow upward ascendant camera movement to open skies",
+        "lighting": "Blinding celestial white and gold aura of ascension",
+        "visual_prompt": "Cinematic 16:9, Heavenly realm opening above holy battlefield, flower showers from heaven, transcendent golden light, sacred cosmic conclusion"
+      }
+    ]
+  }
+}

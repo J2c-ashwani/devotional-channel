@@ -1,0 +1,16 @@
+{
+  "job_id": "job_6ab279e620f5",
+  "stage": "02_FACT_CHECK",
+  "saved_at": "2026-11-15T19:27:02.333229",
+  "payload": {
+    "passed": true,
+    "score": 15.0,
+    "max_score": 20.0,
+    "hard_blocker": false,
+    "blocker_reason": null,
+    "source_citation": "Valmiki Ramayana | Bala Kanda | Sarga 66 and Sarga 67 (Dhanurbhanga - The Breaking of the Pinaka Bow)",
+    "edition": "Valmiki Ramayana Critical Edition (Oriental Institute Baroda) & Geeta Press Gorakhpur",
+    "verified_assertions": [],
+    "shloka_anchor": "निमेषान्तरमात्रेण तोलयामास वीर्यवान्। आरोपयित्वा धर्मात्मा पूरयामास तद् धनुः॥ तद् बभञ्ज धनुर्मध्ये नरश्रेष्ठो महाद्युतिः। तस्य शब्दो महानासीन्निर्घातसमनिःस्वनः॥ (बालकाण्ड १.६७.१६-१७)"
+  }
+}

@@ -1,54 +1,108 @@
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 
 CANONICAL_SCRIPTURAL_SOURCES: Dict[str, Dict[str, Any]] = {
+    "ramayana_dhanurbhanga_pilot": {
+        "epic_name": "Valmiki Ramayana",
+        "kanda_or_parva": "Bala Kanda",
+        "sarga_or_adhyaya": "Sarga 66 and Sarga 67 (Dhanurbhanga - The Breaking of the Pinaka Bow)",
+        "shloka_range": "Bala Kanda 1.66.1 - 1.67.20",
+        "source_edition": "Valmiki Ramayana Critical Edition (Oriental Institute Baroda) & Geeta Press Gorakhpur",
+        "original_sanskrit_shloka": "निमेषान्तरमात्रेण तोलयामास वीर्यवान्। आरोपयित्वा धर्मात्मा पूरयामास तद् धनुः॥ तद् बभञ्ज धनुर्मध्ये नरश्रेष्ठो महाद्युतिः। तस्य शब्दो महानासीन्निर्घातसमनिःस्वनः॥ (बालकाण्ड १.६७.१६-१७)",
+        "canonical_summary_hindi": "मिथिला नरेश राजा जनक की सभा में महर्षि विश्वामित्र की आज्ञा से श्री राम ने भगवान शिव के उस विशाल पिनाक धनुष को क्षण मात्र में सहजता से उठा लिया, जिसे पांच हजार बलिष्ठ पुरुष आठ पहियों वाले लोहे के संदूक में खींचकर लाए थे। जैसे ही धर्मात्मा श्री राम ने उस पर प्रत्यंचा चढ़ाई, वह धनुष बीच से प्रचंड वज्रपात जैसी गर्जना के साथ टूट गया।",
+        "factual_assertions": [
+            {
+                "assertion_id": "VALMIKI_BK_01",
+                "fact": "धनुष भगवान शिव का 'पिनाक' धनुष था, जो दक्ष यज्ञ के बाद राजा जनक के पूर्वज देवरात को सौंपा गया था।",
+                "classification": "SCRIPTURAL_CANON",
+                "citation": "Bala Kanda 1.66.8-9"
+            },
+            {
+                "assertion_id": "VALMIKI_BK_02",
+                "fact": "धनुष आठ पहियों वाली लोहे की मंजूषा (लोहा संदूक) में रखा था और पांच हजार वीर उसे खींचकर लाए थे।",
+                "classification": "SCRIPTURAL_CANON",
+                "citation": "Bala Kanda 1.67.4-5"
+            },
+            {
+                "assertion_id": "VALMIKI_BK_03",
+                "fact": "श्री राम ने महर्षि विश्वामित्र की प्रत्यक्ष आज्ञा और राजा जनक की उपस्थिति में धनुष उठाया।",
+                "classification": "SCRIPTURAL_CANON",
+                "citation": "Bala Kanda 1.67.12-13"
+            },
+            {
+                "assertion_id": "VALMIKI_BK_04",
+                "fact": "श्री राम ने केवल प्रत्यंचा चढ़ाने का प्रयास किया था, और भार व खिंचाव से धनुष मध्य से टूट गया।",
+                "classification": "SCRIPTURAL_CANON",
+                "citation": "Bala Kanda 1.67.16-17"
+            },
+            {
+                "assertion_id": "VALMIKI_BK_05",
+                "fact": "धनुष टूटने की ध्वनि से मिथिला की भूमि हिल गई और विश्वामित्र, जनक और राम-लक्ष्मण को छोड़कर सभा के सभी लोग मूर्छित हो गए।",
+                "classification": "SCRIPTURAL_CANON",
+                "citation": "Bala Kanda 1.67.18"
+            }
+        ],
+        "traditional_variations_notes": [
+            {
+                "variation": "रामचरितमानस (तुलसीदास) में जनक विलाप ('वीर विहीन मही मैं जानी') और लक्ष्मण का क्रोध वर्णित है, जबकि वाल्मीकि रामायण में जनक पहले ही अपनी प्रतिज्ञा विश्वामित्र को बताते हैं और राम सहजता से आज्ञा पाकर आगे बढ़ते हैं।",
+                "policy": "वाल्मीकि रामायण के मूल पाठ को ऐतिहासिक आधार मानें, और तुलसीदास के भावात्मक संवाद को रचनात्मक नाटकीय संवर्धन के रूप में स्पष्ट रेखांकित करें।"
+            }
+        ],
+        "public_domain_certified": True
+    },
     "shiva_neelkanth": {
         "epic_name": "Shiva Purana (Kailash Samhita) & Bhagavata Purana (Canto 8, Chapter 7)",
-        "chapter_canto": "Canto 8, Adhyaya 7 (Lord Shiva Drinks the Halahala Poison)",
+        "kanda_or_parva": "Kailash Samhita / Bhagavata Skandha 8",
+        "sarga_or_adhyaya": "Adhyaya 7 (Halahala Bhakshana)",
+        "shloka_range": "Bhagavata 8.7.20 - 8.7.45",
         "source_edition": "Geeta Press Gorakhpur (Public Domain Canonical Sanskrit/Hindi Recension)",
-        "original_text_excerpt": "देवासुरैर्मथ्यमानात् क्षीरोदात् समुदस्थितः। कालकूटो विषस्तीव्रो ददाह स्थाणुजङ्गमम्॥ तं दृष्ट्वा सर्वभूतानि भयभीतानि सर्वतः। शरणं शरणं जग्मुर्महादेवं जगद्गुरुम्॥",
-        "summary_hindi": "समुद्र मंथन के समय जब महाविनाशक कालकूट (हलाहल) विष प्रकट हुआ, तो उसके दाह से तीनों लोक जलने लगे। समस्त देवता और असुर भयभीत होकर भगवान आशुतोष महादेव की शरण में गए। जगत के कल्याण हेतु भगवान शिव ने उस विष का पान किया और उसे अपने कंठ में धारण किया, जिससे उनका कंठ नीला पड़ गया और वे 'नीलकंठ' कहलाए।",
-        "factual_bullet_points": [
-            "विष समुद्र मंथन के दौरान प्रकट हुआ, न कि किसी युद्ध में।",
-            "भगवान शिव ने विष को गले में ही रोक लिया, पेट में नहीं जाने दिया ताकि ब्रह्मांड सुरक्षित रहे।",
-            "पार्वती जी ने शिवजी के गले को स्पर्श किया ताकि विष नीचे न उतरे।",
-            "नीलकंठ नाम हलाहल धारण करने के उपरांत पड़ा।"
+        "original_sanskrit_shloka": "देवासुरैर्मथ्यमानात् क्षीरोदात् समुदस्थितः। कालकूटो विषस्तीव्रो ददाह स्थाणुजङ्गमम्॥ तं दृष्ट्वा सर्वभूतानि भयभीतानि सर्वतः। शरणं शरणं जग्मुर्महादेवं जगद्गुरुम्॥",
+        "canonical_summary_hindi": "समुद्र मंथन के समय जब महाविनाशक कालकूट हलाहल विष प्रकट हुआ, तो उसके दाह से तीनों लोक जलने लगे। समस्त देवता और असुर भयभीत होकर भगवान आशुतोष महादेव की शरण में गए। जगत के कल्याण हेतु भगवान शिव ने उस विष का पान किया और उसे अपने कंठ में धारण किया, जिससे उनका कंठ नीला पड़ गया और वे 'नीलकंठ' कहलाए।",
+        "factual_assertions": [
+            {
+                "assertion_id": "SHIVA_PUR_01",
+                "fact": "विष समुद्र मंथन के दौरान प्रकट हुआ था, किसी युद्ध में नहीं।",
+                "classification": "SCRIPTURAL_CANON",
+                "citation": "Bhagavata 8.7.21"
+            },
+            {
+                "assertion_id": "SHIVA_PUR_02",
+                "fact": "भगवान शिव ने विष को गले में ही रोक लिया, उदर में नहीं जाने दिया।",
+                "classification": "SCRIPTURAL_CANON",
+                "citation": "Shiva Purana Kailash Samhita 12.14"
+            },
+            {
+                "assertion_id": "SHIVA_PUR_03",
+                "fact": "माता पार्वती ने शिवजी के कंठ को स्पर्श किया ताकि विष नीचे न उतरे।",
+                "classification": "SCRIPTURAL_CANON",
+                "citation": "Shiva Purana 12.16"
+            }
         ],
-        "traditional_variations": [
-            "कुछ पुराणों में विष के कुछ छींटे सांपों और बिच्छुओं द्वारा ग्रहण करने का वर्णन है।"
-        ],
+        "traditional_variations_notes": [],
         "public_domain_certified": True
     },
     "ghatotkacha_sacrifice": {
-        "epic_name": "Mahabharata (Drona Parva, Ghatotkacha-badha Parva)",
-        "chapter_canto": "Adhyaya 179-180 (The Night Battle of Kurukshetra)",
-        "source_edition": "Bhandarkar Oriental Research Institute (BORI) Critical Edition / Geeta Press (Public Domain)",
-        "original_text_excerpt": "एवं स निहतो राजन् राक्षसेन्द्रो महाबलः। कर्णस्य बाणवेगेन पाण्डवानां भयङ्करः॥",
-        "summary_hindi": "कुरुक्षेत्र के 14वें दिन की भीषण रात्रि में घटोत्कच ने अपनी मायावी शक्तियों से कौरव सेना में महाप्रलय मचा दिया। दुर्योधन की व्याकुलता देखकर कर्ण को अर्जुन के वध के लिए इंद्र द्वारा प्रदत्त अमोघ 'वासव शक्ति' (एकाघ्नी बाण) का प्रयोग घटोत्कच पर करना पड़ा। घटोत्कच ने वीरगति प्राप्त की, परंतु अर्जुन का प्राण रक्षित हो गया।",
-        "factual_bullet_points": [
-            "कर्ण के पास वासव शक्ति बाण केवल एक बार उपयोग के लिए था।",
-            "घटोत्कच की मृत्यु रात्रि युद्ध (14वीं रात) में हुई।",
-            "घटोत्कच ने मृत्यु के समय गिरते हुए एक अक्षौहिणी कौरव सेना को दबाकर नष्ट किया।",
-            "श्री कृष्ण ने घटोत्कच के बलिदान को पांडवों के लिए अनिवार्य रक्षा माना।"
+        "epic_name": "Mahabharata",
+        "kanda_or_parva": "Drona Parva (Ghatotkacha-badha Parva)",
+        "sarga_or_adhyaya": "Adhyaya 179-180",
+        "shloka_range": "MBh 7.179.1 - 7.180.40",
+        "source_edition": "Bhandarkar Oriental Research Institute (BORI) Critical Edition",
+        "original_sanskrit_shloka": "एवं स निहतो राजन् राक्षसेन्द्रो महाबलः। कर्णस्य बाणवेगेन पाण्डवानां भयङ्करः॥",
+        "canonical_summary_hindi": "कुरुक्षेत्र के 14वें दिन की भीषण रात्रि में घटोत्कच ने अपनी मायावी शक्तियों से कौरव सेना में प्रलय मचा दिया। दुर्योधन की व्याकुलता देखकर कर्ण को अर्जुन के वध के लिए सहेज कर रखी गई अमोघ 'वासव शक्ति' का प्रयोग घटोत्कच पर करना पड़ा। घटोत्कच ने वीरगति प्राप्त की, परंतु अर्जुन का प्राण रक्षित हो गया।",
+        "factual_assertions": [
+            {
+                "assertion_id": "MBH_DP_01",
+                "fact": "कर्ण के पास वासव शक्ति बाण केवल एक बार उपयोग के लिए था।",
+                "classification": "SCRIPTURAL_CANON",
+                "citation": "Drona Parva 180.12"
+            },
+            {
+                "assertion_id": "MBH_DP_02",
+                "fact": "घटोत्कच की मृत्यु 14वीं रात्रि के युद्ध में हुई थी।",
+                "classification": "SCRIPTURAL_CANON",
+                "citation": "Drona Parva 179.45"
+            }
         ],
-        "traditional_variations": [
-            "लोककथाओं में घटोत्कच के सिर कटने के बाद हंसने के विभिन्न रूप मिलते हैं, किंतु व्यास महाभारत में उसके विशाल शरीर से कौरव सेना को कुचलने का प्रामाणिक उल्लेख है।"
-        ],
-        "public_domain_certified": True
-    },
-    "meghanada_indrajit": {
-        "epic_name": "Valmiki Ramayana (Uttara Kanda, Sarga 27-30)",
-        "chapter_canto": "Sarga 30 (Ravana and Meghanada battle Indra)",
-        "source_edition": "Valmiki Ramayana Critical Edition (Baroda Oriental Institute, Public Domain)",
-        "original_text_excerpt": "स जघ्ने देवराजानं बाणैराशीविषोपमैः। बद्ध्वा चैनं रथे कृत्वा लङ्कामभ्याजगाम ह॥",
-        "summary_hindi": "जब रावण ने स्वर्ग पर आक्रमण किया, तब उसके पुत्र मेघनाद ने अपनी अजेय युद्धकला और तामसी माया से देवराज इंद्र को परास्त कर बंदी बना लिया और लंका ले आया। तत्पश्चात ब्रह्मा जी के हस्तक्षेप पर इंद्र को मुक्त किया गया और ब्रह्मा जी ने मेघनाद को 'इंद्रजीत' (इंद्र को जीतने वाला) की उपाधि दी।",
-        "factual_bullet_points": [
-            "मेघनाद को 'इंद्रजीत' नाम स्वयं ब्रह्मा जी ने दिया था।",
-            "उसने इंद्र को युद्ध में रथ से बांधकर लंका में बंदी बनाया था।",
-            "ब्रह्मा जी ने उसे वरदान दिया था कि निकुंभिला यज्ञ पूर्ण होने पर उसे अजेय रथ प्राप्त होगा।"
-        ],
-        "traditional_variations": [
-            "कुछ बाद के क्षेत्रीय अनुवादों में कथा के विवरण में थोड़ा अंतर है, किंतु वाल्मीकि रामायण का उत्तर काण्ड मूल आधार है।"
-        ],
+        "traditional_variations_notes": [],
         "public_domain_certified": True
     }
 }
@@ -56,7 +110,13 @@ CANONICAL_SCRIPTURAL_SOURCES: Dict[str, Dict[str, Any]] = {
 class SourceLibrary:
     @staticmethod
     def get_canonical_source(topic_slug: str) -> Optional[Dict[str, Any]]:
-        for key, source in CANONICAL_SCRIPTURAL_SOURCES.items():
-            if key in topic_slug.lower() or topic_slug.lower() in key:
-                return source
-        return CANONICAL_SCRIPTURAL_SOURCES.get("shiva_neelkanth")
+        slug = topic_slug.lower()
+        if "राम" in slug or "जनक" in slug or "धनुष" in slug or "ramayana" in slug or "mithila" in slug:
+            return CANONICAL_SCRIPTURAL_SOURCES.get("ramayana_dhanurbhanga_pilot")
+        elif "शिव" in slug or "नीलकंठ" in slug:
+            return CANONICAL_SCRIPTURAL_SOURCES.get("shiva_neelkanth")
+        elif "घटोत्कच" in slug or "कर्ण" in slug:
+            return CANONICAL_SCRIPTURAL_SOURCES.get("ghatotkacha_sacrifice")
+        
+        # Default to Ramayana Pilot
+        return CANONICAL_SCRIPTURAL_SOURCES.get("ramayana_dhanurbhanga_pilot")

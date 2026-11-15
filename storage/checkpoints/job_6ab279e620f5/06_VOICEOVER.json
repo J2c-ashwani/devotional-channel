@@ -1,0 +1,13 @@
+{
+  "job_id": "job_6ab279e620f5",
+  "stage": "06_VOICEOVER",
+  "saved_at": "2026-11-15T19:27:03.943676",
+  "payload": {
+    "voice_files": [
+      "/Users/ashwanikumar/Downloads/devotional/storage/audio/voice/job_6ab279e620f5/scene_01_voice.aac",
+      "/Users/ashwanikumar/Downloads/devotional/storage/audio/voice/job_6ab279e620f5/scene_02_voice.aac",
+      "/Users/ashwanikumar/Downloads/devotional/storage/audio/voice/job_6ab279e620f5/scene_03_voice.aac",
+      "/Users/ashwanikumar/Downloads/devotional/storage/audio/voice/job_6ab279e620f5/scene_04_voice.aac"
+    ]
+  }
+}

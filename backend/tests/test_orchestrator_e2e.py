@@ -2,6 +2,13 @@ import pytest
 from pathlib import Path
 from backend.app.pipeline.orchestrator import ProductionPipelineOrchestrator
 from backend.app.pipeline.emergency import EmergencyKillSwitch
+from backend.app.modules.scriptwriting.originality_guard import OriginalityGuard
+
+@pytest.fixture(autouse=True)
+def clean_test_ledger():
+    OriginalityGuard.clear_history()
+    yield
+    OriginalityGuard.clear_history()
 
 @pytest.mark.asyncio
 async def test_end_to_end_shorts_pipeline():
