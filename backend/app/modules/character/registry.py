@@ -43,6 +43,24 @@ class CharacterRegistry:
             elif "घटोत्कच" in topic_title and "krishna" in char_id:
                 matched.append(char)
 
+        # Prioritize protagonist if specifically acting in title (e.g. 'राम ने', 'कृष्ण ने', 'अर्जुन ने')
+        def score_char(c):
+            c_name = c.get("name", "")
+            c_id = c.get("id", "")
+            score = 0
+            if "श्री राम" in topic_title and "rama" in c_id:
+                score += 20
+            elif "राम ने" in topic_title and "rama" in c_id:
+                score += 25
+            elif "कृष्ण" in topic_title and "krishna" in c_id:
+                score += 20
+            elif "शिव जी" in topic_title and "shiva" in c_id:
+                score += 20
+            elif "हनुमान" in topic_title and "hanuman" in c_id:
+                score += 20
+            return score
+
+        matched.sort(key=score_char, reverse=True)
         if not matched and len(self.characters) > 0:
             matched.append(list(self.characters.values())[0])
         return matched
