@@ -176,29 +176,30 @@ class ProductionPipelineOrchestrator:
             idx = scene["scene_index"]
             text = scene["narration_hindi"]
             total_chars += len(text)
-            raw_voice = voice_dir / f"scene_{idx:02d}_voice.aac"
+            raw_voice = voice_dir / f"scene_{idx:02d}_voice.wav"
             voice_res = await self.voice_engine.generate_narration_audio(
                 hindi_text=text,
                 output_audio_path=raw_voice,
                 voice_profile=primary_char.get("voice_profile") if primary_char else None,
-                target_duration=scene.get("duration_sec")
+                target_duration=scene.get("duration_sec"),
+                use_bold_baritone=True
             )
             raw_dur = float(voice_res.get("duration", scene.get("duration_sec", 6.0)))
             scene["voice_duration"] = round(raw_dur, 2)
-            actual_scene_dur = round(raw_dur + pause_sec, 2)
-            scene["duration_sec"] = actual_scene_dur
             
             # Pad voice file with dramatic silence so audio duration == scene duration
-            padded_voice = voice_dir / f"scene_{idx:02d}_padded.aac"
+            # CRITICAL FIX: Do NOT use '-t' which prematurely truncates speech. apad adds exact silence.
+            padded_voice = voice_dir / f"scene_{idx:02d}_padded.wav"
             subprocess.run([
                 "ffmpeg", "-y",
                 "-i", str(raw_voice),
                 "-af", f"apad=pad_dur={pause_sec}",
-                "-t", str(actual_scene_dur),
-                "-c:a", "aac",
-                "-b:a", "192k",
+                "-c:a", "pcm_s16le",
                 str(padded_voice)
             ], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            
+            actual_scene_dur = HindiVoiceoverEngine.get_exact_audio_duration(padded_voice)
+            scene["duration_sec"] = actual_scene_dur
             voice_files.append(padded_voice)
             
         timeline.append({"stage": "VOICEOVER_GENERATED", "segments": len(voice_files)})
