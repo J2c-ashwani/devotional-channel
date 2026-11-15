@@ -30,4 +30,4 @@ jobs:
 
       - name: Run Pytest Suite
         run: |
-          pytest backend/tests/ -v
+          PYTHONPATH=. pytest backend/tests/ -v

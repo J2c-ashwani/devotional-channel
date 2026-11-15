@@ -34,6 +34,14 @@ wheels/
 storage/*.db
 storage/rendered/*
 storage/visuals/scenes/*
+storage/visuals/thumbnails/*
+storage/checkpoints/*
 storage/audio/voice/*
+storage/audio/google_narration/*
+storage/audio/google_voices/*
+storage/audio/variations/*
+storage/audio/*.aac
+storage/audio/*.wav
+storage/audio/*.mp3
 !storage/audio/music/.gitkeep
 !storage/audio/sfx/.gitkeep
