@@ -6,7 +6,10 @@
   "language": {
     "primary": "hi",
     "script": "Devanagari",
-    "tone": "Dignified, dramatic, poetic, emotionally compelling conversational Hindi"
+    "tone": "Dignified, dramatic, poetic, emotionally compelling conversational Hindi",
+    "pacing": "Unhurried, majestic, grounded Kathavachak cadence (no haste / no harbadi)",
+    "speed_multiplier": 1.0,
+    "vocal_rules_path": "config/vocal_rules.json"
   },
   "audience": {
     "primary_age": "16-45",

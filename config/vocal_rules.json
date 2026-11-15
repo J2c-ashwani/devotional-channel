@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0",
+  "name": "Pauranik Gatha - Golden Vocal & Cadence Rules",
+  "pacing_rules": {
+    "speed_multiplier": 1.0,
+    "speaking_rate_percent": "+0%",
+    "style": "Grounded, unhurried, majestic storytelling (धैर्यवान, शांत और गंभीर कथावाचक प्रवाह)",
+    "forbid_haste": true,
+    "target_words_per_second": [2.0, 2.3]
+  },
+  "acoustic_prosody": {
+    "pitch_shift": "+0Hz",
+    "formant_resonance": "mature_30_35yo_baritone",
+    "sub_chest_boost_hz": 105,
+    "sub_chest_gain_db": 7.0,
+    "throat_authority_boost_hz": 800,
+    "throat_authority_gain_db": 3.0,
+    "compand_broadcast_limiter": true
+  },
+  "climax_flow_rules": {
+    "forbid_awkward_punctuation_pauses": true,
+    "seamless_impact_words": [
+      "तड़ाक की प्रलयंकारी गर्जना के साथ",
+      "वज्रपात जैसी भयानक ध्वनि से",
+      "सिंहनाद गूंज उठा"
+    ],
+    "no_trailing_exclamation_split": true,
+    "sfx_alignment_mode": "instant_impact"
+  },
+  "providers_priority": [
+    "elevenlabs",
+    "gemini_flash_tts",
+    "google_cloud_tts",
+    "edge_tts"
+  ]
+}

@@ -53,15 +53,16 @@ class HindiVoiceoverEngine:
 
     def convert_to_flowing_katha_cadence(self, text: str) -> str:
         """
-        Transforms flat textbook prose into flowing, high-energy oral narration:
-        - Replaces flat danda (।) with dynamic exclamations or natural commas
+        Transforms flat textbook prose into flowing, unhurried, majestic oral narration:
         - Removes dragging ellipsis (...) that inject robotic silences
-        - Preserves fast, breath-supported narrative momentum
+        - Preserves natural, breath-supported narrative momentum without artificial stops
+        - Eliminates abrupt pauses after climax words like 'तड़ाक'
         """
         cadence_text = text.strip()
         cadence_text = cadence_text.replace("...", "")
         cadence_text = cadence_text.replace("…", "")
-        cadence_text = cadence_text.replace("।", "!")
+        # Prevent abrupt exclamation pause after impact words
+        cadence_text = cadence_text.replace("तड़ाक!", "तड़ाक")
         cadence_text = cadence_text.replace("—", ", ")
         while "!!" in cadence_text:
             cadence_text = cadence_text.replace("!!", "!")
@@ -279,7 +280,7 @@ class HindiVoiceoverEngine:
             },
             "audioConfig": {
                 "audioEncoding": "MP3",
-                "speakingRate": 1.12,
+                "speakingRate": 1.0,
                 "pitch": 0.0,
                 "volumeGainDb": 4.0
             }
@@ -311,14 +312,14 @@ class HindiVoiceoverEngine:
     ) -> bool:
         """Edge TTS generation (fallback)."""
         voice_name = self.DEFAULT_VOICE
-        raw_pitch = "+10Hz"
-        raw_rate = "+15%"
+        raw_pitch = "+0Hz"
+        raw_rate = "+0%"
         raw_volume = "+20%"
 
         if voice_profile:
             voice_name = voice_profile.get("voice_name", self.DEFAULT_VOICE)
-            raw_pitch = voice_profile.get("pitch", "+10Hz")
-            raw_rate = voice_profile.get("rate", "+15%")
+            raw_pitch = voice_profile.get("pitch", "+0Hz")
+            raw_rate = voice_profile.get("rate", "+0%")
             raw_volume = voice_profile.get("volume", "+20%")
 
         pitch = self.format_pitch(raw_pitch)
