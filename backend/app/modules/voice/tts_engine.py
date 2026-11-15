@@ -9,9 +9,9 @@ from backend.app.modules.voice.audio_validator import AudioValidator
 
 class HindiVoiceoverEngine:
     """
-    Module I: Hindi AI Voiceover Engine.
-    Generates natural, emotive Hindi narration in Devanagari script.
-    Maintains Sanskrit pronunciation rules, prosody, and audio quality validation.
+    Module I: Hindi AI Voiceover Engine with Authentic Kathavachak / Pravachan Prosody.
+    Generates passionate, rhythmic, high-energy Devanagari narration (ओजस् और भक्ति रस).
+    Eliminates robotic newsreader cadence using oral delivery pauses and pitch modulation.
     """
 
     DEFAULT_VOICE = "hi-IN-MadhurNeural"
@@ -36,6 +36,29 @@ class HindiVoiceoverEngine:
             rate = f"{rate}%"
         return rate
 
+    def format_volume(self, vol_val: str) -> str:
+        vol = str(vol_val).strip()
+        if not vol.startswith("+") and not vol.startswith("-"):
+            vol = f"+{vol}"
+        if not vol.endswith("%"):
+            vol = f"{vol}%"
+        return vol
+
+    def convert_to_kathavachak_cadence(self, text: str) -> str:
+        """
+        Transforms flat textbook prose into oral Kathavachak pravachan rhythm:
+        - Replaces full stops (।) with dramatic storytelling pauses (...)
+        - Preserves and sharpens exclamations (!) and dialogue dashes (—)
+        - Prevents flat monotonous end-of-sentence resets
+        """
+        cadence_text = text.strip()
+        # Replace mechanical full stops with dramatic oral pauses
+        cadence_text = cadence_text.replace("।", "... ")
+        # Ensure dialogue and exclamations have breathing space
+        cadence_text = cadence_text.replace("! ", "! ... ")
+        cadence_text = cadence_text.replace("—", " ... ")
+        return cadence_text
+
     async def generate_narration_audio(
         self,
         hindi_text: str,
@@ -45,29 +68,38 @@ class HindiVoiceoverEngine:
     ) -> Dict[str, Any]:
         output_audio_path.parent.mkdir(parents=True, exist_ok=True)
         
-        # Apply Sanskrit-to-Hindi phonetics normalization
+        # 1. Apply Sanskrit-to-Hindi phonetics normalization
         normalized_text = self.pronunciation_mgr.apply_pronunciation_rules(hindi_text)
         
+        # 2. Transform into rhythmic oral Kathavachak delivery
+        kathavachak_text = self.convert_to_kathavachak_cadence(normalized_text)
+        
+        # Default to energetic Kathavachak delivery: +2Hz pitch (vocal projection), +6% rate (flowing passion), +15% volume
         voice_name = self.DEFAULT_VOICE
-        raw_pitch = "+0Hz"
-        raw_rate = "-2%"
+        raw_pitch = "+2Hz"
+        raw_rate = "+6%"
+        raw_volume = "+15%"
+
         if voice_profile:
             voice_name = voice_profile.get("voice_name", self.DEFAULT_VOICE)
-            raw_pitch = voice_profile.get("pitch", "+0Hz")
-            raw_rate = voice_profile.get("rate", "-2%")
+            raw_pitch = voice_profile.get("pitch", "+2Hz")
+            raw_rate = voice_profile.get("rate", "+6%")
+            raw_volume = voice_profile.get("volume", "+15%")
 
         pitch = self.format_pitch(raw_pitch)
         rate = self.format_rate(raw_rate)
+        volume = self.format_volume(raw_volume)
 
         success = False
         try:
-            # 1. Generate real Neural Hindi speech via edge_tts
+            # Generate real Neural Hindi speech via edge_tts
             temp_mp3 = output_audio_path.with_suffix(".mp3")
             communicate = edge_tts.Communicate(
-                text=normalized_text,
+                text=kathavachak_text,
                 voice=voice_name,
                 rate=rate,
-                pitch=pitch
+                pitch=pitch,
+                volume=volume
             )
             await communicate.save(str(temp_mp3))
             
@@ -90,7 +122,7 @@ class HindiVoiceoverEngine:
         except Exception as e:
             success = False
 
-        # 2. Fallback: If network is completely offline, generate procedural fallback
+        # Fallback: If network is completely offline, generate procedural fallback
         if not success or not output_audio_path.exists() or output_audio_path.stat().st_size == 0:
             word_count = len(hindi_text.split())
             duration = float(target_duration if target_duration else max(4.0, word_count / 2.3))

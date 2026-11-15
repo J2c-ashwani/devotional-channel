@@ -1,0 +1,73 @@
+{
+  "job_id": "job_1eb167f0603f",
+  "stage": "04_STORYBOARD",
+  "saved_at": "2026-11-15T19:47:52.863774",
+  "payload": {
+    "format": "LONG_FORM",
+    "aspect_ratio": "16:9",
+    "resolution": [
+      1920,
+      1080
+    ],
+    "total_scenes": 4,
+    "estimated_duration_sec": 12.0,
+    "scenes": [
+      {
+        "scene_index": 1,
+        "scene_name": "Act 1: Aftermath & Cosmic Moral Dilemma",
+        "duration_sec": 3.0,
+        "aspect_ratio": "16:9",
+        "resolution": [
+          1920,
+          1080
+        ],
+        "narration_hindi": "जब कुरुक्षेत्र की रक्त-रंजित भूमि पर 18 दिनों का महासंग्राम समाप्त हुआ, तो विजय का उल्लास नहीं, बल्कि एक भारी सन्नाटा चारों ओर पसरा था।",
+        "camera_movement": "Slow sweeping panoramic crane shot across Kurukshetra",
+        "lighting": "Smoky twilight amber embers, tragic melancholic dusk",
+        "visual_prompt": "Cinematic 16:9 widescreen, epic historical battlefield of Kurukshetra at sunset, broken chariots, banners in the wind, melancholic golden mist, ultra-realistic 8k render"
+      },
+      {
+        "scene_index": 2,
+        "scene_name": "Act 2: The Path to the Patriarch",
+        "duration_sec": 3.0,
+        "aspect_ratio": "16:9",
+        "resolution": [
+          1920,
+          1080
+        ],
+        "narration_hindi": "पांडवों ने विजय तो प्राप्त कर ली थी, परंतु अपने गुरुओं और भाइयों को खोने के बाद धर्मराज युधिष्ठिर का मन पश्चाताप में जल रहा था। तब भगवान श्री कृष्ण यु",
+        "camera_movement": "Tracking medium shot following Krishna and Yudhishthira walking",
+        "lighting": "Ethereal glow from Krishna's presence",
+        "visual_prompt": "Cinematic 16:9, Lord Krishna guiding the Pandavas through sacred battlefield, dignified grief, golden rim lighting, 3D animated film quality"
+      },
+      {
+        "scene_index": 3,
+        "scene_name": "Act 3: The Discourse on the Bed of Arrows",
+        "duration_sec": 3.0,
+        "aspect_ratio": "16:9",
+        "resolution": [
+          1920,
+          1080
+        ],
+        "narration_hindi": "जब युधिष्ठिर ने पूछा कि अन्याय के समय मौन रहना भी क्या अपराध है, तो पितामह भीष्म के नेत्रों से अश्रु बह निकले। उन्होंने स्वीकार किया कि द्रौपदी के चीरहरण पर उनका मौन ही उनके कष्ट का मूल कारण बना।",
+        "camera_movement": "Intimate close-up on Bhishma's serene face, then cutting to listening listeners",
+        "lighting": "Celestial sun rays penetrating the gloom",
+        "visual_prompt": "Cinematic 16:9, Grandfather Bhishma resting on bed of arrows, divine countenance, serene yogic calm, surrounded by reverent Pandavas and sages, dramatic lighting"
+      },
+      {
+        "scene_index": 4,
+        "scene_name": "Act 4: Liberation and the Eternal Truth of Dharma",
+        "duration_sec": 3.0,
+        "aspect_ratio": "16:9",
+        "resolution": [
+          1920,
+          1080
+        ],
+        "narration_hindi": "सूर्य के उत्तरायण होते ही पितामह भीष्म ने स्वेच्छा से प्राण त्यागे। युधिष्ठिर ने उनके वचनों को हृदय में धारण कर धर्मपूर्वक शासन आरंभ किया।",
+        "camera_movement": "Slow upward ascendant camera movement to open skies",
+        "lighting": "Blinding celestial white and gold aura of ascension",
+        "visual_prompt": "Cinematic 16:9, Heavenly realm opening above holy battlefield, flower showers from heaven, transcendent golden light, sacred cosmic conclusion"
+      }
+    ]
+  }
+}

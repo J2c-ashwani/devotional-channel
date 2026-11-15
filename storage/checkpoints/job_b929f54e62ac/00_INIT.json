@@ -1,0 +1,15 @@
+{
+  "job_id": "job_b929f54e62ac",
+  "stage": "00_INIT",
+  "saved_at": "2026-11-15T19:35:18.217009",
+  "payload": {
+    "budget": {
+      "allowed": true,
+      "monthly_budget_usd": 150.0,
+      "current_spend_usd": 12.4,
+      "percentage_used": 8.3,
+      "warning_threshold_exceeded": false,
+      "reason": null
+    }
+  }
+}

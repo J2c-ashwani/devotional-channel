@@ -1,0 +1,23 @@
+{
+  "job_id": "job_b929f54e62ac",
+  "stage": "02_FACT_CHECK",
+  "saved_at": "2026-11-15T19:35:18.217339",
+  "payload": {
+    "passed": true,
+    "score": 16.0,
+    "max_score": 20.0,
+    "hard_blocker": false,
+    "blocker_reason": null,
+    "source_citation": "Valmiki Ramayana | Bala Kanda | Sarga 66 and Sarga 67 (Dhanurbhanga - The Breaking of the Pinaka Bow)",
+    "edition": "Valmiki Ramayana Critical Edition (Oriental Institute Baroda) & Geeta Press Gorakhpur",
+    "verified_assertions": [
+      {
+        "assertion_id": "VALMIKI_BK_05",
+        "citation": "Bala Kanda 1.67.18",
+        "fact": "धनुष टूटने की ध्वनि से मिथिला की भूमि हिल गई और विश्वामित्र, जनक और राम-लक्ष्मण को छोड़कर सभा के सभी लोग मूर्छित हो गए।",
+        "status": "VERIFIED_IN_SCRIPT"
+      }
+    ],
+    "shloka_anchor": "निमेषान्तरमात्रेण तोलयामास वीर्यवान्। आरोपयित्वा धर्मात्मा पूरयामास तद् धनुः॥ तद् बभञ्ज धनुर्मध्ये नरश्रेष्ठो महाद्युतिः। तस्य शब्दो महानासीन्निर्घातसमनिःस्वनः॥ (बालकाण्ड १.६७.१६-१७)"
+  }
+}

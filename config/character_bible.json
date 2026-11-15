@@ -16,9 +16,10 @@
       },
       "voice_profile": {
         "voice_name": "hi-IN-MadhurNeural",
-        "pitch": "-4Hz",
-        "rate": "-5%",
-        "style": "Deep, resonant, calm, authoritative, cosmic"
+        "pitch": "+2Hz",
+        "rate": "+5%",
+        "volume": "+15%",
+        "style": "Kathavachak Ojas: Booming, resonant, cosmic authority with devotional fervor"
       },
       "personality": "Ascetic, supreme asceticism, unbounded compassion for devotees, righteous fury against adharma",
       "prompt_keywords": "Lord Shiva, Neelkanth, cinematic 3D lighting, ash-smeared blue complexion, trishula with damru, crescent moon in matted hair, photorealistic 8k octane render, dramatic mythical realism"
@@ -39,9 +40,10 @@
       },
       "voice_profile": {
         "voice_name": "hi-IN-MadhurNeural",
-        "pitch": "-2Hz",
-        "rate": "-3%",
-        "style": "Noble, measured, warm, virtuous, resolute"
+        "pitch": "+2Hz",
+        "rate": "+6%",
+        "volume": "+15%",
+        "style": "Kathavachak Veerya: Noble, measured, energetic, virtuous, resolute with rhythmic cadence"
       },
       "personality": "Maryada Purushottam, embodiment of Dharma, serene humility, formidable battlefield prowess",
       "prompt_keywords": "Lord Rama, Kodanda bow, dark cloud skin tone, noble ascetic warrior prince, Valmiki Ramayana authenticity, photorealistic 3D cinematic lighting, detailed embroidery"
@@ -62,9 +64,10 @@
       },
       "voice_profile": {
         "voice_name": "hi-IN-MadhurNeural",
-        "pitch": "+0Hz",
-        "rate": "+0%",
-        "style": "Humble, deep devotion, booming heroic resonance when in battle"
+        "pitch": "+3Hz",
+        "rate": "+6%",
+        "volume": "+20%",
+        "style": "Kathavachak Bhakti-Veera: Humble, boundless energy, booming heroic resonance"
       },
       "personality": "Selfless devotion (Bhakti), supreme intellect, boundless courage, playful innocence coupled with catastrophic strength",
       "prompt_keywords": "Lord Hanuman, golden-hued mighty Vanara warrior, golden mace gada, divine aura, detailed fur texture, dramatic cinematic rim lighting, 3D animated octane render"
@@ -85,9 +88,10 @@
       },
       "voice_profile": {
         "voice_name": "hi-IN-MadhurNeural",
-        "pitch": "-1Hz",
-        "rate": "-2%",
-        "style": "Eloquent, philosophical, enchanting, profound, reassuring"
+        "pitch": "+1Hz",
+        "rate": "+5%",
+        "volume": "+15%",
+        "style": "Kathavachak Madhur-Gita: Eloquent, philosophical, enchanting, profound, rhythmic resonance"
       },
       "personality": "Supreme strategist, master philosopher, playful yet detached, defender of cosmic balance",
       "prompt_keywords": "Lord Krishna, peacock feather crown, glowing blue monsoon complexion, yellow silk pitambara, divine philosopher of Bhagavad Gita, ultra-detailed 3D animation, cinematic lighting"

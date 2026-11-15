@@ -1,5 +1,6 @@
 import uuid
 import time
+import subprocess
 from pathlib import Path
 from typing import Dict, Any, Optional
 from datetime import datetime
@@ -164,31 +165,50 @@ class ProductionPipelineOrchestrator:
         timeline.append({"stage": "DIRECTOR_REVIEW", "signoff": director_review["director_signoff"], "score": director_review["director_score"]})
         AutonomousRecoveryEngine.save_checkpoint(job_id, "04_STORYBOARD", storyboard)
 
-        # Step 8: Hybrid Visual Scene & Motion Generation (Module H)
-        scene_assets = await self.visual_gen.render_all_storyboard_scenes(storyboard, job_id)
-        timeline.append({"stage": "VISUAL_SCENES_RENDERED", "count": len(scene_assets)})
-        AutonomousRecoveryEngine.save_checkpoint(job_id, "05_VISUALS", {"scenes": scene_assets})
-
-        # Step 9: Hindi AI Voiceover Generation (Module I)
+        # Step 8: Hindi AI Voiceover Generation (Module I) - AUDIO LEADS VIDEO
         voice_files = []
         voice_dir = settings.STORAGE_DIR / "audio" / "voice" / job_id
         voice_dir.mkdir(parents=True, exist_ok=True)
         total_chars = 0
+        pause_sec = 0.6 if format_type == "SHORT" else 0.8
         
-        for scene in scene_assets:
+        for scene in storyboard["scenes"]:
             idx = scene["scene_index"]
             text = scene["narration_hindi"]
             total_chars += len(text)
-            out_voice = voice_dir / f"scene_{idx:02d}_voice.aac"
+            raw_voice = voice_dir / f"scene_{idx:02d}_voice.aac"
             voice_res = await self.voice_engine.generate_narration_audio(
                 hindi_text=text,
-                output_audio_path=out_voice,
+                output_audio_path=raw_voice,
                 voice_profile=primary_char.get("voice_profile") if primary_char else None,
-                target_duration=scene["duration_sec"]
+                target_duration=scene.get("duration_sec")
             )
-            voice_files.append(out_voice)
+            raw_dur = float(voice_res.get("duration", scene.get("duration_sec", 6.0)))
+            scene["voice_duration"] = round(raw_dur, 2)
+            actual_scene_dur = round(raw_dur + pause_sec, 2)
+            scene["duration_sec"] = actual_scene_dur
+            
+            # Pad voice file with dramatic silence so audio duration == scene duration
+            padded_voice = voice_dir / f"scene_{idx:02d}_padded.aac"
+            subprocess.run([
+                "ffmpeg", "-y",
+                "-i", str(raw_voice),
+                "-af", f"apad=pad_dur={pause_sec}",
+                "-t", str(actual_scene_dur),
+                "-c:a", "aac",
+                "-b:a", "192k",
+                str(padded_voice)
+            ], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            voice_files.append(padded_voice)
+            
         timeline.append({"stage": "VOICEOVER_GENERATED", "segments": len(voice_files)})
         AutonomousRecoveryEngine.save_checkpoint(job_id, "06_VOICEOVER", {"voice_files": [str(v) for v in voice_files]})
+
+        # Step 9: Hybrid Visual Scene & Motion Generation (Module H)
+        # Visual scenes are now rendered to match the exact audio duration!
+        scene_assets = await self.visual_gen.render_all_storyboard_scenes(storyboard, job_id)
+        timeline.append({"stage": "VISUAL_SCENES_RENDERED", "count": len(scene_assets)})
+        AutonomousRecoveryEngine.save_checkpoint(job_id, "05_VISUALS", {"scenes": scene_assets})
 
         # Step 10: Automatic Video Editing & Rendering Engine (Module K)
         render_res = VideoRenderingPipeline.render_complete_video(

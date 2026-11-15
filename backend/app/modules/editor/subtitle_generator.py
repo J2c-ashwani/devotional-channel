@@ -4,6 +4,7 @@ from typing import List, Dict, Any
 class SubtitleGenerator:
     """
     Generates SRT and ASS format synchronized Hindi subtitles for YouTube videos.
+    Precision-aligned to actual spoken voice duration.
     """
 
     @classmethod
@@ -23,13 +24,14 @@ class SubtitleGenerator:
         
         for i, scene in enumerate(scenes, 1):
             dur = scene.get("duration_sec", 6.0)
+            voice_dur = scene.get("voice_duration", dur)
             text = scene.get("narration_hindi", "").strip()
             if not text:
                 current_time += dur
                 continue
                 
             start_str = cls.format_time_srt(current_time)
-            end_str = cls.format_time_srt(current_time + dur)
+            end_str = cls.format_time_srt(current_time + voice_dur)
             
             lines.append(f"{i}")
             lines.append(f"{start_str} --> {end_str}")
