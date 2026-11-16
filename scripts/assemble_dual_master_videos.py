@@ -29,7 +29,7 @@ CLIP_SHOT1 = STORAGE_DIR / "rendered" / "shot1_pinaka_vault_t2v.mp4"
 CLIP_SHOT2A = STORAGE_DIR / "rendered" / "king_janaka_omni_clip.mp4"
 CLIP_SHOT2B = STORAGE_DIR / "rendered" / "vishvamitra_omni_clip.mp4"
 CLIP_SHOT3 = STORAGE_DIR / "rendered" / "rama_breaks_bow_action_omni.mp4"
-CLIP_SHOT4 = STORAGE_DIR / "rendered" / "shot4_celebration_t2v.mp4"
+CLIP_SHOT4 = STORAGE_DIR / "rendered" / "shot4_rama_sita_celebration_omni.mp4"
 
 # Audio Soundtracks
 AUDIO_HINDI = STORAGE_DIR / "rendered" / "job_ramayana_ep01_google" / "master_google_soundtrack.aac"
@@ -173,26 +173,9 @@ def main():
     # Render Hindi Master Video
     assemble_production("hindi", AUDIO_HINDI, hindi_durations, HINDI_OUTPUT)
 
-    # Render English Master Video
-    assemble_production("english", AUDIO_ENGLISH, english_durations, ENGLISH_OUTPUT)
-
-    # Copy both videos to Downloads folder
-    dl_hindi = USER_DOWNLOADS / "ramayana_part1_hindi_pure_t2v.mp4"
-    dl_english = USER_DOWNLOADS / "ramayana_part1_english_pure_t2v.mp4"
-    try:
-        shutil.copy2(HINDI_OUTPUT, dl_hindi)
-        print(f"Copied Hindi Master to Downloads: {dl_hindi}")
-    except Exception as e:
-        print(f"Notice copying Hindi to Downloads: {e}")
-
-    try:
-        shutil.copy2(ENGLISH_OUTPUT, dl_english)
-        print(f"Copied English Master to Downloads: {dl_english}")
-    except Exception as e:
-        print(f"Notice copying English to Downloads: {e}")
-
     print("\n==========================================")
-    print(" Both Master Videos Rendered Successfully!")
+    print(f" Hindi Master Video Rendered: {HINDI_OUTPUT}")
+    print("==========================================")
     print(f"1. Hindi Master:   {HINDI_OUTPUT}")
     print(f"2. English Master: {ENGLISH_OUTPUT}")
     print("==========================================")

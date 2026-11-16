@@ -40,7 +40,7 @@ CLIP1 = STORAGE_DIR / "rendered" / "shot1_pinaka_vault_t2v.mp4"
 CLIP2A = STORAGE_DIR / "rendered" / "king_janaka_omni_clip.mp4"
 CLIP2B = STORAGE_DIR / "rendered" / "vishvamitra_omni_clip.mp4"
 CLIP3 = STORAGE_DIR / "rendered" / "rama_breaks_bow_action_omni.mp4"
-CLIP4 = STORAGE_DIR / "rendered" / "shot4_celebration_t2v.mp4"
+CLIP4 = STORAGE_DIR / "rendered" / "shot4_rama_sita_celebration_omni.mp4"
 
 # Audio Narration Assets (Authentic Indian English)
 VOICE_SC1 = STORAGE_DIR / "audio" / "english_narration_indian" / "scene_01_indian.mp3"
