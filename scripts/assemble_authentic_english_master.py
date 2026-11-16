@@ -201,7 +201,7 @@ def main():
     # 5. Segment 4: Celebration & Follow CTA (Duration: 12.12s)
     # Celestial flowers shower + Indian English narrator CTA + Shankh
     # -------------------------------------------------------------
-    print("\n--- Segment 4: Celebration (Clean Studio Voiceover & Shankh Finale) ---")
+    print("\n--- Segment 4: Celebration (Pristine Studio Voiceover & Shankh Finale) ---")
     cmd_seg4 = [
         "ffmpeg", "-y",
         "-i", str(CLIP4),
@@ -209,17 +209,17 @@ def main():
         "-i", str(BGM),
         "-i", str(SHANKH),
         "-filter_complex",
-        "[0:v]setpts=1.5075*PTS,scale=1080:1920:flags=lanczos,fps=30,trim=0:12.12,setpts=PTS-STARTPTS[v_out];"
+        "[0:v]setpts=1.465*PTS,scale=1080:1920:flags=lanczos,fps=30,trim=0:11.78,setpts=PTS-STARTPTS[v_out];"
         "[1:a]loudnorm=I=-14:LRA=7:TP=-1.5[a_voice];"
-        "[2:a]volume=0.10,atrim=0:12.12[a_bgm];"
-        "[3:a]adelay=10200|10200,volume=0.40[a_shankh];"
-        "[a_voice][a_bgm][a_shankh]amix=inputs=3:duration=first:dropout_transition=0,afade=t=out:st=11.6:d=0.5[a_out]",
+        "[2:a]volume=0.10,atrim=0:11.78[a_bgm];"
+        "[3:a]adelay=9800|9800,volume=0.35[a_shankh];"
+        "[a_voice][a_bgm][a_shankh]amix=inputs=3:duration=first:dropout_transition=0,afade=t=out:st=11.3:d=0.45[a_out]",
         "-map", "[v_out]",
         "-map", "[a_out]",
         "-c:v", "libx264", "-preset", "fast", "-crf", "17",
         "-pix_fmt", "yuv420p",
         "-c:a", "aac", "-b:a", "256k",
-        "-t", "12.12",
+        "-t", "11.78",
         str(SEG4)
     ]
     run(cmd_seg4)
