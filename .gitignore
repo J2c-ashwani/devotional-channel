@@ -43,5 +43,6 @@ storage/audio/variations/*
 storage/audio/*.aac
 storage/audio/*.wav
 storage/audio/*.mp3
+storage/*.png
 !storage/audio/music/.gitkeep
 !storage/audio/sfx/.gitkeep
