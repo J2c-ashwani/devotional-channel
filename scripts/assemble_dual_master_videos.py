@@ -18,6 +18,7 @@ import os
 import shutil
 import subprocess
 from pathlib import Path
+from PIL import Image, ImageDraw, ImageFont
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 STORAGE_DIR = BASE_DIR / "storage"
@@ -96,6 +97,33 @@ def create_video_segment(input_clip: Path, target_duration: float, output_path: 
     run(cmd)
     print(f"Segment created: {output_path} ({target_duration}s)")
 
+def generate_header_badge(text: str, output_path: Path):
+    img = Image.new('RGBA', (1080, 1920), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(img)
+    try:
+        font = ImageFont.truetype('/System/Library/Fonts/Supplemental/Arial Unicode.ttf', 44)
+    except:
+        font = ImageFont.load_default()
+    bbox = draw.textbbox((0, 0), text, font=font)
+    text_w = bbox[2] - bbox[0]
+    text_h = bbox[3] - bbox[1]
+    pad_x = 44
+    pad_y = 16
+    badge_w = text_w + pad_x * 2
+    badge_h = text_h + pad_y * 2
+    badge_x = (1080 - badge_w) // 2
+    badge_y = 140
+    draw.rounded_rectangle(
+        [badge_x, badge_y, badge_x + badge_w, badge_y + badge_h],
+        radius=24,
+        fill=(15, 12, 10, 190),
+        outline=(212, 175, 55, 240),
+        width=3
+    )
+    draw.text((badge_x + pad_x, badge_y + pad_y - 2), text, font=font, fill=(255, 255, 255, 255))
+    img.save(output_path)
+    return output_path
+
 def assemble_production(lang: str, audio_path: Path, shot_durations: dict, final_output: Path):
     print(f"\n==========================================")
     print(f" Assembling {lang.upper()} Master Video (Pure Text-to-Video)")
@@ -123,16 +151,22 @@ def assemble_production(lang: str, audio_path: Path, shot_durations: dict, final
         for s in [seg1, seg2a, seg2b, seg3, seg4]:
             f.write(f"file '{s.resolve()}'\n")
 
-    # Final stitch with warm mythological color grading & audio muxing
+    # Final stitch with header badge, warm mythological color grading & audio muxing
     # eq: contrast=1.04, saturation=1.12 for divine Indian mythological warmth
     total_duration = sum(shot_durations.values())
     raw_video = lang_dir / f"stitched_{lang}_video.mp4"
+    badge_path = lang_dir / f"badge_{lang}.png"
+    badge_text = "रामायण  •  भाग 1" if lang == "hindi" else "RAMAYANA  •  PART 1"
+    generate_header_badge(badge_text, badge_path)
     
     cmd_stitch = [
         "ffmpeg", "-y",
         "-f", "concat", "-safe", "0",
         "-i", str(concat_list),
-        "-vf", "eq=contrast=1.04:brightness=0.01:saturation=1.12",
+        "-i", str(badge_path),
+        "-filter_complex",
+        "[0:v][1:v]overlay=0:0,eq=contrast=1.04:brightness=0.01:saturation=1.12[v_out]",
+        "-map", "[v_out]",
         "-c:v", "libx264", "-preset", "fast", "-crf", "18",
         "-pix_fmt", "yuv420p",
         str(raw_video)

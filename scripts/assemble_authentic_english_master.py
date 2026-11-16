@@ -29,6 +29,7 @@ import os
 import shutil
 import subprocess
 from pathlib import Path
+from PIL import Image, ImageDraw, ImageFont
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 STORAGE_DIR = BASE_DIR / "storage"
@@ -68,6 +69,33 @@ def run(cmd: list):
         print("ERROR STDERR:\n", res.stderr)
         raise RuntimeError(f"FFmpeg command failed: {res.stderr}")
     return res
+
+def generate_header_badge(text: str, output_path: Path):
+    img = Image.new('RGBA', (1080, 1920), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(img)
+    try:
+        font = ImageFont.truetype('/System/Library/Fonts/Supplemental/Arial Bold.ttf', 44)
+    except:
+        font = ImageFont.load_default()
+    bbox = draw.textbbox((0, 0), text, font=font)
+    text_w = bbox[2] - bbox[0]
+    text_h = bbox[3] - bbox[1]
+    pad_x = 44
+    pad_y = 16
+    badge_w = text_w + pad_x * 2
+    badge_h = text_h + pad_y * 2
+    badge_x = (1080 - badge_w) // 2
+    badge_y = 140
+    draw.rounded_rectangle(
+        [badge_x, badge_y, badge_x + badge_w, badge_y + badge_h],
+        radius=24,
+        fill=(15, 12, 10, 190),
+        outline=(212, 175, 55, 240),
+        width=3
+    )
+    draw.text((badge_x + pad_x, badge_y + pad_y - 2), text, font=font, fill=(255, 255, 255, 255))
+    img.save(output_path)
+    print(f"Header badge saved to {output_path}")
 
 def main():
     print("=== Rendering Authentic English Master with Character Lip-Sync ===")
@@ -173,21 +201,22 @@ def main():
     # 5. Segment 4: Celebration & Follow CTA (Duration: 12.12s)
     # Celestial flowers shower + Indian English narrator CTA + Shankh
     # -------------------------------------------------------------
-    print("\n--- Segment 4: Celebration (Indian Narrator & Shankh Finale) ---")
+    print("\n--- Segment 4: Celebration (Clean Studio Voiceover & Shankh Finale) ---")
     cmd_seg4 = [
         "ffmpeg", "-y",
         "-i", str(CLIP4),
         "-i", str(VOICE_SC4),
         "-i", str(SHANKH),
+        "-i", str(BGM),
         "-filter_complex",
         "[0:v]scale=1080:1920:flags=lanczos,fps=30[base];"
         "[base]split=3[v1][v2_in][v3];"
         "[v2_in]reverse[v2];"
         "[v1][v2][v3]concat=n=3:v=1:a=0,trim=0:12.12,setpts=PTS-STARTPTS[v_out];"
-        "[0:a]volume=0.25[a_native];"
         "[1:a]volume=1.0[a_voice];"
         "[2:a]adelay=6000|6000,volume=0.85[a_shankh];"
-        "[a_voice][a_native][a_shankh]amix=inputs=3:duration=first:dropout_transition=2,afade=t=out:st=10.5:d=1.5,loudnorm=I=-14:LRA=7:TP=-1.5[a_out]",
+        "[3:a]volume=0.15,atrim=0:12.12,afade=t=out:st=10.5:d=1.5[a_bgm];"
+        "[a_voice][a_shankh][a_bgm]amix=inputs=3:duration=first:dropout_transition=2,afade=t=out:st=10.5:d=1.5,loudnorm=I=-14:LRA=7:TP=-1.5[a_out]",
         "-map", "[v_out]",
         "-map", "[a_out]",
         "-c:v", "libx264", "-preset", "fast", "-crf", "17",
@@ -199,9 +228,12 @@ def main():
     run(cmd_seg4)
 
     # -------------------------------------------------------------
-    # 6. Final Concatenation
+    # 6. Final Concatenation with Episode Header Badge
     # -------------------------------------------------------------
-    print("\n--- Final Concatenation of All 5 Segments ---")
+    print("\n--- Final Concatenation of All 5 Segments with Header Badge ---")
+    badge_path = OUTPUT_DIR / "badge_overlay.png"
+    generate_header_badge("RAMAYANA  •  PART 1", badge_path)
+
     concat_list = OUTPUT_DIR / "concat_list.txt"
     with open(concat_list, "w") as f:
         for s in [SEG1, SEG2A, SEG2B, SEG3, SEG4]:
@@ -211,7 +243,11 @@ def main():
         "ffmpeg", "-y",
         "-f", "concat", "-safe", "0",
         "-i", str(concat_list),
-        "-vf", "eq=contrast=1.04:brightness=0.01:saturation=1.12",
+        "-i", str(badge_path),
+        "-filter_complex",
+        "[0:v][1:v]overlay=0:0,eq=contrast=1.04:brightness=0.01:saturation=1.12[v_out]",
+        "-map", "[v_out]",
+        "-map", "0:a",
         "-c:v", "libx264", "-preset", "fast", "-crf", "18",
         "-pix_fmt", "yuv420p",
         "-c:a", "aac", "-b:a", "256k",
