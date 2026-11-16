@@ -123,7 +123,7 @@ def main():
         "-map", "[a_out]",
         "-c:v", "libx264", "-preset", "fast", "-crf", "17",
         "-pix_fmt", "yuv420p",
-        "-c:a", "aac", "-b:a", "256k",
+        "-c:a", "aac", "-b:a", "256k", "-ar", "48000", "-ac", "2",
         "-t", "13.39",
         str(SEG1)
     ]
@@ -145,7 +145,7 @@ def main():
         "-map", "[a_out]",
         "-c:v", "libx264", "-preset", "fast", "-crf", "17",
         "-pix_fmt", "yuv420p",
-        "-c:a", "aac", "-b:a", "256k",
+        "-c:a", "aac", "-b:a", "256k", "-ar", "48000", "-ac", "2",
         "-t", "8.04",
         str(SEG2A)
     ]
@@ -166,7 +166,7 @@ def main():
         "-map", "[a_out]",
         "-c:v", "libx264", "-preset", "fast", "-crf", "17",
         "-pix_fmt", "yuv420p",
-        "-c:a", "aac", "-b:a", "256k",
+        "-c:a", "aac", "-b:a", "256k", "-ar", "48000", "-ac", "2",
         "-t", "8.04",
         str(SEG2B)
     ]
@@ -191,17 +191,17 @@ def main():
         "-map", "[a_out]",
         "-c:v", "libx264", "-preset", "fast", "-crf", "17",
         "-pix_fmt", "yuv420p",
-        "-c:a", "aac", "-b:a", "256k",
+        "-c:a", "aac", "-b:a", "256k", "-ar", "48000", "-ac", "2",
         "-t", "8.04",
         str(SEG3)
     ]
     run(cmd_seg3)
 
     # -------------------------------------------------------------
-    # 5. Segment 4: Celebration & Follow CTA (Duration: 12.12s)
+    # 5. Segment 4: Celebration & Follow CTA (Duration: 11.88s)
     # Celestial flowers shower + Indian English narrator CTA + Shankh
     # -------------------------------------------------------------
-    print("\n--- Segment 4: Celebration (Pristine Studio Voiceover & Shankh Finale) ---")
+    print("\n--- Segment 4: Celebration (Pristine Male Indian Voiceover & Shankh Finale) ---")
     cmd_seg4 = [
         "ffmpeg", "-y",
         "-i", str(CLIP4),
@@ -209,45 +209,44 @@ def main():
         "-i", str(BGM),
         "-i", str(SHANKH),
         "-filter_complex",
-        "[0:v]setpts=1.465*PTS,scale=1080:1920:flags=lanczos,fps=30,trim=0:11.78,setpts=PTS-STARTPTS[v_out];"
+        "[0:v]setpts=1.4776*PTS,scale=1080:1920:flags=lanczos,fps=30,trim=0:11.88,setpts=PTS-STARTPTS[v_out];"
         "[1:a]loudnorm=I=-14:LRA=7:TP=-1.5[a_voice];"
-        "[2:a]volume=0.10,atrim=0:11.78[a_bgm];"
+        "[2:a]volume=0.10,atrim=0:11.88[a_bgm];"
         "[3:a]adelay=9800|9800,volume=0.35[a_shankh];"
-        "[a_voice][a_bgm][a_shankh]amix=inputs=3:duration=first:dropout_transition=0,afade=t=out:st=11.3:d=0.45[a_out]",
+        "[a_voice][a_bgm][a_shankh]amix=inputs=3:duration=first:dropout_transition=0,afade=t=out:st=11.4:d=0.45[a_out]",
         "-map", "[v_out]",
         "-map", "[a_out]",
         "-c:v", "libx264", "-preset", "fast", "-crf", "17",
         "-pix_fmt", "yuv420p",
-        "-c:a", "aac", "-b:a", "256k",
-        "-t", "11.78",
+        "-c:a", "aac", "-b:a", "256k", "-ar", "48000", "-ac", "2",
+        "-t", "11.88",
         str(SEG4)
     ]
     run(cmd_seg4)
 
     # -------------------------------------------------------------
-    # 6. Final Concatenation with Episode Header Badge
+    # 6. Final Filtergraph Concatenation with Episode Header Badge
     # -------------------------------------------------------------
-    print("\n--- Final Concatenation of All 5 Segments with Header Badge ---")
+    print("\n--- Final Filtergraph Concatenation of All 5 Segments with Header Badge ---")
     badge_path = OUTPUT_DIR / "badge_overlay.png"
     generate_header_badge("RAMAYANA  •  PART 1", badge_path)
 
-    concat_list = OUTPUT_DIR / "concat_list.txt"
-    with open(concat_list, "w") as f:
-        for s in [SEG1, SEG2A, SEG2B, SEG3, SEG4]:
-            f.write(f"file '{s.resolve()}'\n")
-
     cmd_final = [
         "ffmpeg", "-y",
-        "-f", "concat", "-safe", "0",
-        "-i", str(concat_list),
+        "-i", str(SEG1),
+        "-i", str(SEG2A),
+        "-i", str(SEG2B),
+        "-i", str(SEG3),
+        "-i", str(SEG4),
         "-i", str(badge_path),
         "-filter_complex",
-        "[0:v][1:v]overlay=0:0,eq=contrast=1.04:brightness=0.01:saturation=1.12[v_out]",
+        "[0:v][0:a][1:v][1:a][2:v][2:a][3:v][3:a][4:v][4:a]concat=n=5:v=1:a=1[v_stitched][a_stitched];"
+        "[v_stitched][5:v]overlay=0:0,eq=contrast=1.04:brightness=0.01:saturation=1.12[v_out]",
         "-map", "[v_out]",
-        "-map", "0:a",
+        "-map", "[a_stitched]",
         "-c:v", "libx264", "-preset", "fast", "-crf", "18",
         "-pix_fmt", "yuv420p",
-        "-c:a", "aac", "-b:a", "256k",
+        "-c:a", "aac", "-b:a", "256k", "-ar", "48000", "-ac", "2",
         str(FINAL_OUTPUT)
     ]
     run(cmd_final)
