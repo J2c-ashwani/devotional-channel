@@ -206,17 +206,14 @@ def main():
         "ffmpeg", "-y",
         "-i", str(CLIP4),
         "-i", str(VOICE_SC4),
-        "-i", str(SHANKH),
         "-i", str(BGM),
+        "-i", str(SHANKH),
         "-filter_complex",
-        "[0:v]scale=1080:1920:flags=lanczos,fps=30[base];"
-        "[base]split=3[v1][v2_in][v3];"
-        "[v2_in]reverse[v2];"
-        "[v1][v2][v3]concat=n=3:v=1:a=0,trim=0:12.12,setpts=PTS-STARTPTS[v_out];"
-        "[1:a]volume=1.0[a_voice];"
-        "[2:a]adelay=6000|6000,volume=0.85[a_shankh];"
-        "[3:a]volume=0.15,atrim=0:12.12,afade=t=out:st=10.5:d=1.5[a_bgm];"
-        "[a_voice][a_shankh][a_bgm]amix=inputs=3:duration=first:dropout_transition=2,afade=t=out:st=10.5:d=1.5,loudnorm=I=-14:LRA=7:TP=-1.5[a_out]",
+        "[0:v]setpts=1.5075*PTS,scale=1080:1920:flags=lanczos,fps=30,trim=0:12.12,setpts=PTS-STARTPTS[v_out];"
+        "[1:a]loudnorm=I=-14:LRA=7:TP=-1.5[a_voice];"
+        "[2:a]volume=0.10,atrim=0:12.12[a_bgm];"
+        "[3:a]adelay=10200|10200,volume=0.40[a_shankh];"
+        "[a_voice][a_bgm][a_shankh]amix=inputs=3:duration=first:dropout_transition=0,afade=t=out:st=11.6:d=0.5[a_out]",
         "-map", "[v_out]",
         "-map", "[a_out]",
         "-c:v", "libx264", "-preset", "fast", "-crf", "17",
