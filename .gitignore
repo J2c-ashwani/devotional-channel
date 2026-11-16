@@ -38,6 +38,7 @@ storage/visuals/thumbnails/*
 storage/checkpoints/*
 storage/audio/voice/*
 storage/audio/google_narration/*
+storage/audio/english_narration/*
 storage/audio/google_voices/*
 storage/audio/variations/*
 storage/audio/*.aac
