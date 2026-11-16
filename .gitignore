@@ -42,6 +42,7 @@ storage/audio/google_voices/*
 storage/audio/variations/*
 storage/audio/*.aac
 storage/audio/*.wav
+.DS_Store
 storage/audio/*.mp3
 storage/*.png
 !storage/audio/music/.gitkeep
