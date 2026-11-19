@@ -7,7 +7,7 @@ STORAGE_DIR = BASE_DIR / "storage"
 CONFIG_DIR = BASE_DIR / "config"
 
 class Settings(BaseSettings):
-    APP_NAME: str = "Pauranik Gatha - Autonomous YouTube Studio"
+    APP_NAME: str = "Itihasa Saga - Autonomous Media Studio"
     ENV: str = "development"
     DEBUG: bool = True
     
@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     YOUTUBE_CLIENT_ID: str = "mock_client_id"
     YOUTUBE_CLIENT_SECRET: str = "mock_client_secret"
     YOUTUBE_REFRESH_TOKEN: str = "mock_refresh_token"
-    YOUTUBE_CHANNEL_ID: str = "UC_CINEMATIC_MYTHOLOGY_HINDI"
+    YOUTUBE_CHANNEL_ID: str = "UC_ITIHASA_SAGA"
     
     # AI API Keys (Configurable via environment variables)
     GEMINI_API_KEY: str = ""
