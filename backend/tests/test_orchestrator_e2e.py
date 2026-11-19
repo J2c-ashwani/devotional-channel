@@ -19,13 +19,14 @@ async def test_end_to_end_shorts_pipeline():
     )
 
     assert result["success"] is True
-    assert result["status"] == "SCHEDULED"
+    assert result["status"] == "SIMULATED"
     assert result["qc_score"] >= 90.0
     assert "video_path" in result
     assert Path(result["video_path"]).exists()
     assert Path(result["thumbnail_path"]).exists()
     assert result["youtube"]["success"] is True
-    assert "yt_" in result["youtube"]["youtube_video_id"]
+    assert result["youtube"]["simulated"] is True
+    assert "yt_sim_" in result["youtube"]["youtube_video_id"]
     assert "13:30:00Z" in result["youtube"]["scheduled_publish_at_utc"] # 19:00 IST
 
 @pytest.mark.asyncio
@@ -45,7 +46,7 @@ async def test_end_to_end_longform_pipeline():
     )
 
     assert result["success"] is True
-    assert result["status"] == "SCHEDULED"
+    assert result["status"] == "SIMULATED"
     assert result["qc_score"] >= 90.0
     assert Path(result["video_path"]).exists()
 

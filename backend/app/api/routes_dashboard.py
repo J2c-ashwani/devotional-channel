@@ -12,7 +12,7 @@ router = APIRouter(prefix="/api/dashboard", tags=["Dashboard"])
 async def get_dashboard_summary() -> Dict[str, Any]:
     ist_time = AutonomousScheduler.get_current_ist_time()
     next_sched = AutonomousScheduler.determine_scheduled_format(ist_time)
-    budget = BudgetGuard.check_budget_availability(current_monthly_spend=18.45)
+    budget = BudgetGuard.check_budget_availability()
     char_reg = CharacterRegistry()
 
     return {

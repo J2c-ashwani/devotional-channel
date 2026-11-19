@@ -71,6 +71,7 @@ class HybridVisualPipeline:
             "image_path": str(img_path),
             "video_path": str(video_path),
             "duration_sec": duration,
+            "voice_duration": scene_spec.get("voice_duration", duration),
             "narration_hindi": scene_spec.get("narration_hindi", ""),
             "sfx_cue": scene_spec.get("sfx_cue", None)
         }

@@ -13,6 +13,32 @@ class VideoRenderingPipeline:
     and applies color grading and loudness normalization.
     """
 
+    _subtitles_filter_available: bool = None
+
+    @classmethod
+    def _has_subtitles_filter(cls) -> bool:
+        if cls._subtitles_filter_available is None:
+            try:
+                res = subprocess.run(
+                    ["ffmpeg", "-hide_banner", "-filters"],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                )
+                cls._subtitles_filter_available = any(
+                    line.strip().split()[1] == "subtitles"
+                    for line in res.stdout.splitlines()
+                    if len(line.strip().split()) >= 2
+                )
+            except Exception:
+                cls._subtitles_filter_available = False
+        return cls._subtitles_filter_available
+
+    @staticmethod
+    def _escape_filter_path(path: Path) -> str:
+        s = str(path.resolve())
+        return s.replace("\\", "\\\\").replace(":", "\\:").replace("'", "\\'")
+
     @classmethod
     def render_complete_video(
         cls,
@@ -31,6 +57,7 @@ class VideoRenderingPipeline:
 
         # 1. Generate Subtitles
         SubtitleGenerator.generate_srt(scene_assets, output_srt_path)
+        has_srt = output_srt_path.exists() and output_srt_path.stat().st_size > 0
 
         # 2. Mix Audio
         durations = [s.get("duration_sec", 6.0) for s in scene_assets]
@@ -43,23 +70,51 @@ class VideoRenderingPipeline:
                 vpath = Path(s["video_path"]).resolve()
                 f.write(f"file '{vpath}'\n")
 
-        # Color grading filter: slight warm saturation (+10%) and subtle contrast (+5%) for mythological richness
+        # Color grading filter: slight warm saturation (+12%) and subtle contrast (+5%) for mythological richness
         color_filter = "eq=contrast=1.05:brightness=0.01:saturation=1.12"
+        video_filter = color_filter
+        subtitles_burned_in = False
+
+        if has_srt and cls._has_subtitles_filter():
+            escaped_srt = cls._escape_filter_path(output_srt_path)
+            font_size = 18 if format_type == "SHORT" else 22
+            margin_v = 80 if format_type == "SHORT" else 40
+            style = (
+                f"FontSize={font_size},PrimaryColour=&H00FFFFFF,"
+                f"OutlineColour=&H00000000,BorderStyle=1,Outline=2,Alignment=2,MarginV={margin_v}"
+            )
+            video_filter = f"{color_filter},subtitles='{escaped_srt}':force_style='{style}'"
+            subtitles_burned_in = True
 
         cmd = [
             "ffmpeg", "-y",
             "-f", "concat", "-safe", "0",
             "-i", str(video_concat_txt),
             "-i", str(mixed_audio_path),
-            "-vf", color_filter,
+        ]
+        if has_srt:
+            cmd.extend(["-i", str(output_srt_path)])
+
+        cmd.extend(["-map", "0:v:0", "-map", "1:a:0"])
+        if has_srt:
+            cmd.extend(["-map", "2:s:0"])
+
+        cmd.extend([
+            "-vf", video_filter,
             "-c:v", "libx264",
             "-preset", "ultrafast",
             "-pix_fmt", "yuv420p",
             "-c:a", "aac",
             "-b:a", "192k",
-            "-shortest",
-            str(output_video_path)
-        ]
+        ])
+        if has_srt:
+            cmd.extend([
+                "-c:s", "mov_text",
+                "-metadata:s:s:0", "language=hin",
+                "-disposition:s:0", "default",
+            ])
+
+        cmd.extend(["-shortest", str(output_video_path)])
 
         subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -72,6 +127,8 @@ class VideoRenderingPipeline:
             "success": True,
             "video_path": str(output_video_path),
             "subtitles_path": str(output_srt_path),
+            "subtitles_burned_in": subtitles_burned_in,
+            "subtitles_embedded": validation.get("has_subtitles", False),
             "resolution": target_res,
             "duration_sec": validation["duration"],
             "file_size_bytes": output_video_path.stat().st_size
@@ -99,6 +156,7 @@ class VideoRenderingPipeline:
             streams = data.get("streams", [])
             has_video = any(s.get("codec_type") == "video" for s in streams)
             has_audio = any(s.get("codec_type") == "audio" for s in streams)
+            has_subtitles = any(s.get("codec_type") == "subtitle" for s in streams)
         except Exception as e:
             return {"valid": False, "error": f"Error parsing video streams: {str(e)}"}
 
@@ -113,5 +171,6 @@ class VideoRenderingPipeline:
             "valid": True,
             "duration": round(duration, 2),
             "streams": len(streams),
+            "has_subtitles": has_subtitles,
             "error": None
         }

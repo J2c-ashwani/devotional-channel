@@ -69,7 +69,10 @@ class ProductionPipelineOrchestrator:
                 "error": "Emergency Kill Switch is active. Production stopped."
             }
 
-        budget_check = BudgetGuard.check_budget_availability(current_monthly_spend=12.40)
+        estimated_job_cost = CostTracker.estimate_job_cost(format_type)
+        budget_check = BudgetGuard.check_budget_availability(
+            estimated_new_job_cost=estimated_job_cost
+        )
         if not budget_check["allowed"]:
             return {
                 "success": False,
@@ -116,11 +119,8 @@ class ProductionPipelineOrchestrator:
         timeline.append({"stage": "RESEARCH_TOPIC", "topic": topic["title_hindi"]})
         AutonomousRecoveryEngine.save_checkpoint(job_id, "01_RESEARCH", topic)
 
-        # Step 2: Canonical Mythology Grounding & Shloka Verification (Module B)
+        # Step 2: Canonical Mythology Source Lookup (Module B)
         canonical_source = SourceLibrary.get_canonical_source(topic["title_hindi"])
-        fact_check = MythologyFactChecker.validate_script(topic["title_hindi"], topic["title_hindi"])
-        timeline.append({"stage": "FACT_CHECK", "passed": fact_check["passed"], "source": fact_check.get("source_citation")})
-        AutonomousRecoveryEngine.save_checkpoint(job_id, "02_FACT_CHECK", fact_check)
 
         # Step 3: Screenplay Generation & Originality Guard (Module C)
         if format_type == "SHORT":
@@ -135,6 +135,15 @@ class ProductionPipelineOrchestrator:
         script["originality_score"] = orig_audit["originality_score"]
         timeline.append({"stage": "SCREENPLAY", "duration_sec": script["estimated_duration_sec"], "originality": orig_audit["originality_score"]})
         AutonomousRecoveryEngine.save_checkpoint(job_id, "03_SCREENPLAY", script)
+
+        # Step 3b: Canonical Mythology Fact Check on the ACTUAL Generated Screenplay & Dialogue (Module B)
+        dialogue_text = " ".join(
+            d.get("line", "") for d in script.get("dialogue_excerpts", []) if isinstance(d, dict)
+        )
+        script_text_to_verify = f"{script['full_screenplay_devanagari']}\n{dialogue_text}".strip()
+        fact_check = MythologyFactChecker.validate_script(script_text_to_verify, topic["title_hindi"])
+        timeline.append({"stage": "FACT_CHECK", "passed": fact_check["passed"], "source": fact_check.get("source_citation")})
+        AutonomousRecoveryEngine.save_checkpoint(job_id, "02_FACT_CHECK", fact_check)
 
         # Step 4: Audience Psychology & Hook Tension Analysis (Module S)
         psych_eval = AudiencePsychologyEngine.analyze_emotional_arc(script)
@@ -202,8 +211,22 @@ class ProductionPipelineOrchestrator:
             scene["duration_sec"] = actual_scene_dur
             voice_files.append(padded_voice)
             
-        timeline.append({"stage": "VOICEOVER_GENERATED", "segments": len(voice_files)})
-        AutonomousRecoveryEngine.save_checkpoint(job_id, "06_VOICEOVER", {"voice_files": [str(v) for v in voice_files]})
+        total_audio_duration = round(sum(s["duration_sec"] for s in storyboard["scenes"]), 2)
+        storyboard["actual_duration_sec"] = total_audio_duration
+        duration_gate_error = None
+        if format_type == "LONG_FORM" and scene_duration_override is None:
+            if total_audio_duration < LongformPlanner.MIN_DURATION_SEC:
+                duration_gate_error = (
+                    f"Long-form audio duration ({total_audio_duration:.1f}s) is below the minimum "
+                    f"required {LongformPlanner.MIN_DURATION_SEC:.0f}s (8 minutes)."
+                )
+
+        timeline.append({
+            "stage": "VOICEOVER_GENERATED",
+            "segments": len(voice_files),
+            "total_audio_duration_sec": total_audio_duration
+        })
+        AutonomousRecoveryEngine.save_checkpoint(job_id, "06_VOICEOVER", {"voice_files": [str(v) for v in voice_files], "total_audio_duration_sec": total_audio_duration})
 
         # Step 9: Hybrid Visual Scene & Motion Generation (Module H)
         # Visual scenes are now rendered to match the exact audio duration!
@@ -259,35 +282,85 @@ class ProductionPipelineOrchestrator:
             factual_result=fact_check,
             script_originality=orig_audit["originality_score"],
             visual_result={"success": True},
-            audio_result={"success": True},
+            audio_result={"success": duration_gate_error is None, "error": duration_gate_error},
             copyright_result=copyright_audit,
             policy_result=policy_audit,
             render_result=render_res,
             is_duplicate=orig_audit.get("is_duplicate", False)
         )
+        if duration_gate_error:
+            qc_report["is_passed"] = False
+            qc_report["hard_blocker_triggered"] = True
+            qc_report["hard_blocker_reason"] = duration_gate_error
+            qc_report["status"] = "QUARANTINED"
+
         timeline.append({"stage": "QUALITY_CONTROL", "overall_score": qc_report["overall_score"], "passed": qc_report["is_passed"]})
         AutonomousRecoveryEngine.save_checkpoint(job_id, "08_QC", qc_report)
 
+        # Compute & persist actual operational spend now (resources already consumed for TTS/visuals/render)
+        elapsed_sec = time.time() - start_time
+        cost_report = CostTracker.calculate_job_cost(
+            tokens_used=1800,
+            images_generated=len(scene_assets),
+            video_seconds=render_res["duration_sec"],
+            tts_characters=total_chars,
+            render_seconds=elapsed_sec
+        )
+
         # Step 14: Hard-Blocking Fail-Closed Gate Enforcement
         if not qc_report["is_passed"]:
+            updated_spend = CostTracker.record_job_cost(job_id, format_type, cost_report, status="QUARANTINED")
+            cost_report["monthly_spend_after_job_usd"] = updated_spend
             return {
                 "success": False,
                 "job_id": job_id,
                 "status": "QUARANTINED",
                 "qc_score": qc_report["overall_score"],
                 "hard_blocker": qc_report["hard_blocker_reason"],
+                "cost": cost_report,
                 "timeline": timeline,
                 "error": "Failed quality control threshold or triggered hard blocker. Publication rejected."
             }
 
         # Step 15: YouTube Upload & Consistent 7:00 PM IST Scheduling (Module O)
+        subtitles_file = Path(render_res["subtitles_path"]) if render_res.get("subtitles_path") else None
         upload_res = await self.uploader.upload_and_schedule_video(
             video_path=Path(render_res["video_path"]),
             thumbnail_path=thumb_path,
             metadata=metadata,
-            scheduled_publish_time_ist=AutonomousScheduler.DEFAULT_PUBLISH_TIME_IST
+            scheduled_publish_time_ist=AutonomousScheduler.DEFAULT_PUBLISH_TIME_IST,
+            subtitles_path=subtitles_file,
+            simulate_upload=simulate_upload
         )
-        timeline.append({"stage": "YOUTUBE_SCHEDULED", "video_id": upload_res["youtube_video_id"]})
+
+        if not upload_res.get("success"):
+            updated_spend = CostTracker.record_job_cost(job_id, format_type, cost_report, status="UPLOAD_FAILED")
+            cost_report["monthly_spend_after_job_usd"] = updated_spend
+            timeline.append({"stage": "YOUTUBE_UPLOAD_FAILED", "error": upload_res.get("error")})
+            AutonomousRecoveryEngine.save_checkpoint(job_id, "09_UPLOAD_FAILED", upload_res)
+            return {
+                "success": False,
+                "job_id": job_id,
+                "status": "UPLOAD_FAILED",
+                "format": format_type,
+                "topic_title_hindi": topic["title_hindi"],
+                "video_path": render_res["video_path"],
+                "subtitles_path": render_res.get("subtitles_path"),
+                "thumbnail_path": str(thumb_path),
+                "qc_score": qc_report["overall_score"],
+                "youtube": upload_res,
+                "cost": cost_report,
+                "timeline": timeline,
+                "elapsed_seconds": round(elapsed_sec, 2),
+                "error": upload_res.get("error", "YouTube upload failed.")
+            }
+
+        is_simulated = bool(upload_res.get("simulated", False))
+        final_status = "SIMULATED" if is_simulated else "SCHEDULED"
+        timeline.append({
+            "stage": "YOUTUBE_SIMULATED" if is_simulated else "YOUTUBE_SCHEDULED",
+            "video_id": upload_res["youtube_video_id"]
+        })
         AutonomousRecoveryEngine.save_checkpoint(job_id, "09_UPLOAD", upload_res)
 
         # Record script to permanent history archive
@@ -298,24 +371,21 @@ class ProductionPipelineOrchestrator:
             full_script=script["full_screenplay_devanagari"]
         )
 
-        # Step 16: Cost & API Usage Micro-Tracking (Module Q)
-        elapsed_sec = time.time() - start_time
-        cost_report = CostTracker.calculate_job_cost(
-            tokens_used=1800,
-            images_generated=len(scene_assets),
-            video_seconds=render_res["duration_sec"],
-            tts_characters=total_chars,
-            render_seconds=elapsed_sec
-        )
+        # Step 16: Persist Cost & API Usage Micro-Tracking (Module Q)
+        updated_spend = CostTracker.record_job_cost(job_id, format_type, cost_report, status=final_status)
+        cost_report["monthly_spend_after_job_usd"] = updated_spend
 
         return {
             "success": True,
             "job_id": job_id,
-            "status": "SCHEDULED",
+            "status": final_status,
             "format": format_type,
             "topic_title_hindi": topic["title_hindi"],
             "scriptural_grounding": fact_check.get("source_citation"),
             "video_path": render_res["video_path"],
+            "subtitles_path": render_res.get("subtitles_path"),
+            "subtitles_embedded": render_res.get("subtitles_embedded", False),
+            "subtitles_burned_in": render_res.get("subtitles_burned_in", False),
             "thumbnail_path": str(thumb_path),
             "qc_score": qc_report["overall_score"],
             "qc_breakdown": qc_report["factor_breakdown"],

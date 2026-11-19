@@ -104,6 +104,37 @@ CANONICAL_SCRIPTURAL_SOURCES: Dict[str, Dict[str, Any]] = {
         ],
         "traditional_variations_notes": [],
         "public_domain_certified": True
+    },
+    "bhishma_shanti_parva": {
+        "epic_name": "Mahabharata",
+        "kanda_or_parva": "Shanti Parva (Rajadharmanushasana & Mokshadharma Parva)",
+        "sarga_or_adhyaya": "Adhyaya 56-167 (Bhishma's Discourse on the Bed of Arrows)",
+        "shloka_range": "MBh 12.56.1 - 12.167.50",
+        "source_edition": "Bhandarkar Oriental Research Institute (BORI) Critical Edition & Geeta Press Gorakhpur",
+        "original_sanskrit_shloka": "यथा हि गर्भिणी हित्वा स्वं प्रियं मनसोऽनुगम्। गर्भस्य हितमाधत्ते तथा राज्ञाप्यसंशयम्॥ (शान्तिपर्व ५६.४५)",
+        "canonical_summary_hindi": "कुरुक्षेत्र के अठारह दिवसीय महासंग्राम के उपरांत भगवान श्री कृष्ण धर्मराज युधिष्ठिर को शरशैया पर लेटे पितामह भीष्म के समीप ले गए। पितामह भीष्म ने युधिष्ठिर को राजधर्म, दंडनीति, आपद्धर्म और मोक्षधर्म का गूढ़ उपदेश दिया तथा सूर्य के उत्तरायण होने पर योगबल से प्राण त्यागे।",
+        "factual_assertions": [
+            {
+                "assertion_id": "MBH_SP_01",
+                "fact": "भगवान श्री कृष्ण युधिष्ठिर को शरशैया पर लेटे पितामह भीष्म के पास राजधर्म के उपदेश के लिए ले गए।",
+                "classification": "SCRIPTURAL_CANON",
+                "citation": "Shanti Parva 12.46-54"
+            },
+            {
+                "assertion_id": "MBH_SP_02",
+                "fact": "पितामह भीष्म ने राजा को गर्भवती माता की भांति अपने सुख से ऊपर प्रजा के कल्याण को रखने का राजधर्म सिखाया।",
+                "classification": "SCRIPTURAL_CANON",
+                "citation": "Shanti Parva 12.56.44-45"
+            },
+            {
+                "assertion_id": "MBH_SP_03",
+                "fact": "भीष्म ने कुरुसभा में द्रौपदी के अपमान के समय अपने मौन को स्वीकार किया और उत्तरायण में स्वेच्छा से प्राण त्यागे।",
+                "classification": "SCRIPTURAL_CANON",
+                "citation": "Anushasana Parva 13.153-154"
+            }
+        ],
+        "traditional_variations_notes": [],
+        "public_domain_certified": True
     }
 }
 
@@ -111,7 +142,9 @@ class SourceLibrary:
     @staticmethod
     def get_canonical_source(topic_slug: str) -> Optional[Dict[str, Any]]:
         slug = topic_slug.lower()
-        if "राम" in slug or "जनक" in slug or "धनुष" in slug or "ramayana" in slug or "mithila" in slug:
+        if "भीष्म" in slug or "शांति" in slug or "युधिष्ठिर" in slug or "bhishma" in slug:
+            return CANONICAL_SCRIPTURAL_SOURCES.get("bhishma_shanti_parva")
+        elif "राम" in slug or "जनक" in slug or "धनुष" in slug or "ramayana" in slug or "mithila" in slug:
             return CANONICAL_SCRIPTURAL_SOURCES.get("ramayana_dhanurbhanga_pilot")
         elif "शिव" in slug or "नीलकंठ" in slug:
             return CANONICAL_SCRIPTURAL_SOURCES.get("shiva_neelkanth")
