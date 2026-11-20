@@ -1,0 +1,82 @@
+name: Itihasa Saga Daily Autonomous Pipeline
+
+on:
+  schedule:
+    # 🌅 Morning Slot (Ramayana): Runs at 00:45 UTC = 6:15 AM IST (Publishes for 7:00 AM IST)
+    - cron: '45 0 * * *'
+    # ⚔️ Evening Slot (Mahabharata): Runs at 12:15 UTC = 5:45 PM IST (Publishes for 6:30 PM IST)
+    - cron: '15 12 * * *'
+  workflow_dispatch:
+    inputs:
+      track:
+        description: 'Epic Track to Produce'
+        required: true
+        default: 'AUTO'
+        type: choice
+        options:
+          - AUTO
+          - RAMAYANA
+          - MAHABHARATA
+
+jobs:
+  produce_and_publish_episode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      - name: Install System Dependencies (FFmpeg & Fonts)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu fonts-liberation
+
+      - name: Install Python Requirements
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+          pip install google-cloud-storage google-auth-oauthlib google-api-python-client
+
+      - name: Setup Google Service Account
+        if: env.GCP_SA_KEY != ''
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+        run: |
+          echo "$GCP_SA_KEY" > service-account.json
+
+      - name: Determine Track (Morning = Ramayana, Evening = Mahabharata)
+        id: determine_track
+        run: |
+          if [ "${{ github.event.inputs.track }}" != "" ] && [ "${{ github.event.inputs.track }}" != "AUTO" ]; then
+            echo "TRACK=${{ github.event.inputs.track }}" >> $GITHUB_ENV
+          else
+            HOUR=$(date -u +%H)
+            if [ "$HOUR" -lt 6 ]; then
+              echo "TRACK=RAMAYANA" >> $GITHUB_ENV
+            else
+              echo "TRACK=MAHABHARATA" >> $GITHUB_ENV
+            fi
+          fi
+
+      - name: Execute Autonomous Video Production & Multi-Platform Upload
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GOOGLE_APPLICATION_CREDENTIALS: service-account.json
+          GOOGLE_CLOUD_PROJECT: devotional-youtube-514907
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          YOUTUBE_CHANNEL_ID: UC7jhh-MuUL4GYndzjouOYSQ
+          META_PERMANENT_ACCESS_TOKEN: ${{ secrets.META_PERMANENT_ACCESS_TOKEN }}
+          INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
+          FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
+        run: |
+          echo "🎬 Starting Production Run for Track: $TRACK"
+          python scripts/run_pipeline.py --format SHORT --track "$TRACK"

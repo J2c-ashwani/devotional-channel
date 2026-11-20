@@ -28,6 +28,7 @@ wheels/
 .env.*
 *service-account*.json
 *credentials*.json
+*client_secret*.json
 *.pem
 *.key
 .pytest_cache/
