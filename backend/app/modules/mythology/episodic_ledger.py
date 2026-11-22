@@ -10,7 +10,7 @@ import json
 from pathlib import Path
 from typing import Dict, Any, List
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parents[4]
 STORAGE_DIR = BASE_DIR / "storage"
 PROGRESS_FILE = STORAGE_DIR / "episodic_progress.json"
 
