@@ -33,6 +33,8 @@ from backend.app.modules.cost.budget_guard import BudgetGuard
 from backend.app.modules.director.production_director import AutomatedProductionDirector
 from backend.app.modules.psychology.audience_psychology import AudiencePsychologyEngine
 from backend.app.modules.recovery.recovery_engine import AutonomousRecoveryEngine
+from backend.app.modules.mythology.episodic_ledger import EpisodicLedger
+from backend.app.modules.meta.uploader import MetaReelUploader
 
 class ProductionPipelineOrchestrator:
     """
@@ -48,13 +50,18 @@ class ProductionPipelineOrchestrator:
         self.visual_gen = HybridVisualPipeline()
         self.voice_engine = HindiVoiceoverEngine()
         self.uploader = YouTubeUploader()
+        try:
+            self.meta_uploader = MetaReelUploader()
+        except Exception:
+            self.meta_uploader = None
 
     async def execute_production_run(
         self,
         format_type: str = "SHORT",
         forced_topic: Optional[Dict[str, Any]] = None,
         simulate_upload: bool = True,
-        scene_duration_override: Optional[float] = None
+        scene_duration_override: Optional[float] = None,
+        track: str = "AUTO"
     ) -> Dict[str, Any]:
         start_time = time.time()
         job_id = f"job_{uuid.uuid4().hex[:12]}"
@@ -84,38 +91,17 @@ class ProductionPipelineOrchestrator:
         timeline.append({"stage": "INIT", "status": "PASSED", "time": datetime.utcnow().isoformat()})
         AutonomousRecoveryEngine.save_checkpoint(job_id, "00_INIT", {"budget": budget_check})
 
-        # Step 1: Content Research & Topic Selection (Module A)
+        # Step 1: Content Research & Topic Selection (Episodic Multi-Track: Ramayana & Mahabharata)
         if forced_topic:
             topic = forced_topic
         else:
-            if self.db:
-                research_engine = ContentResearchEngine(self.db)
-                await research_engine.discover_and_rank_topics()
-                db_topic = await research_engine.get_highest_priority_topic(format_type)
-                if db_topic:
-                    topic = {
-                        "id": db_topic.id,
-                        "title_hindi": db_topic.title_hindi,
-                        "title_english": db_topic.title_english,
-                        "epic_source": db_topic.epic_source,
-                        "format_type": db_topic.format_type
-                    }
-                else:
-                    topic = {
-                        "id": "topic_ramayana_pilot",
-                        "title_hindi": "श्री राम का धनुर्भंग: जब मिथिला में शिव का पिनाक धनुष टूटा",
-                        "title_english": "Dhanurbhanga: Lord Rama Lifts the Pinaka Bow of Shiva in Mithila",
-                        "epic_source": "Valmiki Ramayana (Bala Kanda Sarga 66-67)",
-                        "format_type": format_type
-                    }
-            else:
-                topic = {
-                    "id": "topic_ramayana_pilot",
-                    "title_hindi": "श्री राम का धनुर्भंग: जब मिथिला में शिव का पिनाक धनुष टूटा",
-                    "title_english": "Dhanurbhanga: Lord Rama Lifts the Pinaka Bow of Shiva in Mithila",
-                    "epic_source": "Valmiki Ramayana (Bala Kanda Sarga 66-67)",
-                    "format_type": format_type
-                }
+            active_track = track
+            if active_track == "AUTO":
+                import pytz
+                ist = pytz.timezone(settings.PUBLISH_TIMEZONE)
+                now_ist = datetime.now(ist)
+                active_track = "RAMAYANA" if now_ist.hour < 12 else "MAHABHARATA"
+            topic = EpisodicLedger.get_next_topic(track=active_track)
         timeline.append({"stage": "RESEARCH_TOPIC", "topic": topic["title_hindi"]})
         AutonomousRecoveryEngine.save_checkpoint(job_id, "01_RESEARCH", topic)
 
@@ -374,6 +360,24 @@ class ProductionPipelineOrchestrator:
         # Step 16: Persist Cost & API Usage Micro-Tracking (Module Q)
         updated_spend = CostTracker.record_job_cost(job_id, format_type, cost_report, status=final_status)
         cost_report["monthly_spend_after_job_usd"] = updated_spend
+
+        # Step 17: Multi-Platform Distribution: Instagram Reels & Facebook Page
+        meta_results = {}
+        if not simulate_upload and self.meta_uploader:
+            try:
+                caption = f"{topic['title_hindi']}\n\n{script.get('opening_hook_hindi', '')}\n\n🔔 फॉलो करें: @itihasasaga\n\n#ramayana #mahabharata #itihasasaga #sanatan #shorts #reels"
+                video_file = Path(render_res["video_path"])
+                ig_id = self.meta_uploader.publish_instagram_reel(video_file, caption)
+                fb_id = self.meta_uploader.publish_facebook_reel(video_file, caption)
+                meta_results = {"instagram_media_id": ig_id, "facebook_video_id": fb_id}
+                timeline.append({"stage": "META_PUBLISHED", "results": meta_results})
+            except Exception as e:
+                print("Meta multi-platform upload notice:", e)
+                meta_results = {"error": str(e)}
+
+        # Mark episode completed in chronological ledger
+        if not simulate_upload and upload_res.get("success"):
+            EpisodicLedger.mark_completed(topic["id"])
 
         return {
             "success": True,
