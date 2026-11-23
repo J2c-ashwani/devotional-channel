@@ -45,11 +45,9 @@ jobs:
           pip install google-cloud-storage google-auth-oauthlib google-api-python-client
 
       - name: Setup Google Service Account
-        if: env.GCP_SA_KEY != ''
-        env:
-          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+        if: ${{ secrets.GCP_SA_KEY != '' }}
         run: |
-          echo "$GCP_SA_KEY" > service-account.json
+          echo "${{ secrets.GCP_SA_KEY }}" > service-account.json
 
       - name: Determine Track (Morning = Ramayana, Evening = Mahabharata)
         id: determine_track
@@ -68,7 +66,6 @@ jobs:
       - name: Execute Autonomous Video Production & Multi-Platform Upload
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GOOGLE_APPLICATION_CREDENTIALS: service-account.json
           GOOGLE_CLOUD_PROJECT: devotional-youtube-514907
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
@@ -78,5 +75,17 @@ jobs:
           INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
           FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
         run: |
+          if [ -f service-account.json ] && [ -s service-account.json ]; then
+            export GOOGLE_APPLICATION_CREDENTIALS=service-account.json
+          fi
           echo "🎬 Starting Production Run for Track: $TRACK"
           python scripts/run_pipeline.py --format SHORT --track "$TRACK"
+
+      - name: Commit and Push Updated Progress Ledger
+        if: always()
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action Autonomous Pipeline"
+          git add storage/episodic_progress.json storage/published_scripts_ledger.json storage/cost_ledger.json 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "chore(pipeline): update episodic progress and publication ledgers [skip ci]"
+          git push origin main || echo "Git push skipped or failed"
