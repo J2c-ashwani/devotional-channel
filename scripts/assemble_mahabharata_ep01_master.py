@@ -1,17 +1,14 @@
 #!/usr/bin/env python3
 """
-Assemble Mahabharata Episode 1 Definitive Broadcast Master (Pure Text-to-Video in Hindi):
+Assemble Mahabharata Episode 1 Definitive Broadcast Master (V2 - Google Charon Voice & Flowing Cradle):
 - Track: Mahabharata (Track B)
 - Episode 1: "माँ गंगा का त्याग और देवव्रत का जन्म: जब राजा शांतनु ने तोड़ा अपना वचन"
-- Shots:
-  1. Shot 1: Sacred Ganga river banks at twilight + Hindi Narrator Hook (7.0s)
-  2. Shot 2: King Shantanu speaking in Hindi with real lip-sync (5.03s)
-  3. Shot 3: Goddess Ganga speaking in Hindi with real lip-sync (8.04s)
-  4. Shot 4: Celestial departure into river mist + Hindi Outro + Shankh (8.04s)
-- Styling:
-  - Header Badge: "महाभारत • भाग 1" (Top safe zone)
-  - Synced Hindi Subtitles: Clear character-attributed dialogue badges
-Total duration: ~28.1s (Broadcast Gold Retention Zone)
+- Updates based on user feedback:
+  1. Voice: Google Charon (the authentic mature Kathavachak voice from Ramayana Part 1)
+  2. Scene 1 Visual: Goddess Ganga gently placing the sacred cradle into the flowing river Ganga
+  3. Audio Purity: 100% MUTE original video audio in Scene 1 & 4 — zero conflicting background chatter!
+  4. Scene 2 & 3: Original native character Hindi lip-sync dialogue from King Shantanu and Goddess Ganga
+Total duration: ~29.1s (Broadcast Gold Retention Zone)
 """
 
 import os
@@ -23,23 +20,23 @@ from PIL import Image, ImageDraw, ImageFont
 BASE_DIR = Path("/Users/ashwanikumar/Downloads/devotional")
 STORAGE_DIR = BASE_DIR / "storage"
 SHOTS_DIR = STORAGE_DIR / "rendered" / "mahabharata_ep01"
-WORK_DIR = SHOTS_DIR / "work"
+WORK_DIR = SHOTS_DIR / "work_v2"
 WORK_DIR.mkdir(parents=True, exist_ok=True)
 
 # Visual Assets (Pure Gemini Omni 1.2 Flash)
-SHOT1 = SHOTS_DIR / "shot1_ganga_river_banks.mp4"
+SHOT1 = SHOTS_DIR / "shot1_ganga_cradle_flowing.mp4"  # NEW: Ganga flowing baby cradle in river
 SHOT2 = SHOTS_DIR / "shot2_shantanu_speaking_hindi.mp4"
 SHOT3 = SHOTS_DIR / "shot3_ganga_speaking_hindi.mp4"
 SHOT4 = SHOTS_DIR / "shot4_ganga_departure.mp4"
 
-# Audio Assets
-VOICE_HOOK = STORAGE_DIR / "audio" / "mahabharata_ep01" / "scene_01_hook_tight.aac"
-VOICE_OUTRO = STORAGE_DIR / "audio" / "mahabharata_ep01" / "scene_04_outro_tight.aac"
+# Audio Assets (AUTHENTIC GOOGLE CHARON - SAME AS RAMAYANA PART 1!)
+VOICE_HOOK = STORAGE_DIR / "audio" / "mahabharata_ep01" / "scene_01_hook_charon.wav"
+VOICE_OUTRO = STORAGE_DIR / "audio" / "mahabharata_ep01" / "scene_04_outro_charon.wav"
 BGM = STORAGE_DIR / "audio" / "music" / "bgm_sacred_epic_orchestral.aac"
 SHANKH = STORAGE_DIR / "audio" / "sfx" / "sfx_divine_shankh.aac"
 
 # Intermediate Rendered Segments
-SEG1 = WORK_DIR / "seg1_hook.mp4"
+SEG1 = WORK_DIR / "seg1_cradle_hook.mp4"
 SEG2 = WORK_DIR / "seg2_shantanu.mp4"
 SEG3 = WORK_DIR / "seg3_ganga.mp4"
 SEG4 = WORK_DIR / "seg4_outro.mp4"
@@ -134,34 +131,37 @@ def create_subtitle_card(lines: list, output_path: Path, is_dialogue: bool = Fal
 
 def main():
     print("=" * 60)
-    print("🎬 Assembling Mahabharata Ep 01 Definitive Hindi Master")
+    print("🎬 Assembling Mahabharata Ep 01 Definitive Master (V2)")
+    print("   Featuring Google Charon Voice & Flowing Cradle Visual")
     print("=" * 60)
 
-    # 1. Segment 1: Opening Hook (7.0s)
-    print("\n--- 1. Rendering Segment 1: Hook (7.0s) ---")
+    # 1. Segment 1: Opening Hook with Flowing Cradle (8.04s)
+    # ZERO VIDEO AUDIO (Completely Mute [0:a] to eliminate background chatter)
+    # ONLY Google Charon voice + Sacred BGM
+    print("\n--- 1. Rendering Segment 1: Ganga Flowing Cradle (8.04s) ---")
     cmd_seg1 = [
         "ffmpeg", "-y",
         "-i", str(SHOT1),
         "-i", str(VOICE_HOOK),
         "-i", str(BGM),
         "-filter_complex",
-        "[0:v]trim=0:7.0,setpts=PTS-STARTPTS,scale=1080:1920:flags=lanczos,fps=30[v_out];"
-        "[0:a]atrim=0:7.0,asetpts=PTS-STARTPTS,volume=0.25[a_ambient];"
-        "[1:a]atrim=0:7.0,asetpts=PTS-STARTPTS,volume=1.4[a_voice];"
-        "[2:a]atrim=0:7.0,asetpts=PTS-STARTPTS,afade=t=in:ss=0:d=1.0,volume=0.18[a_bgm];"
-        "[a_voice][a_ambient][a_bgm]amix=inputs=3:duration=first:dropout_transition=2,loudnorm=I=-14:LRA=7:TP=-1.5[a_out]",
+        "[0:v]trim=0:8.04,setpts=PTS-STARTPTS,scale=1080:1920:flags=lanczos,fps=30[v_out];"
+        "[1:a]atempo=1.08,atrim=0:8.04,asetpts=PTS-STARTPTS,volume=1.5[a_voice];"
+        "[2:a]atrim=0:8.04,asetpts=PTS-STARTPTS,afade=t=in:ss=0:d=1.0,volume=0.18[a_bgm];"
+        "[a_voice][a_bgm]amix=inputs=2:duration=first:dropout_transition=2,loudnorm=I=-14:LRA=7:TP=-1.5[a_out]",
         "-map", "[v_out]",
         "-map", "[a_out]",
         "-c:v", "libx264", "-preset", "fast", "-crf", "17",
         "-pix_fmt", "yuv420p",
         "-c:a", "aac", "-b:a", "256k", "-ar", "48000", "-ac", "2",
-        "-t", "7.0",
+        "-t", "8.04",
         str(SEG1)
     ]
     run(cmd_seg1)
 
     # 2. Segment 2: King Shantanu Anguish (5.03s)
-    print("\n--- 2. Rendering Segment 2: Shantanu Lip-Sync (5.03s) ---")
+    # NATIVE LIP-SYNC CHARACTER AUDIO from King Shantanu + subtle BGM
+    print("\n--- 2. Rendering Segment 2: Shantanu Native Lip-Sync (5.03s) ---")
     cmd_seg2 = [
         "ffmpeg", "-y",
         "-i", str(SHOT2),
@@ -169,7 +169,7 @@ def main():
         "-filter_complex",
         "[0:v]trim=0:5.03,setpts=PTS-STARTPTS,scale=1080:1920:flags=lanczos,fps=30[v_out];"
         "[0:a]atrim=0:5.03,asetpts=PTS-STARTPTS,volume=1.8[a_speech];"
-        "[1:a]atrim=7.0:12.03,asetpts=PTS-STARTPTS,volume=0.12[a_bgm];"
+        "[1:a]atrim=8.04:13.07,asetpts=PTS-STARTPTS,volume=0.12[a_bgm];"
         "[a_speech][a_bgm]amix=inputs=2:duration=first:dropout_transition=2,loudnorm=I=-14:LRA=7:TP=-1.5[a_out]",
         "-map", "[v_out]",
         "-map", "[a_out]",
@@ -182,7 +182,8 @@ def main():
     run(cmd_seg2)
 
     # 3. Segment 3: Goddess Ganga Revelation & Farewell (8.04s)
-    print("\n--- 3. Rendering Segment 3: Goddess Ganga Lip-Sync (8.04s) ---")
+    # NATIVE LIP-SYNC CHARACTER AUDIO from Goddess Ganga + subtle BGM
+    print("\n--- 3. Rendering Segment 3: Goddess Ganga Native Lip-Sync (8.04s) ---")
     cmd_seg3 = [
         "ffmpeg", "-y",
         "-i", str(SHOT3),
@@ -190,7 +191,7 @@ def main():
         "-filter_complex",
         "[0:v]trim=0:8.04,setpts=PTS-STARTPTS,scale=1080:1920:flags=lanczos,fps=30[v_out];"
         "[0:a]atrim=0:8.04,asetpts=PTS-STARTPTS,volume=1.8[a_speech];"
-        "[1:a]atrim=12.03:20.07,asetpts=PTS-STARTPTS,volume=0.12[a_bgm];"
+        "[1:a]atrim=13.07:21.11,asetpts=PTS-STARTPTS,volume=0.12[a_bgm];"
         "[a_speech][a_bgm]amix=inputs=2:duration=first:dropout_transition=2,loudnorm=I=-14:LRA=7:TP=-1.5[a_out]",
         "-map", "[v_out]",
         "-map", "[a_out]",
@@ -203,7 +204,8 @@ def main():
     run(cmd_seg3)
 
     # 4. Segment 4: Celestial Departure & Outro (8.04s)
-    print("\n--- 4. Rendering Segment 4: Outro & Shankh (8.04s) ---")
+    # ZERO VIDEO AUDIO (Clean Google Charon Outro + BGM + Divine Shankh)
+    print("\n--- 4. Rendering Segment 4: Charon Outro & Shankh (8.04s) ---")
     cmd_seg4 = [
         "ffmpeg", "-y",
         "-i", str(SHOT4),
@@ -212,11 +214,10 @@ def main():
         "-i", str(SHANKH),
         "-filter_complex",
         "[0:v]trim=0:8.04,setpts=PTS-STARTPTS,scale=1080:1920:flags=lanczos,fps=30[v_out];"
-        "[0:a]atrim=0:8.04,asetpts=PTS-STARTPTS,volume=0.25[a_ambient];"
-        "[1:a]atrim=0:8.04,asetpts=PTS-STARTPTS,volume=1.4[a_voice];"
-        "[2:a]atrim=20.07:28.11,asetpts=PTS-STARTPTS,afade=t=out:st=6.5:d=1.5,volume=0.18[a_bgm];"
-        "[3:a]adelay=4500|4500,volume=0.6[a_shankh];"
-        "[a_voice][a_ambient][a_bgm][a_shankh]amix=inputs=4:duration=first:dropout_transition=2,loudnorm=I=-14:LRA=7:TP=-1.5[a_out]",
+        "[1:a]atrim=0:8.04,asetpts=PTS-STARTPTS,volume=1.5[a_voice];"
+        "[2:a]atrim=21.11:29.15,asetpts=PTS-STARTPTS,afade=t=out:st=6.5:d=1.5,volume=0.18[a_bgm];"
+        "[3:a]adelay=4200|4200,volume=0.65[a_shankh];"
+        "[a_voice][a_bgm][a_shankh]amix=inputs=3:duration=first:dropout_transition=2,loudnorm=I=-14:LRA=7:TP=-1.5[a_out]",
         "-map", "[v_out]",
         "-map", "[a_out]",
         "-c:v", "libx264", "-preset", "fast", "-crf", "17",
@@ -268,14 +269,19 @@ def main():
     create_subtitle_card(["और इस प्रकार जन्मा वह महायोद्धा 'भीष्म'!", "महाभारत • भाग 2 के लिए अभी फॉलो करें!"], sub4_png, is_dialogue=False)
 
     # 7. Burn Overlays onto Master Video
+    # Timing:
+    # Seg 1: 0.0 to 8.04
+    # Seg 2: 8.04 to 13.07
+    # Seg 3: 13.07 to 21.11
+    # Seg 4: 21.11 to 29.15
     print("\n--- 7. Burning All Overlays onto Final Broadcast Master ---")
     filter_complex = (
         "[0:v][1:v]overlay=0:0[v0];"
-        "[v0][2:v]overlay=0:0:enable='between(t,0.5,6.8)'[v1];"
-        "[v1][3:v]overlay=0:0:enable='between(t,7.2,11.8)'[v2];"
-        "[v2][4:v]overlay=0:0:enable='between(t,12.2,16.2)'[v3];"
-        "[v3][5:v]overlay=0:0:enable='between(t,16.2,20.0)'[v4];"
-        "[v4][6:v]overlay=0:0:enable='between(t,20.5,27.8)'[v_out]"
+        "[v0][2:v]overlay=0:0:enable='between(t,0.5,7.8)'[v1];"
+        "[v1][3:v]overlay=0:0:enable='between(t,8.2,12.8)'[v2];"
+        "[v2][4:v]overlay=0:0:enable='between(t,13.2,17.2)'[v3];"
+        "[v3][5:v]overlay=0:0:enable='between(t,17.2,21.0)'[v4];"
+        "[v4][6:v]overlay=0:0:enable='between(t,21.5,28.8)'[v_out]"
     )
 
     cmd_final = [
@@ -299,7 +305,7 @@ def main():
 
     # Deliver to Downloads
     shutil.copyfile(FINAL_STORAGE_OUTPUT, FINAL_DOWNLOADS_OUTPUT)
-    print(f"\n🎉 DEFINITIVE BROADCAST MASTER COMPLETE & DELIVERED!")
+    print(f"\n🎉 DEFINITIVE BROADCAST MASTER V2 COMPLETE & DELIVERED!")
     print(f"📁 Storage: {FINAL_STORAGE_OUTPUT} ({FINAL_STORAGE_OUTPUT.stat().st_size} bytes)")
     print(f"📁 Downloads: {FINAL_DOWNLOADS_OUTPUT} ({FINAL_DOWNLOADS_OUTPUT.stat().st_size} bytes)")
 

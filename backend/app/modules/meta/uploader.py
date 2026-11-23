@@ -45,7 +45,7 @@ class MetaReelUploader:
         blob = bucket.blob(blob_name)
         
         print(f"☁️ Uploading {local_video_path.name} to Google Cloud Storage ({blob_name})...")
-        blob.upload_from_filename(str(local_video_path), content_type="video/mp4")
+        blob.upload_from_filename(str(local_video_path), content_type="video/mp4", timeout=600.0)
         
         signed_url = blob.generate_signed_url(expiration=datetime.timedelta(hours=2), method="GET")
         print("✅ Generated high-speed Signed URL for Meta ingestion!")
