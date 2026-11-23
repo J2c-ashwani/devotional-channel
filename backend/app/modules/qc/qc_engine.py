@@ -1,4 +1,4 @@
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from backend.app.config import settings
 from backend.app.modules.qc.hard_rules import HardRuleEnforcer
 
@@ -21,7 +21,11 @@ class QualityControlEngine:
         copyright_result: Dict[str, Any],# max 10
         policy_result: Dict[str, Any],  # max 10
         render_result: Dict[str, Any],
-        is_duplicate: bool = False
+        is_duplicate: bool = False,
+        format_type: str = "SHORT",
+        director_review: Optional[Dict[str, Any]] = None,
+        script_data: Optional[Dict[str, Any]] = None,
+        topic_title: str = ""
     ) -> Dict[str, Any]:
         # 1. Check Hard Blockers First (Fail-Closed)
         hard_blocker_reason = HardRuleEnforcer.evaluate_hard_blockers(
@@ -30,7 +34,11 @@ class QualityControlEngine:
             policy_result=policy_result,
             render_result=render_result,
             audio_result=audio_result,
-            is_duplicate=is_duplicate
+            is_duplicate=is_duplicate,
+            format_type=format_type,
+            director_review=director_review,
+            script_data=script_data,
+            topic_title=topic_title
         )
 
         # 2. Compute 12-Factor Component Scores (Weighted to 100 max)

@@ -17,6 +17,7 @@ async def main():
     parser.add_argument("--track", choices=["RAMAYANA", "MAHABHARATA", "AUTO"], default="AUTO", help="Epic Track: Morning = RAMAYANA, Evening = MAHABHARATA")
     parser.add_argument("--scene-duration", type=float, default=None, help="Optional scene duration override in seconds")
     parser.add_argument("--simulate-upload", action="store_true", default=False, help="Simulate upload instead of live publishing")
+    parser.add_argument("--allow-republish", action="store_true", default=False, help="Allow republishing even if episode marked complete (bypasses Single-Shot duplicate lock)")
     parser.add_argument("--kill-switch", action="store_true", help="Arm emergency kill switch")
     args = parser.parse_args()
 
@@ -48,7 +49,8 @@ async def main():
         format_type=args.format,
         simulate_upload=args.simulate_upload,
         scene_duration_override=args.scene_duration,
-        track=track
+        track=track,
+        allow_republish=args.allow_republish
     )
 
     print("\n" + "="*60)

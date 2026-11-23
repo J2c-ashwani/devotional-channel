@@ -72,7 +72,8 @@ class ProductionPipelineOrchestrator:
         forced_topic: Optional[Dict[str, Any]] = None,
         simulate_upload: bool = True,
         scene_duration_override: Optional[float] = None,
-        track: str = "AUTO"
+        track: str = "AUTO",
+        allow_republish: bool = False
     ) -> Dict[str, Any]:
         start_time = time.time()
         job_id = f"job_{uuid.uuid4().hex[:12]}"
@@ -290,7 +291,7 @@ class ProductionPipelineOrchestrator:
         )
         timeline.append({"stage": "POLICY_AUDIT", "passed": policy_audit["passed"]})
 
-        # Step 13: 12-Factor Quality Control Audit (Module N)
+        # Step 13: 12-Factor Quality Control Audit with Single-Shot Perfection Protocol (Module N)
         qc_report = QualityControlEngine.audit_production(
             research_score=19.0,
             factual_result=fact_check,
@@ -300,7 +301,11 @@ class ProductionPipelineOrchestrator:
             copyright_result=copyright_audit,
             policy_result=policy_audit,
             render_result=render_res,
-            is_duplicate=orig_audit.get("is_duplicate", False)
+            is_duplicate=orig_audit.get("is_duplicate", False),
+            format_type=format_type,
+            director_review=director_review,
+            script_data=script,
+            topic_title=topic["title_hindi"]
         )
         if duration_gate_error:
             qc_report["is_passed"] = False
@@ -336,7 +341,20 @@ class ProductionPipelineOrchestrator:
                 "error": "Failed quality control threshold or triggered hard blocker. Publication rejected."
             }
 
-        # Step 15: YouTube Upload & Consistent 7:00 PM IST Scheduling (Module O)
+        # Step 15: Single-Shot Perfection Protocol Guard & YouTube Upload
+        if not simulate_upload and not allow_republish and EpisodicLedger.is_completed(topic.get("id", "")):
+            return {
+                "success": False,
+                "job_id": job_id,
+                "status": "DUPLICATE_SUPPRESSED",
+                "topic_title_hindi": topic["title_hindi"],
+                "video_path": render_res["video_path"],
+                "error": (
+                    f"Single-Shot Perfection Protocol Guard: Episode '{topic.get('id')}' is already marked published! "
+                    f"Duplicate publishing is blocked to prevent Instagram/YouTube algorithmic view suppression (zero views penalty)."
+                )
+            }
+
         subtitles_file = Path(render_res["subtitles_path"]) if render_res.get("subtitles_path") else None
         upload_res = await self.uploader.upload_and_schedule_video(
             video_path=Path(render_res["video_path"]),

@@ -247,6 +247,11 @@ class EpisodicLedger:
         }
 
     @classmethod
+    def is_completed(cls, topic_id: str) -> bool:
+        progress = cls._load_progress()
+        return topic_id in progress.get("completed_ids", [])
+
+    @classmethod
     def mark_completed(cls, topic_id: str):
         progress = cls._load_progress()
         completed = progress.get("completed_ids", [])
