@@ -47,6 +47,11 @@ storage/audio/*.aac
 storage/audio/*.wav
 .DS_Store
 storage/audio/*.mp3
+storage/audio/*.wav
+storage/audio/*.pcm
+storage/audio/episodic_narrations/*
+storage/audio/mahabharata_ep01/*
+storage/audio/ramayana_ep02/*
 storage/*.png
 !storage/audio/music/.gitkeep
 !storage/audio/sfx/.gitkeep

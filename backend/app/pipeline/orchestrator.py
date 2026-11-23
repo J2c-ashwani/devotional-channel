@@ -36,6 +36,11 @@ from backend.app.modules.recovery.recovery_engine import AutonomousRecoveryEngin
 from backend.app.modules.mythology.episodic_ledger import EpisodicLedger
 from backend.app.modules.meta.uploader import MetaReelUploader
 
+# Dedicated Multi-Agent Subsystem
+from backend.app.agents.scriptwriter_agent import ScriptwriterAgent
+from backend.app.agents.director_agent import ProductionDirectorAgent
+from backend.app.agents.social_media_manager_agent import SocialMediaManagerAgent
+
 class ProductionPipelineOrchestrator:
     """
     Master Production Pipeline Orchestrator (v2.0 Architecture).
@@ -54,6 +59,12 @@ class ProductionPipelineOrchestrator:
             self.meta_uploader = MetaReelUploader()
         except Exception:
             self.meta_uploader = None
+        try:
+            self.scriptwriter = ScriptwriterAgent()
+        except Exception as e:
+            print(f"Notice initializing ScriptwriterAgent: {e}")
+            self.scriptwriter = None
+        self.social_media_manager = SocialMediaManagerAgent()
 
     async def execute_production_run(
         self,
@@ -108,15 +119,32 @@ class ProductionPipelineOrchestrator:
         # Step 2: Canonical Mythology Source Lookup (Module B)
         canonical_source = SourceLibrary.get_canonical_source(topic["title_hindi"])
 
-        # Step 3: Screenplay Generation & Originality Guard (Module C)
+        # Step 3: Screenplay Generation via Dedicated Scriptwriter Agent (Enforcing 60-90s, 5 Acts)
         if format_type == "SHORT":
-            script = ScreenplayEngine.generate_short_script(topic, canonical_source)
+            script = None
+            if self.scriptwriter:
+                try:
+                    script = self.scriptwriter.write_screenplay(topic, canonical_source)
+                    # Bridge keys for downstream compatibility
+                    if "opening_hook_hindi" not in script and "scenes" in script and len(script["scenes"]) > 0:
+                        script["opening_hook_hindi"] = script["scenes"][0].get("narrator_text_hindi", "")
+                        script["narrative_body_hindi"] = script["scenes"][1].get("narrator_text_hindi", "") if len(script["scenes"]) > 1 else ""
+                        script["climax_hindi"] = script["scenes"][2].get("narrator_text_hindi", "") if len(script["scenes"]) > 2 else ""
+                        script["conclusion_hindi"] = script["scenes"][-1].get("narrator_text_hindi", "")
+                    if "id" not in script:
+                        script["id"] = f"script_{uuid.uuid4().hex[:10]}"
+                    if "format" not in script:
+                        script["format"] = "SHORT"
+                except Exception as e:
+                    print(f"⚠️ ScriptwriterAgent error ({e}), falling back to ScreenplayEngine")
+            if not script:
+                script = ScreenplayEngine.generate_short_script(topic, canonical_source)
         else:
             script = ScreenplayEngine.generate_longform_script(topic, canonical_source)
 
         orig_audit = OriginalityGuard.audit_script_originality(
             new_script=script["full_screenplay_devanagari"],
-            new_hook=script["opening_hook_hindi"]
+            new_hook=script.get("opening_hook_hindi", "")
         )
         script["originality_score"] = orig_audit["originality_score"]
         timeline.append({"stage": "SCREENPLAY", "duration_sec": script["estimated_duration_sec"], "originality": orig_audit["originality_score"]})
@@ -374,6 +402,14 @@ class ProductionPipelineOrchestrator:
             except Exception as e:
                 print("Meta multi-platform upload notice:", e)
                 meta_results = {"error": str(e)}
+
+        # Step 18: Social Media Manager Multi-Platform Audit & Ledger Certification
+        sm_audit = self.social_media_manager.verify_publication_status(
+            episode_id=topic.get("id", job_id),
+            youtube_res=upload_res,
+            meta_res=meta_results
+        )
+        timeline.append({"stage": "SOCIAL_MEDIA_MANAGER_AUDIT", "report": sm_audit})
 
         # Mark episode completed in chronological ledger
         if not simulate_upload and upload_res.get("success"):
