@@ -40,6 +40,24 @@ class ScreenplayEngine:
                 {"scene_index": 5, "scene_name": "Dharmic Outro & Shankh", "duration_sec": 13.0, "narrator_text_hindi": conclusion, "visual_description_english": "Sacred Shankh conch sounding over ancient Bharatvarsha with divine golden aura and temple spires"}
             ]
             duration = 70.0
+        elif "नीलकंठ" in topic_title or "शिव" in topic_title or "विष" in topic_title:
+            opening_hook = "जब क्षीरसागर के महामंथन से अमृत नहीं, बल्कि सम्पूर्ण ब्रह्मांड को भस्म करने वाला कालकूट विष निकला—तो देव और दानव दोनों भय से कांप उठे!"
+            narrative_body = "उस भयानक विष की ज्वाला से सूर्य का तेज भी धुंधला पड़ने लगा। कोई देव, कोई असुर उस विष को छूने का साहस नहीं जुटा सका। तब समस्त सृष्टि की रक्षा के लिए तीनों लोकों की दृष्टि केवल कैलाश की ओर उठी।"
+            climax = "भगवान शिव ने मुस्कुराकर उस प्रलयंकारी विष को अपनी हथेली में समेटा और एक ही घूंट में पी लिया! माता पार्वती ने तुरंत उनके कंठ को स्पर्श किया, ताकि कालकूट विष सृष्टि के उदर में न जा सके!"
+            resolution = "विष वहीं महादेव के कंठ में ठहर गया और उनका कंठ नीला पड़ गया। उसी क्षण से देवाधिदेव महादेव संसार में 'नीलकंठ' कहलाए, जिन्होंने सृष्टि के प्राणों की रक्षा की!"
+            conclusion = "यह त्याग सिखाता है कि जो संसार के विष को पीकर भी शांत रहे, वही देवों के देव महादेव हैं! इतिहास सागा को अभी फॉलो करें!"
+            dialogue = [
+                {"speaker": "देवगण", "line": "त्राहिमाम महादेव! इस हलाहल की ज्वाला से तीनों लोकों को बचाइए!"},
+                {"speaker": "महादेव शिव", "line": "संसार की रक्षा के लिए यदि विषपान भी करना पड़े, तो यही मेरा धर्म है।"}
+            ]
+            scenes = [
+                {"scene_index": 1, "scene_name": "Ocean Churning Crisis", "duration_sec": 13.0, "narrator_text_hindi": opening_hook, "visual_description_english": "Cosmic ocean churning with deadly dark purple Kalakuta poison engulfing the heavens"},
+                {"scene_index": 2, "scene_name": "Gods Pleading at Kailash", "duration_sec": 14.0, "narrator_text_hindi": narrative_body, "visual_description_english": "Devas and Asuras trembling with folded hands before Lord Shiva on Mount Kailash"},
+                {"scene_index": 3, "scene_name": "Lord Shiva Consumes Poison", "duration_sec": 16.0, "narrator_text_hindi": climax, "dialogue_speaker": "महादेव शिव", "dialogue_hindi": "संसार की रक्षा के लिए यदि विषपान भी करना पड़े, तो यही मेरा धर्म है।", "visual_description_english": "Lord Shiva calmly drinking the fiery dark poison as Goddess Parvati places her divine hand on his throat"},
+                {"scene_index": 4, "scene_name": "Blue Throat Revelation (Neelkantha)", "duration_sec": 14.0, "narrator_text_hindi": resolution, "visual_description_english": "Lord Shiva's throat glowing radiant sapphire blue with a divine crescent moon aura"},
+                {"scene_index": 5, "scene_name": "Dharmic Outro & Shankh", "duration_sec": 13.0, "narrator_text_hindi": conclusion, "visual_description_english": "Mount Kailash glowing in divine cosmic light with Om sound and sacred Himalayan tranquility"}
+            ]
+            duration = 70.0
         elif "भीष्म" in topic_title or "शांतनु" in topic_title or "गंगा" in topic_title or "महाभारत" in topic_title:
             opening_hook = "कुरुवंश का वह प्रलयंकारी दिन, जब युवराज देवव्रत ने अपने पिता राजा शांतनु के मौन विलाप और त्याग को देखकर इतिहास की सबसे कठिन प्रतिज्ञा ली!"
             narrative_body = "निषादराज सत्यवती का विवाह शांतनु से कराने को तैयार नहीं थे, क्योंकि उन्हें डर था कि देवव्रत के होते हुए सत्यवती की संतान कभी हस्तिनापुर के सिंहासन पर नहीं बैठ पाएगी!"

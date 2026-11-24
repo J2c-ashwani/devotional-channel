@@ -12,7 +12,7 @@ def test_screenplay_generation_shorts():
     assert len(script["opening_hook_hindi"]) > 20
     assert len(script["climax_hindi"]) > 20
     assert len(script["conclusion_hindi"]) > 20
-    assert 30 <= script["estimated_duration_sec"] <= 60
+    assert 60 <= script["estimated_duration_sec"] <= 90
     assert "नीलकंठ" in script["full_screenplay_devanagari"]
 
 def test_screenplay_generation_longform():

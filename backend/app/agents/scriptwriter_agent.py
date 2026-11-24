@@ -27,18 +27,24 @@ class ScriptwriterAgent:
     MAX_DURATION_SEC = 90.0
 
     def __init__(self):
-        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.environ.get(
-            'GOOGLE_APPLICATION_CREDENTIALS',
-            '/Users/ashwanikumar/Downloads/devotional/service-account.json'
-        )
-        self.client = genai.Client(
-            vertexai=True,
-            project='devotional-youtube-514907',
-            location='global'
-        )
+        api_key = os.environ.get('GEMINI_API_KEY')
+        if api_key:
+            self.client = genai.Client(api_key=api_key)
+        else:
+            os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.environ.get(
+                'GOOGLE_APPLICATION_CREDENTIALS',
+                '/Users/ashwanikumar/Downloads/devotional/service-account.json'
+            )
+            self.client = genai.Client(
+                vertexai=True,
+                project='devotional-youtube-514907',
+                location='us-central1'
+            )
 
     def write_screenplay(self, topic: Dict[str, Any], canonical_source: Dict[str, Any]) -> Dict[str, Any]:
         """Generates a complete 5-act Hindi screenplay with timing and dialogue."""
+        from backend.app.modules.scriptwriting.screenplay_engine import ScreenplayEngine
+
         prompt = f"""
 You are the Master Mythological Scriptwriter Agent for 'Itihasa Saga' (@itihasasaga).
 Topic: {topic.get('title_hindi')}
@@ -72,27 +78,30 @@ Return a STRICT JSON object with this exact structure:
       "dialogue_hindi": "...",
       "visual_description_english": "...",
       "emotional_tone": "Tense and thunderous"
-    }},
-    ...
+    }}
   ],
   "full_screenplay_devanagari": "Full screenplay text...",
   "takeaway_moral_hindi": "..."
 }}
 """
-        response = self.client.models.generate_content(
-            model='gemini-2.5-flash',
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                response_mime_type="application/json",
-                temperature=0.3
+        try:
+            response = self.client.models.generate_content(
+                model='gemini-2.5-flash',
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    temperature=0.3
+                )
             )
-        )
-        data = json.loads(response.text)
-        
-        # Enforce minimum duration guard
-        total_dur = sum(s.get("duration_sec", 12.0) for s in data.get("scenes", []))
-        if total_dur < self.MIN_DURATION_SEC:
-            for s in data.get("scenes", []):
-                s["duration_sec"] = round(s.get("duration_sec", 12.0) * (self.TARGET_DURATION_SEC / max(total_dur, 1.0)), 1)
-        data["estimated_duration_sec"] = sum(s["duration_sec"] for s in data["scenes"])
-        return data
+            data = json.loads(response.text)
+            
+            # Enforce minimum duration guard
+            total_dur = sum(s.get("duration_sec", 12.0) for s in data.get("scenes", []))
+            if total_dur < self.MIN_DURATION_SEC:
+                for s in data.get("scenes", []):
+                    s["duration_sec"] = round(s.get("duration_sec", 12.0) * (self.TARGET_DURATION_SEC / max(total_dur, 1.0)), 1)
+            data["estimated_duration_sec"] = sum(s["duration_sec"] for s in data["scenes"])
+            return data
+        except Exception as e:
+            print(f"⚠️ ScriptwriterAgent API fallback to ScreenplayEngine: {e}")
+            return ScreenplayEngine.generate_short_script(topic, canonical_source)
