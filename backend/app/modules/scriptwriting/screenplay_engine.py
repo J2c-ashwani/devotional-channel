@@ -12,48 +12,75 @@ class ScreenplayEngine:
     @classmethod
     def generate_short_script(cls, topic_data: Dict[str, Any], canonical_source: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Generates a 30-50 second high-impact Shorts screenplay.
+        Generates a 65-75 second 5-act high-impact Shorts screenplay.
         Structure:
-        - 0-2s: The impossible tension hook (no greetings, no channel intro).
-        - 3-15s: The divine challenge & stakes.
-        - 16-35s: The climactic turning point (Dhanurbhanga).
-        - 36-45s: Resolving philosophical & dharmic payoff.
+        - Act 1 (0-13s): The impossible tension hook & location premise.
+        - Act 2 (13-27s): The divine challenge & conflict escalation.
+        - Act 3 (27-43s): The heroic intervention & iconic character dialogue.
+        - Act 4 (43-57s): The divine revelation & resolution of crisis.
+        - Act 5 (57-70s): Sacred celebration, shankh conch & next episode hook.
         """
         topic_title = topic_data.get("title_hindi", "")
         
-        if "धनुष" in topic_title or "जनक" in topic_title or "राम" in topic_title:
+        if "धनुष" in topic_title or "जनक" in topic_title or "राम" in topic_title or "सीता" in topic_title:
             opening_hook = "सोचिए! राजा जनक की भरी सभा में जब त्रैलोक्य-विजयी महारथियों का अहंकार धूल में मिल चुका था! आठ पहियों वाले लोहे के संदूक में रखा महादेव पिनाक का वह महाधनुष जिसे पांच हजार बलशाली वीर भी नहीं हिला पाए!"
-            narrative_body = "सभा में छा गया था गहरा सन्नाटा! राजा जनक विलाप कर उठे क्या यह पृथ्वी वीरों से शून्य हो गई? और तभी महर्षि विश्वामित्र का सिंहनाद गूंजा—उत्तिष्ठ राम! उठो वत्स, और इस धनुष पर प्रत्यंचा चढ़ाओ!"
-            climax = "प्रभु श्री राम आगे बढ़े, मुख पर वही मंद-मंद अलौकिक मुस्कान। एक हाथ से उस महाधनुष को पुष्प की भांति उठाया, प्रत्यंचा को कान तक खींचा और तड़ाक की प्रलयंकारी गर्जना के साथ वह धनुष बीच से टूट गया, कांप उठे तीनों लोक।"
-            conclusion = "यह शक्ति का नहीं बल्कि मर्यादा और समर्पण का महाविजयघोष था! जिसे अहंकार छू न सका उसे श्री राम की विनम्रता ने वश में कर लिया! बोलो सियावर रामचंद्र की जय!"
+            narrative_body = "सभा में छा गया था गहरा सन्नाटा! राजा जनक विलाप कर उठे क्या यह पृथ्वी वीरों से शून्य हो गई? तभी महर्षि विश्वामित्र का सिंहनाद गूंजा—उत्तिष्ठ राम! उठो वत्स, और इस धनुष पर प्रत्यंचा चढ़ाओ!"
+            climax = "आगे बढ़े मर्यादा पुरुषोत्तम प्रभु श्री राम, मुख पर वही शांत अलौकिक मुस्कान! एक ही हाथ से उस महाधनुष को पुष्प की भांति उठाया, कान तक प्रत्यंचा खींची और तड़ाक की प्रलयंकारी गर्जना के साथ धनुष बीच से टूट गया!"
+            resolution = "कांप उठे तीनों लोक! जनकपुरी में जय-जयकार गूंज उठी और माता सीता ने मंद मुस्कान के साथ श्री राम के गले में वरमाला डाल दी!"
+            conclusion = "यह शक्ति का नहीं बल्कि मर्यादा और समर्पण का महाविजयघोष था! अगला भाग: जनकपुरी में आनंदोत्सव और दिव्य विवाह! इतिहास सागा को अभी फॉलो करें!"
             dialogue = [
                 {"speaker": "महर्षि विश्वामित्र", "line": "उत्तिष्ठ राम! पूरय धनुः!"},
-                {"speaker": "श्री राम", "line": "गुरुदेव की आज्ञा ही मेरा धर्म है।"}
+                {"speaker": "मर्यादा पुरुषोत्तम प्रभु श्री राम", "line": "गुरुदेव की आज्ञा ही मेरा परम धर्म है।"}
             ]
-            duration = 45
-        elif "नीलकंठ" in topic_title or "शिव" in topic_title:
-            opening_hook = "जब क्षीरसागर के मंथन से अमृत नहीं, बल्कि ब्रह्मांड को भस्म करने वाला कालकूट विष निकला—तो देवता और दानव दोनों कांप उठे!"
-            narrative_body = "उस विष की अग्नि इतनी भयानक थी कि सूर्य की किरणें धुंधली पड़ने लगीं। कोई देव, कोई असुर उस विष को छूने का साहस नहीं जुटा सका। तब समस्त सृष्टि की रक्षा के लिए तीनों लोकों की दृष्टि केवल कैलाश की ओर उठी।"
-            climax = "भगवान शिव ने मुस्कुराकर उस विनाशक विष को अपनी हथेली में समेटा और एक ही सांस में पी लिया। माता पार्वती ने तुरंत उनके कंठ को स्पर्श किया, ताकि कालकूट विष सृष्टि के उदर में न जा सके!"
-            conclusion = "विष वहीं महादेव के कंठ में ठहर गया। कंठ नीला पड़ गया, और उसी क्षण से महादेव कहलाए—'नीलकंठ'। जिसने संसार के विष को पीकर सृष्टि को जीवन दिया।"
+            scenes = [
+                {"scene_index": 1, "scene_name": "Opening Dramatic Hook", "duration_sec": 13.0, "narrator_text_hindi": opening_hook, "visual_description_english": "Ancient Mithila royal court, 5000 warriors failing to move the massive 8-wheeled Pinaka bow of Lord Shiva"},
+                {"scene_index": 2, "scene_name": "Crisis & Vishvamitra Command", "duration_sec": 14.0, "narrator_text_hindi": narrative_body, "visual_description_english": "King Janaka weeping in sorrow on the royal throne as Sage Vishvamitra commands Prince Rama"},
+                {"scene_index": 3, "scene_name": "Heroic Intervention & Climax", "duration_sec": 16.0, "narrator_text_hindi": climax, "dialogue_speaker": "मर्यादा पुरुषोत्तम प्रभु श्री राम", "dialogue_hindi": "गुरुदेव की आज्ञा ही मेरा परम धर्म है।", "visual_description_english": "Lord Rama in royal Surya-vamsha Kirita Mukuta golden crown with rubies effortlessly lifting the Pinaka bow as divine lightning flashes"},
+                {"scene_index": 4, "scene_name": "Divine Revelation & Garland", "duration_sec": 14.0, "narrator_text_hindi": resolution, "visual_description_english": "Mata Sita in divine red silk putting the celestial flower garland around Lord Rama's neck as flower petals rain down"},
+                {"scene_index": 5, "scene_name": "Dharmic Outro & Shankh", "duration_sec": 13.0, "narrator_text_hindi": conclusion, "visual_description_english": "Sacred Shankh conch sounding over ancient Bharatvarsha with divine golden aura and temple spires"}
+            ]
+            duration = 70.0
+        elif "भीष्म" in topic_title or "शांतनु" in topic_title or "गंगा" in topic_title or "महाभारत" in topic_title:
+            opening_hook = "कुरुवंश का वह प्रलयंकारी दिन, जब युवराज देवव्रत ने अपने पिता राजा शांतनु के मौन विलाप और त्याग को देखकर इतिहास की सबसे कठिन प्रतिज्ञा ली!"
+            narrative_body = "निषादराज सत्यवती का विवाह शांतनु से कराने को तैयार नहीं थे, क्योंकि उन्हें डर था कि देवव्रत के होते हुए सत्यवती की संतान कभी हस्तिनापुर के सिंहासन पर नहीं बैठ पाएगी!"
+            climax = "तब युवराज देवव्रत आगे बढ़े और दोनों हाथ उठाकर गंगा तट पर गूंजती आवाज में बोले—'आज से मैं हस्तिनापुर के राजसिंहासन का त्याग करता हूँ और आजीवन अखंड ब्रह्मचर्य का पालन करूँगा!'"
+            resolution = "आकाश से देवताओं ने पुष्प वर्षा की और स्वर्ग से ध्वनि गूंजी—'भीष्म! भीष्म!' उस दिन से देवव्रत संसार में 'भीष्म' कहलाए, जिन्होंने पिता के सुख के लिए अपना सब कुछ न्योछावर कर दिया!"
+            conclusion = "यह त्याग संसार के इतिहास में अमर हो गया! अगला भाग: हस्तिनापुर की रंगभूमि में महारथी कर्ण का प्राकट्य! इतिहास सागा को अभी फॉलो करें!"
             dialogue = [
-                {"speaker": "देवगण", "line": "त्राहिमाम महादेव! इस हलाहल की ज्वाला से तीनों लोकों को बचाइए!"},
-                {"speaker": "महादेव", "line": "संसार की रक्षा के लिए यदि विषपान भी करना पड़े, तो यह हमारा कर्तव्य है।"}
+                {"speaker": "देवव्रत भीष्म", "line": "मैं हस्तिनापुर के राज्य और विवाह दोनों का आजीवन त्याग करता हूँ!"}
             ]
-            duration = 45
+            scenes = [
+                {"scene_index": 1, "scene_name": "The King's Grief", "duration_sec": 13.0, "narrator_text_hindi": opening_hook, "visual_description_english": "King Shantanu weeping silently in Hastinapur palace as Prince Devavrata watches with filial devotion"},
+                {"scene_index": 2, "scene_name": "The Impossible Demand", "duration_sec": 14.0, "narrator_text_hindi": narrative_body, "visual_description_english": "Nishadraj sternly refusing King Shantanu's marriage proposal unless Devavrata renounces the throne"},
+                {"scene_index": 3, "scene_name": "The Terrible Vow (Bhishma Pratigya)", "duration_sec": 16.0, "narrator_text_hindi": climax, "dialogue_speaker": "देवव्रत भीष्म", "dialogue_hindi": "मैं हस्तिनापुर के राज्य और विवाह दोनों का आजीवन त्याग करता हूँ!", "visual_description_english": "Young heroic warrior Prince Devavrata raising his right hand in sacred vow on the holy river Ganga bank"},
+                {"scene_index": 4, "scene_name": "Celestial Applause", "duration_sec": 14.0, "narrator_text_hindi": resolution, "visual_description_english": "Celestial devas raining fragrant golden flowers from the clouds as golden thunder announces the title Bhishma"},
+                {"scene_index": 5, "scene_name": "Dharmic Outro & Shankh", "duration_sec": 13.0, "narrator_text_hindi": conclusion, "visual_description_english": "Sacred conch sounding across the royal battlements of ancient Hastinapur at sunset"}
+            ]
+            duration = 70.0
         else:
-            opening_hook = "कुरुक्षेत्र की वह 14वीं रात, जब घटोत्कच ने अपनी माया से कौरव सेना में ऐसा हाहाकार मचाया कि दुर्योधन कांप उठा!"
-            narrative_body = "आकाश से अंगारों की वर्षा हो रही थी। दुर्योधन भागता हुआ कर्ण के चरणों में गिरा—'कर्ण! अपनी अमोघ शक्ति चलाओ, वर्ना कौरव वंश का सूर्य आज ही अस्त हो जाएगा!'"
-            climax = "कर्ण ने अर्जुन के वध के लिए सहेज कर रखी 'वासव शक्ति' घटोत्कच पर छोड़ दी। बाण घटोत्कच के सीने में लगा, पर गिरते हुए भी उस वीर ने कौरवों की एक अक्षौहिणी सेना को कुचल दिया!"
-            conclusion = "घटोत्कच ने वीरगति पाई, परंतु उसने अर्जुन के प्राणों की रक्षा कर पांडवों की विजय सुनिश्चित कर दी।"
-            dialogue = []
-            duration = 45
+            opening_hook = "कुरुक्षेत्र की वह 14वीं रात, जब घटोत्कच ने अपनी माया से कौरव सेना में ऐसा भीषण हाहाकार मचाया कि दुर्योधन भय से कांप उठा!"
+            narrative_body = "आकाश से अंगारों की वर्षा हो रही थी और कौरव सेना तिनके की तरह बिखर रही थी। दुर्योधन भागता हुआ कर्ण के चरणों में गिरा—'कर्ण! अपनी अमोघ शक्ति चलाओ, वर्ना आज कौरव वंश का अंत निश्चित है!'"
+            climax = "कर्ण ने अर्जुन के वध के लिए इंद्रदेव से प्राप्त 'वासव शक्ति' को निकाला और घटोत्कच पर छोड़ दिया! बाण घटोत्कच के सीने में लगा, पर गिरते हुए भी उस वीर ने कौरवों की एक पूरी अक्षौहिणी सेना को कुचल दिया!"
+            resolution = "घटोत्कच ने वीरगति पाई, परंतु उसने अर्जुन के प्राणों की रक्षा कर पांडवों की अंतिम विजय सुनिश्चित कर दी। भगवान श्री कृष्ण मुस्कुराए, क्योंकि धर्म का पलड़ा भारी हो चुका था!"
+            conclusion = "यह बलिदान मित्रता और राष्ट्रधर्म की पराकाष्ठा थी! अगला भाग: महाभारत का निर्णायक युद्ध! इतिहास सागा को अभी फॉलो करें!"
+            dialogue = [
+                {"speaker": "दुर्योधन", "line": "कर्ण! अपनी अमोघ शक्ति चलाओ, वर्ना कौरव वंश का सूर्य आज ही अस्त हो जाएगा!"}
+            ]
+            scenes = [
+                {"scene_index": 1, "scene_name": "Midnight Battle Hook", "duration_sec": 13.0, "narrator_text_hindi": opening_hook, "visual_description_english": "Kurukshetra night battle with Ghatotkacha using cosmic illusion and colossal scale"},
+                {"scene_index": 2, "scene_name": "Duryodhana Panic", "duration_sec": 14.0, "narrator_text_hindi": narrative_body, "visual_description_english": "Duryodhana in panic pleading with warrior Karna amidst battlefield fire"},
+                {"scene_index": 3, "scene_name": "Vasava Shakti Release", "duration_sec": 16.0, "narrator_text_hindi": climax, "dialogue_speaker": "दुर्योधन", "dialogue_hindi": "कर्ण! अपनी अमोघ शक्ति चलाओ!", "visual_description_english": "Karna unleashing the glowing divine Vasava Shakti spear of Indra lighting up the midnight sky"},
+                {"scene_index": 4, "scene_name": "Ghatotkacha Sacrifice", "duration_sec": 14.0, "narrator_text_hindi": resolution, "visual_description_english": "Giant heroic warrior Ghatotkacha falling with smile as Lord Krishna nods in divine knowing"},
+                {"scene_index": 5, "scene_name": "Dharmic Outro", "duration_sec": 13.0, "narrator_text_hindi": conclusion, "visual_description_english": "Sacred Shankh sounding across Kurukshetra dawn with chariot flags fluttering"}
+            ]
+            duration = 70.0
 
         full_screenplay = (
-            f"[दृश्य १ - तीव्र हुक (0-8s)] {opening_hook}\n\n"
-            f"[दृश्य २ - कथा विस्तार (8-22s)] {narrative_body}\n\n"
-            f"[दृश्य ३ - चरमोत्कर्ष / क्लाइमेक्स (22-36s)] {climax}\n\n"
-            f"[दृश्य ४ - दार्शनिक समापन (36-45s)] {conclusion}"
+            f"[दृश्य १ - तीव्र हुक (0-13s)] {opening_hook}\n\n"
+            f"[दृश्य २ - कथा विस्तार (13-27s)] {narrative_body}\n\n"
+            f"[दृश्य ३ - चरमोत्कर्ष / क्लाइमेक्स (27-43s)] {climax}\n\n"
+            f"[दृश्य ४ - दिव्य परिणाम (43-57s)] {resolution}\n\n"
+            f"[दृश्य ५ - दार्शनिक समापन (57-70s)] {conclusion}"
         )
 
         return {
@@ -62,10 +89,12 @@ class ScreenplayEngine:
             "opening_hook_hindi": opening_hook,
             "narrative_body_hindi": narrative_body,
             "climax_hindi": climax,
+            "resolution_hindi": resolution,
             "conclusion_hindi": conclusion,
             "dialogue_excerpts": dialogue,
             "full_screenplay_devanagari": full_screenplay,
-            "estimated_duration_sec": duration
+            "estimated_duration_sec": duration,
+            "scenes": scenes
         }
 
     @classmethod

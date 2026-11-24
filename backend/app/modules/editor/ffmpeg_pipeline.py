@@ -87,7 +87,7 @@ class VideoRenderingPipeline:
             subtitles_burned_in = True
 
         cmd = [
-            "ffmpeg", "-y",
+            "ffmpeg", "-y", "-nostdin",
             "-f", "concat", "-safe", "0",
             "-i", str(video_concat_txt),
             "-i", str(mixed_audio_path),
@@ -116,7 +116,9 @@ class VideoRenderingPipeline:
 
         cmd.extend(["-shortest", str(output_video_path)])
 
-        subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        res = subprocess.run(cmd, stdin=subprocess.DEVNULL, capture_output=True, text=True)
+        if res.returncode != 0:
+            raise RuntimeError(f"FFmpeg render failed: {res.stderr}")
 
         # 4. Technical Validation of Rendered File
         validation = cls.validate_rendered_video(output_video_path, target_res)
