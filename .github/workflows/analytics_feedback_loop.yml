@@ -24,10 +24,10 @@ jobs:
 
       - name: Run Analytics Feedback Calibration
         run: |
-          python -c "
-from backend.app.modules.analytics.metrics_collector import AnalyticsCollector
-from backend.app.modules.analytics.feedback_learner import FeedbackLearner
-metrics = [AnalyticsCollector.harvest_video_analytics('yt_auto', 'SHORT')]
-feedback = FeedbackLearner.evaluate_retention_and_adapt(metrics)
-print('Analytics Feedback Calibrated:', feedback)
-"
+          python -c '
+          from backend.app.modules.analytics.metrics_collector import AnalyticsCollector
+          from backend.app.modules.analytics.feedback_learner import FeedbackLearner
+          metrics = [AnalyticsCollector.harvest_video_analytics("yt_auto", "SHORT")]
+          feedback = FeedbackLearner.evaluate_retention_and_adapt(metrics)
+          print("Analytics Feedback Calibrated:", feedback)
+          '

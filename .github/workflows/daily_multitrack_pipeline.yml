@@ -45,9 +45,12 @@ jobs:
           pip install google-cloud-storage google-auth-oauthlib google-api-python-client
 
       - name: Setup Google Service Account
-        if: ${{ secrets.GCP_SA_KEY != '' }}
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
         run: |
-          echo "${{ secrets.GCP_SA_KEY }}" > service-account.json
+          if [ -n "$GCP_SA_KEY" ]; then
+            echo "$GCP_SA_KEY" > service-account.json
+          fi
 
       - name: Determine Track (Morning = Ramayana, Evening = Mahabharata)
         id: determine_track
