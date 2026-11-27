@@ -59,7 +59,10 @@ async def main():
     print(json.dumps(result, indent=2, ensure_ascii=False))
     print("="*60)
 
-    if not result.get("success"):
+    if result.get("status") in ("DAILY_SLOT_ALREADY_PUBLISHED", "DUPLICATE_SUPPRESSED"):
+        print(f"ℹ️ Slot skipped cleanly: {result.get('error')}")
+        sys.exit(0)
+    elif not result.get("success"):
         print(f"❌ Production Failed / Quarantined: {result.get('error')}")
         sys.exit(1)
     else:

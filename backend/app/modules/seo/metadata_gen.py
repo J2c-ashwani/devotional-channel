@@ -17,16 +17,31 @@ class MetadataGenerator:
     ) -> Dict[str, Any]:
         title_raw = topic_data.get("title_hindi", "")
         
-        # Optimize title length for mobile UI (under 70-80 chars)
-        if len(title_raw) > 80:
-            title_hindi = title_raw[:77] + "..."
+        # Optimize title length for mobile UI & Shorts discovery
+        if format_type == "SHORT" and "#shorts" not in title_raw.lower():
+            base = title_raw[:82].rstrip()
+            title_hindi = f"{base} #shorts"
+        elif len(title_raw) > 95:
+            title_hindi = title_raw[:92] + "..."
         else:
             title_hindi = title_raw
 
-        # Rich compliant description
-        synopsis = script_data.get("narrative_body_hindi", "")[:350]
+        # Rich compliant description built from spoken scenes if available
+        synopsis = (
+            script_data.get("full_screenplay_devanagari")
+            or script_data.get("narrative_body_hindi")
+            or ""
+        ).strip()[:360]
         source_name = canonical_source.get("epic_name", "प्रामाणिक सनातन धर्म ग्रंथ")
         source_edition = canonical_source.get("source_edition", "प्रामाणिक सार्वजनिक संस्करण")
+        track = (topic_data.get("track") or "").upper()
+        ep_num = topic_data.get("episode_num", "")
+        next_hint = f"🔔 भाग {int(ep_num) + 1} देखने के लिए @itihasasaga को अभी सब्सक्राइब और फॉलो करें!" if str(ep_num).isdigit() else "🔔 @itihasasaga को अभी सब्सक्राइब और फॉलो करें!"
+        hashtags = (
+            "#ramayana #shreeram #ayodhya #matasita #itihasasaga #sanatandharma #shorts #reels"
+            if track == "RAMAYANA" or "ramayana" in source_name.lower()
+            else "#mahabharata #bhishma #krishna #hastinapur #itihasasaga #sanatandharma #shorts #reels"
+        )
 
         description_lines = [
             f"॥ श्री हरिः शरणम् ॥",
@@ -34,19 +49,18 @@ class MetadataGenerator:
             f"🚩 {title_hindi}",
             "",
             f"कथा संक्षेप:",
-            f"{synopsis}...",
+            f"{synopsis}",
+            "",
+            next_hint,
             "",
             f"📜 प्रामाणिक संदर्भ एवं स्रोत (Scriptural Source Grounding):",
             f"यह गाथा {source_name} पर आधारित है ({source_edition})।",
             f"हमारा उद्देश्य भारतीय महाकाव्यों और सनातन इतिहास के सत्य एवं दार्शनिक संदेश को प्रामाणिकता और सम्मान के साथ प्रस्तुत करना है।",
             "",
             f"⚖️ YouTube Altered & Synthetic Media Disclosure (यूट्यूब नीति अनुपालन):",
-            f"यह वीडियो आधुनिक 3D एनिमेशन, ओरिजिनल वॉइसओवर और रचनात्मक विज़ुअलाइज़ेशन तकनीकों के माध्यम से निर्मित एक मूल कलात्मक प्रस्तुति है। इसमें किसी भी जीवित व्यक्ति या ऐतिहासिक हस्ती का भ्रामक अनुकरण नहीं किया गया है।",
+            f"यह वीडियो आधुनिक AI सिनेमैटिक विज़ुअलाइज़ेशन तकनीकों के माध्यम से निर्मित एक मूल कलात्मक प्रस्तुति है।",
             "",
-            f"🔒 Copyright & Originality Certified:",
-            f"कथा का आलेख (Script), 3D विज़ुअल और पार्श्व संगीत (Soundtrack) 100% मूल एवं लाइसेंस प्राप्त हैं। बिना अनुमति पुन: अपलोड करना प्रतिबंधित है।",
-            "",
-            f"#IndianMythology #PauranikGatha #SanatanDharma #Mahabharat #Ramayana #HindiKahaniya"
+            hashtags,
         ]
 
         # Add chapter timestamps if long-form

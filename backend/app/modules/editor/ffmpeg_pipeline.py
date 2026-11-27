@@ -176,3 +176,103 @@ class VideoRenderingPipeline:
             "has_subtitles": has_subtitles,
             "error": None
         }
+
+    @classmethod
+    def render_omni_t2v_master(
+        cls,
+        scene_assets: List[Dict[str, Any]],
+        job_id: str,
+        track: str = "RAMAYANA",
+        episode_num: int = 1
+    ) -> Dict[str, Any]:
+        """
+        Broadcast master assembler for pure Google Vertex Text-to-Video Shorts.
+        Preserves 1.00x native Vertex audio & lip-sync (ZERO stretched TTS/atempo/setpts),
+        applies EBU R128 loudness normalization, gold header badge, and speaker subtitle cards.
+        """
+        from backend.app.agents.director_agent import ProductionDirectorAgent
+
+        render_dir = settings.STORAGE_DIR / "rendered" / job_id
+        render_dir.mkdir(parents=True, exist_ok=True)
+        work_dir = render_dir / "work_omni"
+        work_dir.mkdir(parents=True, exist_ok=True)
+
+        output_video_path = render_dir / f"final_short_{job_id}.mp4"
+        output_srt_path = render_dir / f"subtitles_{job_id}.srt"
+        SubtitleGenerator.generate_srt(scene_assets, output_srt_path)
+
+        norm_clips, offsets = [], []
+        cursor = 0.0
+        for s in scene_assets:
+            idx = int(s["scene_index"])
+            src = Path(s["video_path"]).resolve()
+            dur = float(s.get("duration_sec", 12.0))
+            fade_out = max(0.2, dur - 0.06)
+            norm_p = work_dir / f"norm_{idx:02d}.mp4"
+            res = subprocess.run([
+                "ffmpeg", "-y", "-nostdin", "-i", str(src),
+                "-filter_complex",
+                f"[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30,format=yuv420p[v_out];"
+                f"[0:a]loudnorm=I=-14:LRA=7:TP=-1.5,afade=t=in:st=0:d=0.05,afade=t=out:st={fade_out:.2f}:d=0.06[a_out]",
+                "-map", "[v_out]", "-map", "[a_out]",
+                "-c:v", "libx264", "-preset", "fast", "-crf", "17",
+                "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "256k", "-ar", "48000", "-ac", "2",
+                str(norm_p)
+            ], stdin=subprocess.DEVNULL, capture_output=True, text=True)
+            if res.returncode != 0:
+                raise RuntimeError(f"FFmpeg clip normalization failed: {res.stderr}")
+            norm_clips.append(norm_p)
+            offsets.append((cursor, cursor + dur, s))
+            cursor += dur
+
+        concat_txt = work_dir / "concat.txt"
+        concat_txt.write_text("\n".join(f"file '{p.resolve()}'" for p in norm_clips) + "\n")
+        concat_raw = work_dir / "concat_raw.mp4"
+        res_cat = subprocess.run(
+            ["ffmpeg", "-y", "-nostdin", "-f", "concat", "-safe", "0", "-i", str(concat_txt), "-c", "copy", str(concat_raw)],
+            stdin=subprocess.DEVNULL, capture_output=True, text=True
+        )
+        if res_cat.returncode != 0:
+            raise RuntimeError(f"FFmpeg concat failed: {res_cat.stderr}")
+
+        badge_png = work_dir / "badge.png"
+        ProductionDirectorAgent.create_header_badge(track, episode_num, badge_png)
+
+        input_args = ["-i", str(concat_raw), "-i", str(badge_png)]
+        filter_parts = ["[0:v][1:v]overlay=0:0[v0]"]
+        for i, (st, en, sc) in enumerate(offsets):
+            speaker = sc.get("speaker")
+            text = (sc.get("dialogue_hindi") or sc.get("narration_hindi") or "").strip()
+            wrapped = ProductionDirectorAgent.wrap_hindi_lines(text, font_size=36, max_width=900)
+            card_png = work_dir / f"sub_{i:02d}.png"
+            ProductionDirectorAgent.create_subtitle_card(wrapped, card_png, speaker=speaker)
+            input_args.extend(["-i", str(card_png)])
+            in_idx = i + 2
+            prev_lbl, next_lbl = f"v{i}", (f"v{i+1}" if i < len(offsets) - 1 else "v_final")
+            filter_parts.append(f"[{prev_lbl}][{in_idx}:v]overlay=0:0:enable='between(t,{st+0.25:.2f},{max(st+0.5, en-0.25):.2f})'[{next_lbl}]")
+
+        res_fin = subprocess.run([
+            "ffmpeg", "-y", "-nostdin", *input_args,
+            "-filter_complex", ";".join(filter_parts),
+            "-map", "[v_final]", "-map", "0:a",
+            "-c:v", "libx264", "-preset", "medium", "-crf", "17",
+            "-pix_fmt", "yuv420p", "-c:a", "copy", "-movflags", "+faststart",
+            str(output_video_path)
+        ], stdin=subprocess.DEVNULL, capture_output=True, text=True)
+        if res_fin.returncode != 0:
+            raise RuntimeError(f"FFmpeg final overlay master failed: {res_fin.stderr}")
+
+        validation = cls.validate_rendered_video(output_video_path, (1080, 1920))
+        if not validation["valid"]:
+            raise RuntimeError(f"Omni video failed validation: {validation['error']}")
+
+        return {
+            "success": True,
+            "video_path": str(output_video_path),
+            "subtitles_path": str(output_srt_path),
+            "subtitles_burned_in": True,
+            "subtitles_embedded": False,
+            "resolution": (1080, 1920),
+            "duration_sec": validation["duration"],
+            "file_size_bytes": output_video_path.stat().st_size
+        }

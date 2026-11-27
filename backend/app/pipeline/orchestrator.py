@@ -114,24 +114,44 @@ class ProductionPipelineOrchestrator:
                 now_ist = datetime.now(ist)
                 active_track = "RAMAYANA" if now_ist.hour < 12 else "MAHABHARATA"
             topic = EpisodicLedger.get_next_topic(track=active_track)
+
+        # Single-Shot Same-Day Slot Duplicate Guard for live runs
+        effective_track = (topic.get("track") or track or "RAMAYANA").upper()
+        if not simulate_upload and not allow_republish:
+            already_today = EpisodicLedger.has_published_slot_today(effective_track)
+            if already_today:
+                return {
+                    "success": False,
+                    "job_id": job_id,
+                    "status": "DAILY_SLOT_ALREADY_PUBLISHED",
+                    "topic_title_hindi": topic["title_hindi"],
+                    "error": f"Single-Shot Daily Guard: '{effective_track}' slot already published today ({already_today})."
+                }
+
         timeline.append({"stage": "RESEARCH_TOPIC", "topic": topic["title_hindi"]})
         AutonomousRecoveryEngine.save_checkpoint(job_id, "01_RESEARCH", topic)
 
         # Step 2: Canonical Mythology Source Lookup (Module B)
         canonical_source = SourceLibrary.get_canonical_source(topic["title_hindi"])
 
-        # Step 3: Screenplay Generation via Dedicated Scriptwriter Agent (Enforcing 60-90s, 5 Acts)
+        # Step 3: Screenplay Generation via Dedicated Scriptwriter Agent (Enforcing 60-90s, 5-6 Acts)
         if format_type == "SHORT":
             script = None
             if self.scriptwriter:
                 try:
                     script = self.scriptwriter.write_screenplay(topic, canonical_source)
-                    # Bridge keys for downstream compatibility
-                    if "opening_hook_hindi" not in script and "scenes" in script and len(script["scenes"]) > 0:
-                        script["opening_hook_hindi"] = script["scenes"][0].get("narrator_text_hindi", "")
-                        script["narrative_body_hindi"] = script["scenes"][1].get("narrator_text_hindi", "") if len(script["scenes"]) > 1 else ""
-                        script["climax_hindi"] = script["scenes"][2].get("narrator_text_hindi", "") if len(script["scenes"]) > 2 else ""
-                        script["conclusion_hindi"] = script["scenes"][-1].get("narrator_text_hindi", "")
+                    # Bridge keys cleanly across Narrator + Talking-Head Dialogue scenes
+                    if "scenes" in script and len(script["scenes"]) > 0:
+                        _sp = lambda sc: (sc.get("narrator_text_hindi") or sc.get("dialogue_hindi") or "").strip()
+                        if not script.get("opening_hook_hindi"):
+                            script["opening_hook_hindi"] = _sp(script["scenes"][0])
+                        if not script.get("narrative_body_hindi"):
+                            script["narrative_body_hindi"] = " ".join(_sp(sc) for sc in script["scenes"][1:-1]).strip()
+                        if not script.get("climax_hindi"):
+                            mid = max(0, len(script["scenes"]) - 2)
+                            script["climax_hindi"] = _sp(script["scenes"][mid])
+                        if not script.get("conclusion_hindi"):
+                            script["conclusion_hindi"] = _sp(script["scenes"][-1])
                     if "id" not in script:
                         script["id"] = f"script_{uuid.uuid4().hex[:10]}"
                     if "format" not in script:
@@ -189,75 +209,103 @@ class ProductionPipelineOrchestrator:
         timeline.append({"stage": "DIRECTOR_REVIEW", "signoff": director_review["director_signoff"], "score": director_review["director_score"]})
         AutonomousRecoveryEngine.save_checkpoint(job_id, "04_STORYBOARD", storyboard)
 
-        # Step 8: Hindi AI Voiceover Generation (Module I) - AUDIO LEADS VIDEO
-        voice_files = []
-        voice_dir = settings.STORAGE_DIR / "audio" / "voice" / job_id
-        voice_dir.mkdir(parents=True, exist_ok=True)
-        total_chars = 0
-        pause_sec = 0.6 if format_type == "SHORT" else 0.8
-        
-        for scene in storyboard["scenes"]:
-            idx = scene["scene_index"]
-            text = scene["narration_hindi"]
-            total_chars += len(text)
-            raw_voice = voice_dir / f"scene_{idx:02d}_voice.wav"
-            voice_res = await self.voice_engine.generate_narration_audio(
-                hindi_text=text,
-                output_audio_path=raw_voice,
-                voice_profile=primary_char.get("voice_profile") if primary_char else None,
-                target_duration=scene.get("duration_sec"),
-                use_bold_baritone=False
-            )
-            raw_dur = float(voice_res.get("duration", scene.get("duration_sec", 6.0)))
-            scene["voice_duration"] = round(raw_dur, 2)
-            
-            # Pad voice file with dramatic silence so audio duration == scene duration
-            # CRITICAL FIX: Do NOT use '-t' which prematurely truncates speech. apad adds exact silence.
-            padded_voice = voice_dir / f"scene_{idx:02d}_padded.wav"
-            subprocess.run([
-                "ffmpeg", "-y",
-                "-i", str(raw_voice),
-                "-af", f"apad=pad_dur={pause_sec}",
-                "-c:a", "pcm_s16le",
-                str(padded_voice)
-            ], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            
-            actual_scene_dur = HindiVoiceoverEngine.get_exact_audio_duration(padded_voice)
-            scene["duration_sec"] = actual_scene_dur
-            voice_files.append(padded_voice)
-            
-        total_audio_duration = round(sum(s["duration_sec"] for s in storyboard["scenes"]), 2)
-        storyboard["actual_duration_sec"] = total_audio_duration
-        duration_gate_error = None
-        if format_type == "LONG_FORM" and scene_duration_override is None:
-            if total_audio_duration < LongformPlanner.MIN_DURATION_SEC:
-                duration_gate_error = (
-                    f"Long-form audio duration ({total_audio_duration:.1f}s) is below the minimum "
-                    f"required {LongformPlanner.MIN_DURATION_SEC:.0f}s (8 minutes)."
-                )
-
-        timeline.append({
-            "stage": "VOICEOVER_GENERATED",
-            "segments": len(voice_files),
-            "total_audio_duration_sec": total_audio_duration
-        })
-        AutonomousRecoveryEngine.save_checkpoint(job_id, "06_VOICEOVER", {"voice_files": [str(v) for v in voice_files], "total_audio_duration_sec": total_audio_duration})
-
-        # Step 9: Hybrid Visual Scene & Motion Generation (Module H)
-        # Visual scenes are now rendered to match the exact audio duration!
-        scene_assets = await self.visual_gen.render_all_storyboard_scenes(storyboard, job_id)
-        timeline.append({"stage": "VISUAL_SCENES_RENDERED", "count": len(scene_assets)})
-        AutonomousRecoveryEngine.save_checkpoint(job_id, "05_VISUALS", {"scenes": scene_assets})
-
-        # Step 10: Automatic Video Editing & Rendering Engine (Module K)
-        render_res = VideoRenderingPipeline.render_complete_video(
-            scene_assets=scene_assets,
-            voiceover_files=voice_files,
-            job_id=job_id,
-            format_type=format_type
+        # Step 8 & 9 & 10: Locked Pure Google Vertex Text-to-Video Path for LIVE Shorts
+        use_vertex_omni = (
+            format_type == "SHORT"
+            and not simulate_upload
+            and settings.VIDEO_GEN_PROVIDER == "vertex_omni_t2v"
+            and hasattr(self.visual_gen.provider, "generate_omni_t2v_scene")
         )
-        timeline.append({"stage": "VIDEO_RENDERED", "video_path": render_res["video_path"]})
-        AutonomousRecoveryEngine.save_checkpoint(job_id, "07_RENDER", render_res)
+        total_chars = sum(len(s.get("narration_hindi", "")) for s in storyboard["scenes"])
+        duration_gate_error = None
+        voice_files = []
+
+        if use_vertex_omni:
+            scene_assets = await self.visual_gen.render_all_omni_t2v_scenes(storyboard, job_id)
+            total_audio_duration = round(sum(float(s.get("duration_sec", 12.0)) for s in scene_assets), 2)
+            storyboard["actual_duration_sec"] = total_audio_duration
+            timeline.append({
+                "stage": "VERTEX_OMNI_T2V_GENERATED",
+                "segments": len(scene_assets),
+                "total_audio_duration_sec": total_audio_duration
+            })
+            AutonomousRecoveryEngine.save_checkpoint(job_id, "05_VISUALS", {"scenes": scene_assets})
+
+            render_res = VideoRenderingPipeline.render_omni_t2v_master(
+                scene_assets=scene_assets,
+                job_id=job_id,
+                track=topic.get("track", "RAMAYANA"),
+                episode_num=int(topic.get("episode_num", 1))
+            )
+            timeline.append({"stage": "VIDEO_RENDERED", "video_path": render_res["video_path"]})
+            AutonomousRecoveryEngine.save_checkpoint(job_id, "07_RENDER", render_res)
+        else:
+            # Standard Hybrid/TTS path (also used for fast CI unit tests & Longform)
+            voice_dir = settings.STORAGE_DIR / "audio" / "voice" / job_id
+            voice_dir.mkdir(parents=True, exist_ok=True)
+            total_chars = 0
+            pause_sec = 0.6 if format_type == "SHORT" else 0.8
+
+            for scene in storyboard["scenes"]:
+                idx = scene["scene_index"]
+                text = scene["narration_hindi"]
+                total_chars += len(text)
+                raw_voice = voice_dir / f"scene_{idx:02d}_voice.wav"
+                voice_res = await self.voice_engine.generate_narration_audio(
+                    hindi_text=text,
+                    output_audio_path=raw_voice,
+                    voice_profile=primary_char.get("voice_profile") if primary_char else None,
+                    target_duration=scene.get("duration_sec"),
+                    use_bold_baritone=False
+                )
+                raw_dur = float(voice_res.get("duration", scene.get("duration_sec", 6.0)))
+                scene["voice_duration"] = round(raw_dur, 2)
+
+                padded_voice = voice_dir / f"scene_{idx:02d}_padded.wav"
+                target_d = max(raw_dur + pause_sec, float(scene.get("duration_sec", 6.0))) if format_type == "SHORT" else (raw_dur + pause_sec)
+                apad_arg = f"apad=whole_dur={target_d:.2f}" if format_type == "SHORT" else f"apad=pad_dur={pause_sec}"
+                subprocess.run([
+                    "ffmpeg", "-y",
+                    "-i", str(raw_voice),
+                    "-af", apad_arg,
+                    "-c:a", "pcm_s16le",
+                    str(padded_voice)
+                ], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+                actual_scene_dur = HindiVoiceoverEngine.get_exact_audio_duration(padded_voice)
+                scene["duration_sec"] = actual_scene_dur
+                voice_files.append(padded_voice)
+
+            total_audio_duration = round(sum(s["duration_sec"] for s in storyboard["scenes"]), 2)
+            storyboard["actual_duration_sec"] = total_audio_duration
+            if format_type == "LONG_FORM" and scene_duration_override is None:
+                if total_audio_duration < LongformPlanner.MIN_DURATION_SEC:
+                    duration_gate_error = (
+                        f"Long-form audio duration ({total_audio_duration:.1f}s) is below the minimum "
+                        f"required {LongformPlanner.MIN_DURATION_SEC:.0f}s (8 minutes)."
+                    )
+
+            timeline.append({
+                "stage": "VOICEOVER_GENERATED",
+                "segments": len(voice_files),
+                "total_audio_duration_sec": total_audio_duration
+            })
+            AutonomousRecoveryEngine.save_checkpoint(job_id, "06_VOICEOVER", {"voice_files": [str(v) for v in voice_files], "total_audio_duration_sec": total_audio_duration})
+
+            # Step 9: Hybrid Visual Scene & Motion Generation (Module H)
+            scene_assets = await self.visual_gen.render_all_storyboard_scenes(storyboard, job_id)
+            timeline.append({"stage": "VISUAL_SCENES_RENDERED", "count": len(scene_assets)})
+            AutonomousRecoveryEngine.save_checkpoint(job_id, "05_VISUALS", {"scenes": scene_assets})
+
+            # Step 10: Automatic Video Editing & Rendering Engine (Module K)
+            render_res = VideoRenderingPipeline.render_complete_video(
+                scene_assets=scene_assets,
+                voiceover_files=voice_files,
+                job_id=job_id,
+                format_type=format_type
+            )
+            timeline.append({"stage": "VIDEO_RENDERED", "video_path": render_res["video_path"]})
+            AutonomousRecoveryEngine.save_checkpoint(job_id, "07_RENDER", render_res)
 
         # Step 11: Thumbnail Generation & SEO Engine (Module L)
         thumb_path = settings.STORAGE_DIR / "visuals" / "thumbnails" / f"thumb_{job_id}.jpg"
@@ -355,12 +403,17 @@ class ProductionPipelineOrchestrator:
                 )
             }
 
+        if simulate_upload or format_type != "SHORT":
+            target_publish_ist = AutonomousScheduler.DEFAULT_PUBLISH_TIME_IST
+        else:
+            target_publish_ist = "07:00" if effective_track == "RAMAYANA" else "18:30"
+
         subtitles_file = Path(render_res["subtitles_path"]) if render_res.get("subtitles_path") else None
         upload_res = await self.uploader.upload_and_schedule_video(
             video_path=Path(render_res["video_path"]),
             thumbnail_path=thumb_path,
             metadata=metadata,
-            scheduled_publish_time_ist=AutonomousScheduler.DEFAULT_PUBLISH_TIME_IST,
+            scheduled_publish_time_ist=target_publish_ist,
             subtitles_path=subtitles_file,
             simulate_upload=simulate_upload
         )
@@ -411,7 +464,7 @@ class ProductionPipelineOrchestrator:
         meta_results = {}
         if not simulate_upload and self.meta_uploader:
             try:
-                caption = f"{topic['title_hindi']}\n\n{script.get('opening_hook_hindi', '')}\n\n🔔 फॉलो करें: @itihasasaga\n\n#ramayana #mahabharata #itihasasaga #sanatan #shorts #reels"
+                caption = f"{metadata['title_hindi']}\n\n{metadata['description_hindi']}"
                 video_file = Path(render_res["video_path"])
                 ig_id = self.meta_uploader.publish_instagram_reel(video_file, caption)
                 fb_id = self.meta_uploader.publish_facebook_reel(video_file, caption)
@@ -427,6 +480,9 @@ class ProductionPipelineOrchestrator:
             youtube_res=upload_res,
             meta_res=meta_results
         )
+        if not simulate_upload and sm_audit.get("certified_published"):
+            EpisodicLedger.mark_completed(topic.get("id", job_id))
+            EpisodicLedger.mark_slot_published(effective_track, topic.get("id", job_id))
         timeline.append({"stage": "SOCIAL_MEDIA_MANAGER_AUDIT", "report": sm_audit})
 
         # Mark episode completed in chronological ledger

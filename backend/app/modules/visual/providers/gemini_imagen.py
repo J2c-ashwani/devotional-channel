@@ -63,62 +63,138 @@ class GeminiImagenProvider(VisualGenerationProvider):
         Generate a photorealistic 3D scene keyframe using Imagen 3 via Gemini API.
         Guarantees zero visible watermarks (add_watermark=False).
         """
-        client = self._get_dev_client() or self._get_vertex_client()
-        
-        if client:
+        ar_map = {"9:16": "9:16", "16:9": "16:9", "1:1": "1:1", "4:3": "4:3", "3:4": "3:4"}
+        ar = ar_map.get(aspect_ratio, "9:16")
+
+        if vertex_client := self._get_vertex_client():
             try:
                 from google.genai import types
-                
-                # Normalize aspect ratio for Imagen 3
-                ar_map = {
-                    "9:16": "9:16",
-                    "16:9": "16:9",
-                    "1:1": "1:1",
-                    "4:3": "4:3",
-                    "3:4": "3:4"
-                }
-                ar = ar_map.get(aspect_ratio, "9:16")
-
-                def _call_imagen():
-                    return client.models.generate_images(
-                        model="imagen-3.0-generate-002",
-                        prompt=prompt,
-                        config=types.GenerateImagesConfig(
-                            number_of_images=1,
-                            aspect_ratio=ar,
-                            output_mime_type="image/jpeg",
-                            add_watermark=False,  # Strict: No visible watermark logo
-                            person_generation="allow_adult"
+                def _call_img_gen():
+                    return vertex_client.models.generate_content(
+                        model="gemini-3-pro-image",
+                        contents=prompt,
+                        config=types.GenerateContentConfig(
+                            response_modalities=["IMAGE"],
+                            image_config=types.ImageConfig(aspect_ratio=ar)
                         )
                     )
-
-                result = await asyncio.to_thread(_call_imagen)
-                
-                if result and result.generated_images:
-                    img_bytes = result.generated_images[0].image.image_bytes
-                    output_path.parent.mkdir(parents=True, exist_ok=True)
-                    with open(output_path, "wb") as f:
-                        f.write(img_bytes)
-
-                    return {
-                        "status": "SUCCESS",
-                        "provider": "google_imagen_3",
-                        "output_path": str(output_path),
-                        "aspect_ratio": ar,
-                        "model": "imagen-3.0-generate-002",
-                        "watermark_visible": False,
-                        "prompt_used": prompt
-                    }
+                res = await asyncio.to_thread(_call_img_gen)
+                if res and res.candidates:
+                    for part in res.candidates[0].content.parts:
+                        if getattr(part, "inline_data", None) and part.inline_data.data:
+                            output_path.parent.mkdir(parents=True, exist_ok=True)
+                            output_path.write_bytes(part.inline_data.data)
+                            return {
+                                "status": "SUCCESS",
+                                "provider": "vertex_gemini_3_pro_image",
+                                "output_path": str(output_path),
+                                "aspect_ratio": ar,
+                                "model": "gemini-3-pro-image",
+                                "watermark_visible": False,
+                                "prompt_used": prompt
+                            }
             except Exception as err:
-                print(f"[GeminiImagenProvider] Live Imagen generation failed ({err}). Falling back to procedural.")
+                print(f"[GeminiImagenProvider] Live gemini-3-pro-image failed ({err}). Falling back to procedural.")
 
-        # Deterministic fallback when API keys are not supplied or hit error
+        # Deterministic fallback when offline or keys missing
         return await self.mock_fallback.generate_scene_image(
             prompt=prompt,
             output_path=output_path,
             aspect_ratio=aspect_ratio,
             resolution=resolution
         )
+
+    async def generate_omni_t2v_scene(
+        self,
+        prompt: str,
+        output_video_path: Path,
+        duration_sec: int = 12,
+        aspect_ratio: str = "9:16",
+        gcs_bucket: str = "itihasa-saga-storage-514907",
+        gcs_prefix: str = "autonomous_omni_t2v"
+    ) -> Dict[str, Any]:
+        """
+        Pure Google Vertex Text-to-Video (gemini-omni-1.2-flash) on location='global'.
+        Generates native 1080p video + native Hindi character talking-head lip-sync & voiceover.
+        """
+        import base64
+        import time
+        from google import genai
+        from google.genai._gaos.types import interactions
+
+        def _call_omni_sync():
+            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.environ.get(
+                "GOOGLE_APPLICATION_CREDENTIALS",
+                "/Users/ashwanikumar/Downloads/devotional/service-account.json"
+            )
+            client = genai.Client(
+                vertexai=True,
+                project=self.gcp_project or "devotional-youtube-514907",
+                location="global",
+                http_options={"timeout": 600000}
+            )
+            clamped_dur = f"{int(min(15, max(3, round(duration_sec))))}s"
+            gcs_uri = f"gs://{gcs_bucket}/{gcs_prefix}/{output_video_path.stem}_{int(time.time())}.mp4"
+
+            fmt = interactions.VideoResponseFormat(
+                type="video",
+                aspect_ratio=aspect_ratio,
+                duration=clamped_dur,
+                resolution="1080p",
+                delivery="uri",
+                gcs_uri=gcs_uri
+            )
+            try:
+                interaction = client.interactions.create(
+                    model="gemini-omni-1.2-flash",
+                    input=prompt,
+                    response_format=fmt
+                )
+            except Exception:
+                fmt = interactions.VideoResponseFormat(
+                    type="video",
+                    aspect_ratio=aspect_ratio,
+                    duration=clamped_dur,
+                    resolution="720p",
+                    delivery="inline"
+                )
+                interaction = client.interactions.create(
+                    model="gemini-omni-1.2-flash",
+                    input=prompt,
+                    response_format=fmt
+                )
+
+            output_video_path.parent.mkdir(parents=True, exist_ok=True)
+            ov = getattr(interaction, "output_video", None)
+            uri = getattr(ov, "uri", None) if ov else None
+            if not uri:
+                for step in getattr(interaction, "steps", []) or []:
+                    for c in getattr(step, "content", []) or []:
+                        if getattr(c, "type", None) == "video" and getattr(c, "uri", None):
+                            uri = c.uri
+                            break
+            if uri and uri.startswith("gs://"):
+                from google.cloud import storage
+                parts = uri.replace("gs://", "").split("/", 1)
+                sc = storage.Client(project=self.gcp_project or "devotional-youtube-514907")
+                sc.bucket(parts[0]).blob(parts[1]).download_to_filename(str(output_video_path))
+                return "vertex_omni_1080p_gcs"
+            if ov and getattr(ov, "data", None):
+                raw_bytes = base64.b64decode(ov.data) if isinstance(ov.data, str) else ov.data
+                output_video_path.write_bytes(raw_bytes)
+                return "vertex_omni_inline"
+            raise RuntimeError(f"Gemini Omni returned empty video for {output_video_path.name}")
+
+        provider_mode = await asyncio.to_thread(_call_omni_sync)
+        return {
+            "status": "SUCCESS",
+            "provider": provider_mode,
+            "model": "gemini-omni-1.2-flash",
+            "output_path": str(output_video_path),
+            "duration_sec": float(min(15, max(3, round(duration_sec)))),
+            "has_native_audio": True,
+            "watermark_visible": False
+        }
 
     async def animate_scene(
         self,

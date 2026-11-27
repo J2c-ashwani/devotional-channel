@@ -8,6 +8,7 @@ class HardRuleEnforcer:
 
     MIN_SHORTS_DURATION_SEC = 60.0
     MAX_SHORTS_DURATION_SEC = 90.0
+    MAX_WORDS_PER_SEC_SPOKEN = 2.6  # Guarantees crisp unhurried Hindi without mid-word cutoffs in Vertex Omni
 
     @classmethod
     def evaluate_hard_blockers(
@@ -68,5 +69,28 @@ class HardRuleEnforcer:
         # 9. Director Signoff Blocker
         if director_review and not director_review.get("director_signoff", True):
             return f"Director Review Failure: {director_review.get('rejection_reason', 'Production Director withheld signoff')}"
+
+        # 10. Pure Talking-Head Character Dialogue Blocker (Locked across BOTH Ramayana & Mahabharata)
+        if script_data:
+            scenes = script_data.get("scenes", [])
+            for sc in scenes:
+                speaker = sc.get("dialogue_speaker")
+                dialogue = sc.get("dialogue_hindi")
+                if speaker and dialogue and sc.get("is_pure_narrator", False):
+                    return (
+                        f"Talking-Head Rule Failure: Scene '{sc.get('scene_name')}' contains dialogue for '{speaker}', "
+                        f"but was flattened into third-person narration. Characters MUST speak in talking heads with their own voice."
+                    )
+
+                # 11. Spoken Hindi Word-Density Blocker for Vertex Text-to-Video Scenes
+                if format_type == "SHORT" and sc.get("render_mode") == "vertex_omni_t2v":
+                    spoken = f"{sc.get('narrator_text_hindi', '')} {dialogue or ''}".strip()
+                    word_count = len(spoken.split())
+                    dur_sec = max(1.0, float(sc.get("duration_sec", 12.0)))
+                    if word_count / dur_sec > cls.MAX_WORDS_PER_SEC_SPOKEN:
+                        return (
+                            f"Audio Pacing Failure: Scene '{sc.get('scene_name')}' packs {word_count} words into {dur_sec:.1f}s "
+                            f"({word_count/dur_sec:.2f} w/s > {cls.MAX_WORDS_PER_SEC_SPOKEN} w/s limit), risking clipped Vertex audio."
+                        )
 
         return None

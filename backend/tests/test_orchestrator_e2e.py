@@ -4,8 +4,13 @@ from backend.app.pipeline.orchestrator import ProductionPipelineOrchestrator
 from backend.app.pipeline.emergency import EmergencyKillSwitch
 from backend.app.modules.scriptwriting.originality_guard import OriginalityGuard
 
+from backend.app.config import settings
+
+
 @pytest.fixture(autouse=True)
-def clean_test_ledger():
+def clean_test_ledger(tmp_path, monkeypatch):
+    monkeypatch.setattr(settings, "STORAGE_DIR", tmp_path)
+    monkeypatch.setattr(OriginalityGuard, "HISTORY_FILE", tmp_path / "published_scripts_ledger.json")
     OriginalityGuard.clear_history()
     yield
     OriginalityGuard.clear_history()

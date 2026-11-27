@@ -120,6 +120,7 @@ async def test_fact_checker_catches_contradiction_in_generated_script(tmp_path, 
     }
 
     orchestrator = ProductionPipelineOrchestrator()
+    orchestrator.scriptwriter = None
     with patch.object(ScreenplayEngine, "generate_short_script", return_value=bad_script):
         res = await orchestrator.execute_production_run(format_type="SHORT", simulate_upload=True)
 

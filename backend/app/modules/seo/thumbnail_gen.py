@@ -42,11 +42,16 @@ class ThumbnailGenerator:
         draw.rectangle([0, height - 180, width, height], fill=(0, 0, 0, 200))
         draw.rectangle([0, height - 185, width, height - 180], fill=(255, 215, 0)) # Golden accent line
 
-        # Add punchy concise headline
+        # Add punchy concise headline with cross-platform Devanagari Unicode font support
+        from backend.app.agents.director_agent import ProductionDirectorAgent
+        font_headline = ProductionDirectorAgent.get_hindi_font(40)
+        font_sub = ProductionDirectorAgent.get_hindi_font(28)
+
         headline = topic_title_hindi[:45] + ("..." if len(topic_title_hindi) > 45 else "")
         draw.text(
-            (width // 2, height - 110),
+            (width // 2, height - 115),
             headline,
+            font=font_headline,
             fill=(255, 255, 255),
             anchor="mm"
         )
@@ -54,7 +59,8 @@ class ThumbnailGenerator:
         # Sub-badge
         draw.text(
             (width // 2, height - 50),
-            "॥ पौराणिक गाथा - सत्य ऐतिहासिक रहस्य ॥",
+            "॥ इतिहास सागा — प्रामाणिक पौराणिक गाथा ॥",
+            font=font_sub,
             fill=(255, 215, 0),
             anchor="mm"
         )

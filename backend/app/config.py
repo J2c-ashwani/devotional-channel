@@ -28,13 +28,13 @@ class Settings(BaseSettings):
     # AI API Keys (Configurable via environment variables)
     GEMINI_API_KEY: str = ""
     GOOGLE_CLOUD_PROJECT: str = ""
-    GOOGLE_CLOUD_LOCATION: str = "us-central1"
+    GOOGLE_CLOUD_LOCATION: str = "global"
     GOOGLE_APPLICATION_CREDENTIALS: str = ""
     OPENAI_API_KEY: str = ""
     ELEVENLABS_API_KEY: str = ""
     IMAGE_GEN_PROVIDER: str = "modular_gemini"  # "modular_gemini", "mock", "flux"
-    VIDEO_GEN_PROVIDER: str = "modular_motion"  # "modular_motion", "mock"
-    TTS_PROVIDER: str = "edge_tts"             # "edge_tts", "elevenlabs", "mock"
+    VIDEO_GEN_PROVIDER: str = "vertex_omni_t2v"  # "vertex_omni_t2v", "modular_motion", "mock"
+    TTS_PROVIDER: str = "edge_tts"             # Fallback only when voice synthesis requested separately
     
     # Cost & Budget Guardrails (Monthly limit in USD)
     MONTHLY_BUDGET_USD: float = 150.0

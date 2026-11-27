@@ -51,9 +51,11 @@ class PolicyComplianceChecker:
         desc = metadata.get("description_hindi", "")
         script_text = script_data.get("full_screenplay_devanagari", "")
 
-        # 1. Advertiser-Friendly & Community Guidelines Check
+        # 1. Advertiser-Friendly & Community Guidelines Check (word-boundary safe for Devanagari prefixes/suffixes like 'राजधर्म का अंतिम')
+        import re
         for term in cls.PROHIBITED_SENSATIONAL_TERMS:
-            if term in title or term in script_text:
+            pattern = r"(?<![\u0900-\u097Fa-zA-Z0-9])" + re.escape(term) + r"(?![\u0900-\u097Fa-zA-Z0-9])"
+            if re.search(pattern, title) or re.search(pattern, script_text):
                 violations.append(f"Sensationalist or offensive term detected: '{term}'")
 
         # 2. Synthetic Media Disclosure Evaluation

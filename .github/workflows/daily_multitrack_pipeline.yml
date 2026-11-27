@@ -18,6 +18,9 @@ on:
           - RAMAYANA
           - MAHABHARATA
 
+permissions:
+  contents: write
+
 jobs:
   produce_and_publish_episode:
     runs-on: ubuntu-latest
@@ -33,16 +36,16 @@ jobs:
           python-version: '3.13'
           cache: 'pip'
 
-      - name: Install System Dependencies (FFmpeg & Fonts)
+      - name: Install System Dependencies (FFmpeg & Devanagari Fonts)
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg fonts-dejavu fonts-liberation
+          sudo apt-get install -y ffmpeg fonts-noto-core fonts-noto-extra fonts-lohit-deva fontconfig
+          fc-cache -fv >/dev/null 2>&1 || true
 
       - name: Install Python Requirements
         run: |
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
-          pip install google-cloud-storage google-auth-oauthlib google-api-python-client
 
       - name: Setup Google Service Account
         env:
@@ -50,6 +53,9 @@ jobs:
         run: |
           if [ -n "$GCP_SA_KEY" ]; then
             echo "$GCP_SA_KEY" > service-account.json
+          else
+            echo "::error::Missing GCP_SA_KEY secret! Vertex Text-to-Video and GCS require a valid service account."
+            exit 1
           fi
 
       - name: Determine Track (Morning = Ramayana, Evening = Mahabharata)
@@ -59,7 +65,8 @@ jobs:
             echo "TRACK=${{ github.event.inputs.track }}" >> $GITHUB_ENV
           else
             HOUR=$(date -u +%H)
-            if [ "$HOUR" -lt 6 ]; then
+            # Before 11:00 UTC (16:30 IST) handles Morning 00:45 UTC (even under heavy GitHub cron delay) -> RAMAYANA
+            if [ "$HOUR" -lt 11 ]; then
               echo "TRACK=RAMAYANA" >> $GITHUB_ENV
             else
               echo "TRACK=MAHABHARATA" >> $GITHUB_ENV
@@ -68,8 +75,11 @@ jobs:
 
       - name: Execute Autonomous Video Production & Multi-Platform Upload
         env:
+          PYTHONPATH: ${{ github.workspace }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GOOGLE_CLOUD_PROJECT: devotional-youtube-514907
+          GOOGLE_CLOUD_LOCATION: global
+          VIDEO_GEN_PROVIDER: vertex_omni_t2v
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -78,10 +88,8 @@ jobs:
           INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
           FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
         run: |
-          if [ -f service-account.json ] && [ -s service-account.json ]; then
-            export GOOGLE_APPLICATION_CREDENTIALS=service-account.json
-          fi
-          echo "🎬 Starting Production Run for Track: $TRACK"
+          export GOOGLE_APPLICATION_CREDENTIALS="${{ github.workspace }}/service-account.json"
+          echo "🎬 Starting Pure Vertex T2V Production Run for Track: $TRACK"
           python scripts/run_pipeline.py --format SHORT --track "$TRACK"
 
       - name: Commit and Push Updated Progress Ledger
@@ -90,5 +98,8 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action Autonomous Pipeline"
           git add storage/episodic_progress.json storage/published_scripts_ledger.json storage/cost_ledger.json 2>/dev/null || true
-          git diff --staged --quiet || git commit -m "chore(pipeline): update episodic progress and publication ledgers [skip ci]"
-          git push origin main || echo "Git push skipped or failed"
+          if ! git diff --staged --quiet; then
+            git commit -m "chore(pipeline): update episodic progress and publication ledgers [skip ci]"
+            git pull --rebase origin main || true
+            git push origin main || echo "Git push skipped or failed (state synced safely in GCS)"
+          fi

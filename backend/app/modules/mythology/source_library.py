@@ -135,6 +135,61 @@ CANONICAL_SCRIPTURAL_SOURCES: Dict[str, Dict[str, Any]] = {
         ],
         "traditional_variations_notes": [],
         "public_domain_certified": True
+    },
+    "mahabharata_bhishma_pratigya": {
+        "epic_name": "Mahabharata",
+        "kanda_or_parva": "Adi Parva (Sambhava Parva)",
+        "sarga_or_adhyaya": "Adhyaya 100 (Bhishma Pratigya - The Terrible Vow of Devavrata)",
+        "shloka_range": "MBh 1.100.70 - 1.100.105",
+        "source_edition": "Bhandarkar Oriental Research Institute (BORI) Critical Edition & Geeta Press Gorakhpur",
+        "original_sanskrit_shloka": "अद्यप्रभृति मे दाश ब्रह्मचर्यं भविष्यति। अपुत्रस्यापि मे लोक भविष्यन्त्यक्षया दिवि॥ (आदिपर्व १००.९५)",
+        "canonical_summary_hindi": "देवी गंगा द्वारा महावीर राजकुमार देवव्रत को राजा शांतनु को लौटाए जाने के पश्चात, शांतनु सत्यवती से विवाह हेतु व्याकुल थे। जब निषादराज ने सत्यवती के पुत्र को ही हस्तिनापुर का राजा बनाने और देवव्रत की संतानों से सिंहासन की सुरक्षा का वचन मांगा, तब पितृभक्त देवव्रत ने राज्य के साथ-साथ आजीवन अखंड ब्रह्मचर्य की भीषण प्रतिज्ञा ली, जिससे देवतागणों ने उन्हें 'भीष्म' नाम दिया।",
+        "factual_assertions": [
+            {
+                "assertion_id": "MBH_AP_01",
+                "fact": "देवी गंगा ने महावीर राजकुमार देवव्रत को समस्त विद्याओं और शस्त्रों में पारंगत करके महाराज शांतनु को लौटाया।",
+                "classification": "SCRIPTURAL_CANON",
+                "citation": "Adi Parva 1.100.25-35"
+            },
+            {
+                "assertion_id": "MBH_AP_02",
+                "fact": "निषादराज ने शर्त रखी कि सत्यवती का पुत्र ही हस्तिनापुर का सम्राट बने और देवव्रत की संतान से राज्य पर कोई अधिकार न रहे।",
+                "classification": "SCRIPTURAL_CANON",
+                "citation": "Adi Parva 1.100.75-82"
+            },
+            {
+                "assertion_id": "MBH_AP_03",
+                "fact": "पिता शांतनु के सुख के लिए देवव्रत ने राज्य त्याग के साथ आजीवन ब्रह्मचर्य की प्रतिज्ञा ली और आकाश से 'भीष्म' ध्वनि गूंजी।",
+                "classification": "SCRIPTURAL_CANON",
+                "citation": "Adi Parva 1.100.90-100"
+            }
+        ],
+        "traditional_variations_notes": [],
+        "public_domain_certified": True
+    },
+    "mahabharata_adi_sabha_canon": {
+        "epic_name": "Mahabharata",
+        "kanda_or_parva": "Adi Parva / Sabha Parva / Bhishma Parva",
+        "sarga_or_adhyaya": "Canonical Vyasa Mahabharata (BORI & Geeta Press Edition)",
+        "shloka_range": "MBh Critical Edition",
+        "source_edition": "Bhandarkar Oriental Research Institute (BORI) Critical Edition & Geeta Press Gorakhpur",
+        "original_sanskrit_shloka": "यतो धर्मस्ततो जयः॥ (महाभारत)",
+        "canonical_summary_hindi": "महर्षि वेदव्यास रचित महाभारत के आदिपर्व, सभापर्व एवं युद्धपर्वों में वर्णित एकलव्य की गुरु-दक्षिणा, रंगभूमि में कर्ण का प्राकट्य, लाक्षागृह, द्रौपदी स्वयंवर और श्रीमद्भगवद्गीता के प्रामाणिक प्रसंग।",
+        "factual_assertions": [],
+        "traditional_variations_notes": [],
+        "public_domain_certified": True
+    },
+    "ramayana_ayodhya_aranya_canon": {
+        "epic_name": "Valmiki Ramayana",
+        "kanda_or_parva": "Ayodhya Kanda & Aranya Kanda",
+        "sarga_or_adhyaya": "Canonical Valmiki Ramayana (BORI & Geeta Press Edition)",
+        "shloka_range": "VR Critical Edition",
+        "source_edition": "Geeta Press Gorakhpur & Valmiki Ramayana Baroda Critical Edition",
+        "original_sanskrit_shloka": "रामो विग्रहवान् धर्मः साधुः सत्यपराक्रमः॥ (वाल्मीकि रामायण)",
+        "canonical_summary_hindi": "महर्षि वाल्मीकि एवं गोस्वामी तुलसीदास रचित रामायण के अयोध्याकाण्ड एवं अरण्यकाण्ड में वर्णित कैकेयी कोपभवन, श्री राम वन गमन, केवट भक्ति, जटायु बलिदान और माता शबरी प्रसंग।",
+        "factual_assertions": [],
+        "traditional_variations_notes": [],
+        "public_domain_certified": True
     }
 }
 
@@ -142,8 +197,14 @@ class SourceLibrary:
     @staticmethod
     def get_canonical_source(topic_slug: str) -> Optional[Dict[str, Any]]:
         slug = topic_slug.lower()
-        if "भीष्म" in slug or "शांति" in slug or "युधिष्ठिर" in slug or "bhishma" in slug:
+        if "प्रतिज्ञा" in slug or "सत्यवती" in slug or "निषादराज" in slug or "देवव्रत" in slug or "शांतनु" in slug:
+            return CANONICAL_SCRIPTURAL_SOURCES.get("mahabharata_bhishma_pratigya")
+        elif "भीष्म" in slug or "शांति" in slug or "युधिष्ठिर" in slug or "bhishma" in slug:
             return CANONICAL_SCRIPTURAL_SOURCES.get("bhishma_shanti_parva")
+        elif "एकलव्य" in slug or "द्रोण" in slug or "लाक्षागृह" in slug or "द्रौपदी" in slug or "शकुनि" in slug or "शिशुपाल" in slug or "महाभारत" in slug or "अर्जुन" in slug or "पांडव" in slug:
+            return CANONICAL_SCRIPTURAL_SOURCES.get("mahabharata_adi_sabha_canon")
+        elif "मंथरा" in slug or "कैकेयी" in slug or "केवट" in slug or "वन गमन" in slug or "शूर्पणखा" in slug or "जटायु" in slug or "शबरी" in slug or "सीता हरण" in slug:
+            return CANONICAL_SCRIPTURAL_SOURCES.get("ramayana_ayodhya_aranya_canon")
         elif "राम" in slug or "जनक" in slug or "धनुष" in slug or "ramayana" in slug or "mithila" in slug:
             return CANONICAL_SCRIPTURAL_SOURCES.get("ramayana_dhanurbhanga_pilot")
         elif "शिव" in slug or "नीलकंठ" in slug:

@@ -28,15 +28,18 @@ class MetaReelUploader:
                         k, v = line.strip().split("=", 1)
                         self.env[k] = v
 
-        self.access_token = self.env.get("META_PERMANENT_ACCESS_TOKEN")
-        self.ig_account_id = self.env.get("INSTAGRAM_ACCOUNT_ID")
-        self.fb_page_id = self.env.get("FACEBOOK_PAGE_ID")
+        self.access_token = os.environ.get("META_PERMANENT_ACCESS_TOKEN") or self.env.get("META_PERMANENT_ACCESS_TOKEN")
+        self.ig_account_id = os.environ.get("INSTAGRAM_ACCOUNT_ID") or self.env.get("INSTAGRAM_ACCOUNT_ID")
+        self.fb_page_id = os.environ.get("FACEBOOK_PAGE_ID") or self.env.get("FACEBOOK_PAGE_ID")
         self.gcs_bucket_name = "itihasa-saga-storage-514907"
 
-        # Initialize GCS client
-        creds_file = self.env.get("GOOGLE_APPLICATION_CREDENTIALS", str(BASE_DIR / "service-account.json"))
+        # Initialize GCS client (prefer runtime-local service-account.json to avoid macOS TCC cross-folder blocks)
+        local_sa = BASE_DIR / "service-account.json"
+        creds_file = str(local_sa) if local_sa.exists() else (
+            os.environ.get("GOOGLE_APPLICATION_CREDENTIALS") or self.env.get("GOOGLE_APPLICATION_CREDENTIALS", str(local_sa))
+        )
         os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = creds_file
-        self.gcs_client = storage.Client(project=self.env.get("GOOGLE_CLOUD_PROJECT", "devotional-youtube-514907"))
+        self.gcs_client = storage.Client(project=os.environ.get("GOOGLE_CLOUD_PROJECT") or self.env.get("GOOGLE_CLOUD_PROJECT", "devotional-youtube-514907"))
 
     def upload_to_gcs_and_get_url(self, local_video_path: Path) -> str:
         """Uploads video to GCS bucket and generates a 2-hour signed public URL for Meta to ingest"""

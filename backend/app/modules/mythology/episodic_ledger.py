@@ -7,12 +7,17 @@ Ensures 100% automated, uninterrupted episodic continuity.
 """
 
 import json
+import os
+from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
+import pytz
 
 BASE_DIR = Path(__file__).resolve().parents[4]
 STORAGE_DIR = BASE_DIR / "storage"
 PROGRESS_FILE = STORAGE_DIR / "episodic_progress.json"
+GCS_STATE_BUCKET = "itihasa-saga-storage-514907"
+GCS_STATE_BLOB = "state/episodic_progress.json"
 
 RAMAYANA_SERIES: List[Dict[str, Any]] = [
     {
@@ -202,20 +207,70 @@ MAHABHARATA_SERIES: List[Dict[str, Any]] = [
 
 class EpisodicLedger:
     @staticmethod
-    def _load_progress() -> Dict[str, Any]:
+    def _should_sync_gcs() -> bool:
+        return not bool(os.environ.get("PYTEST_CURRENT_TEST"))
+
+    @classmethod
+    def _load_progress(cls) -> Dict[str, Any]:
+        local_data: Dict[str, Any] = {"completed_ids": ["ramayana_ep01"], "daily_slots": {}}
         if PROGRESS_FILE.exists():
             try:
                 with open(PROGRESS_FILE, "r", encoding="utf-8") as f:
-                    return json.load(f)
+                    parsed = json.load(f)
+                    if isinstance(parsed, dict):
+                        local_data = parsed
             except Exception:
                 pass
-        return {"completed_ids": ["ramayana_ep01"]}
 
-    @staticmethod
-    def _save_progress(data: Dict[str, Any]):
+        if cls._should_sync_gcs():
+            try:
+                from google.cloud import storage
+                sc = storage.Client(project=os.environ.get("GOOGLE_CLOUD_PROJECT", "devotional-youtube-514907"))
+                blob = sc.bucket(GCS_STATE_BUCKET).blob(GCS_STATE_BLOB)
+                if blob.exists():
+                    remote_data = json.loads(blob.download_as_text(encoding="utf-8"))
+                    merged_ids = list(dict.fromkeys(
+                        list(local_data.get("completed_ids", [])) + list(remote_data.get("completed_ids", []))
+                    ))
+                    merged_slots = {**remote_data.get("daily_slots", {}), **local_data.get("daily_slots", {})}
+                    local_data["completed_ids"] = merged_ids
+                    local_data["daily_slots"] = merged_slots
+                    STORAGE_DIR.mkdir(parents=True, exist_ok=True)
+                    PROGRESS_FILE.write_text(json.dumps(local_data, ensure_ascii=False, indent=2), encoding="utf-8")
+            except Exception:
+                pass
+        return local_data
+
+    @classmethod
+    def _save_progress(cls, data: Dict[str, Any]):
         STORAGE_DIR.mkdir(parents=True, exist_ok=True)
+        payload = json.dumps(data, ensure_ascii=False, indent=2)
         with open(PROGRESS_FILE, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
+            f.write(payload)
+        if cls._should_sync_gcs():
+            try:
+                from google.cloud import storage
+                sc = storage.Client(project=os.environ.get("GOOGLE_CLOUD_PROJECT", "devotional-youtube-514907"))
+                sc.bucket(GCS_STATE_BUCKET).blob(GCS_STATE_BLOB).upload_from_string(payload, content_type="application/json")
+            except Exception:
+                pass
+
+    @classmethod
+    def get_today_slot_key(cls, track: str) -> str:
+        ist = pytz.timezone("Asia/Kolkata")
+        return f"{datetime.now(ist).strftime('%Y-%m-%d')}_{track.upper()}"
+
+    @classmethod
+    def has_published_slot_today(cls, track: str) -> Optional[str]:
+        progress = cls._load_progress()
+        return progress.get("daily_slots", {}).get(cls.get_today_slot_key(track))
+
+    @classmethod
+    def mark_slot_published(cls, track: str, topic_id: str):
+        progress = cls._load_progress()
+        slots = progress.setdefault("daily_slots", {})
+        slots[cls.get_today_slot_key(track)] = topic_id
+        cls._save_progress(progress)
 
     @classmethod
     def get_next_topic(cls, track: str = "RAMAYANA") -> Dict[str, Any]:

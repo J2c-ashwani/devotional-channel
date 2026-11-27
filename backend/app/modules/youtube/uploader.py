@@ -1,6 +1,6 @@
 import asyncio
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, Any, Optional
 import pytz
@@ -63,10 +63,15 @@ class YouTubeUploader:
         subtitles_path: Optional[Path],
         body: Dict[str, Any]
     ) -> Dict[str, Any]:
+        import socket
+        import ssl
+        import time
         from google.oauth2.credentials import Credentials
         from google.auth.transport.requests import Request
         from googleapiclient.discovery import build
         from googleapiclient.http import MediaFileUpload
+
+        socket.setdefaulttimeout(120.0)
 
         creds = Credentials(
             token=None,
@@ -80,10 +85,10 @@ class YouTubeUploader:
 
         youtube = build("youtube", "v3", credentials=creds)
 
-        # 1. Resumable video upload
+        # 1. Resumable 1MB chunk video upload with automatic retry on write timeouts/SSL glitches
         media = MediaFileUpload(
             str(video_path),
-            chunksize=5 * 1024 * 1024,
+            chunksize=1024 * 1024,
             resumable=True,
             mimetype="video/mp4",
         )
@@ -93,8 +98,21 @@ class YouTubeUploader:
             media_body=media,
         )
         response = None
+        retry_count = 0
+        max_retries = 10
         while response is None:
-            _, response = request.next_chunk()
+            try:
+                status, response = request.next_chunk()
+                if status:
+                    print(f"YouTube upload progress: {int(status.progress() * 100)}%")
+                retry_count = 0
+            except (TimeoutError, ssl.SSLError, socket.timeout, Exception) as e:
+                retry_count += 1
+                if retry_count > max_retries:
+                    raise e
+                wait_time = min(30, retry_count * 5)
+                print(f"⚠️ YouTube upload chunk retry {retry_count}/{max_retries} in {wait_time}s: {e}")
+                time.sleep(wait_time)
 
         video_id = response.get("id")
         if not video_id:
@@ -156,9 +174,26 @@ class YouTubeUploader:
             raise FileNotFoundError(f"Video file {video_path} not found.")
 
         file_hash = UploadLedger.compute_sha256(video_path)
-        rfc3339_publish_at = self.convert_ist_to_utc_rfc3339(scheduled_publish_time_ist, target_date)
+        ist = pytz.timezone(settings.PUBLISH_TIMEZONE)
+        now_ist = datetime.now(ist)
+        hrs, mins = map(int, scheduled_publish_time_ist.split(":"))
+        base_dt = target_date or now_ist
+        scheduled_ist = ist.localize(datetime(
+            year=base_dt.year, month=base_dt.month, day=base_dt.day, hour=hrs, minute=mins, second=0
+        ))
+        # Use scheduled publishAt ONLY if it is safely (>15 min) in the future; otherwise publish public immediately
+        # so delayed wakeups or close-to-slot daemon runs never fail with YouTube 400 invalidPublishAt.
+        use_scheduled_publish = simulate_upload or (scheduled_ist > now_ist + timedelta(minutes=15))
+        rfc3339_publish_at = scheduled_ist.astimezone(pytz.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         has_thumb = bool(thumbnail_path and thumbnail_path.exists())
         has_subs = bool(subtitles_path and subtitles_path.exists() and subtitles_path.stat().st_size > 0)
+
+        status_block: Dict[str, Any] = {
+            "privacyStatus": "private" if use_scheduled_publish else "public",
+            "selfDeclaredMadeForKids": False,
+        }
+        if use_scheduled_publish:
+            status_block["publishAt"] = rfc3339_publish_at
 
         # Standard YouTube API v3 request body
         body = {
@@ -168,11 +203,7 @@ class YouTubeUploader:
                 "tags": metadata["tags"],
                 "categoryId": metadata.get("category_id", "27")
             },
-            "status": {
-                "privacyStatus": "private",
-                "publishAt": rfc3339_publish_at,
-                "selfDeclaredMadeForKids": False
-            }
+            "status": status_block,
         }
 
         if simulate_upload:
@@ -213,15 +244,16 @@ class YouTubeUploader:
                 body,
             )
             video_id = live_res["video_id"]
+            privacy_final = "private" if use_scheduled_publish else "public"
             return {
                 "success": True,
                 "simulated": False,
                 "youtube_video_id": video_id,
-                "youtube_url": f"https://www.youtube.com/watch?v={video_id}",
+                "youtube_url": f"https://youtube.com/shorts/{video_id}" if privacy_final == "public" else f"https://www.youtube.com/watch?v={video_id}",
                 "file_sha256": file_hash,
-                "privacy_status": "private",
-                "scheduled_publish_at_utc": rfc3339_publish_at,
-                "scheduled_publish_at_ist": f"{scheduled_publish_time_ist} IST",
+                "privacy_status": privacy_final,
+                "scheduled_publish_at_utc": rfc3339_publish_at if use_scheduled_publish else None,
+                "scheduled_publish_at_ist": f"{scheduled_publish_time_ist} IST" if use_scheduled_publish else "Immediate Public",
                 "uploaded_at": datetime.utcnow().isoformat(),
                 "has_thumbnail": has_thumb,
                 "thumbnail_uploaded": live_res["thumbnail_uploaded"],

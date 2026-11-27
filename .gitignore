@@ -52,6 +52,9 @@ storage/audio/*.pcm
 storage/audio/episodic_narrations/*
 storage/audio/mahabharata_ep01/*
 storage/audio/ramayana_ep02/*
+storage/visuals/ramayana_ep03_refs/*
+storage/logs/*
+storage/cost_ledger.json
 storage/*.png
 !storage/audio/music/.gitkeep
 !storage/audio/sfx/.gitkeep

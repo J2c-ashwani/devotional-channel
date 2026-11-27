@@ -2,6 +2,11 @@
   "completed_ids": [
     "ramayana_ep01",
     "mahabharata_ep01",
-    "ramayana_ep02"
-  ]
+    "ramayana_ep02",
+    "ramayana_ep03",
+    "mahabharata_ep02"
+  ],
+  "daily_slots": {
+    "2026-11-26_MAHABHARATA": "mahabharata_ep02"
+  }
 }

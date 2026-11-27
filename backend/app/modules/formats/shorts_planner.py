@@ -28,7 +28,7 @@ class ShortsPlanner:
                 # Audit and inject iconographic rules via ProductionDirectorAgent
                 audited_prompt = ProductionDirectorAgent.audit_scene_prompt(
                     character_id=s.get("dialogue_speaker", ""),
-                    prompt=f"Cinematic 9:16 vertical shot, 8k octane render, hyper-realistic ancient Bharatvarsha. {visual_desc}"
+                    prompt=f"Cinematic 9:16 vertical photorealistic 8k live-action ancient Indian epic film scene. Strictly NO on-screen text or watermarks. {visual_desc}"
                 )
 
                 sfx = "thunder_rumble" if idx == 1 else ("shankh_conch" if idx >= len(script_data["scenes"]) else "divine_chime_bell")

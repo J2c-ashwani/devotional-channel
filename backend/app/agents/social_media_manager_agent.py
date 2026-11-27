@@ -31,7 +31,7 @@ class SocialMediaManagerAgent:
     """
 
     def __init__(self):
-        self.storage_dir = Path("/Users/ashwanikumar/Downloads/devotional/storage")
+        self.storage_dir = settings.STORAGE_DIR
         self.progress_file = self.storage_dir / "episodic_progress.json"
         self.ledger_file = self.storage_dir / "published_scripts_ledger.json"
 

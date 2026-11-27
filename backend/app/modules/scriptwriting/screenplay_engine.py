@@ -22,7 +22,44 @@ class ScreenplayEngine:
         """
         topic_title = topic_data.get("title_hindi", "")
         
-        if "धनुष" in topic_title or "जनक" in topic_title or "राम" in topic_title or "सीता" in topic_title:
+        if "मंथरा" in topic_title or "कैकेयी" in topic_title or "कोपभवन" in topic_title:
+            opening_hook = "अयोध्या में श्रीराम के राज्याभिषेक की तैयारी थी, पर मंथरा के विषैले शब्दों ने महल का भाग्य बदल दिया!"
+            narrative_body = "महारानी कैकेयी कोपभवन में आभूषण त्यागकर बैठ गईं और व्याकुल राजा दशरथ उनके चरणों में आ गिरे!"
+            climax = "कैकेयी ने अपने दोनों वरदान मांगे—प्रथम, भरत को राजगद्दी मिले, और द्वितीय, श्रीराम चौदह वर्ष के लिए वन जाएं!"
+            resolution = "अपने वचन से बंधे महाराज दशरथ मूर्च्छित हो गए, पर मर्यादा पुरुषोत्तम श्रीराम ने मुस्कुराकर वनवास स्वीकार कर लिया!"
+            conclusion = "क्या अयोध्यावासी श्रीराम को जाने देंगे? जानिए अगले भाग में! इतिहास सागा को अभी फॉलो करें!"
+            dialogue = [
+                {"speaker": "रानी कैकेयी", "line": "महाराज! भरत को राजगद्दी और श्रीराम को चौदह वर्ष का वनवास दीजिए!"},
+                {"speaker": "प्रभु श्री राम", "line": "पिता का वचन निभाना ही पुत्र का सबसे बड़ा धर्म है।"}
+            ]
+            scenes = [
+                {"scene_index": 1, "scene_name": "Ayodhya Celebration Interrupted", "duration_sec": 12.0, "render_mode": "vertex_omni_t2v", "is_pure_narrator": True, "narrator_text_hindi": opening_hook, "visual_description_english": "Festive ancient Ayodhya palace with lamps dimming as Manthara whispers poison into Queen Kaikeyi's ear"},
+                {"scene_index": 2, "scene_name": "Manthara Talking Head", "duration_sec": 12.0, "render_mode": "vertex_omni_t2v", "is_pure_narrator": False, "narrator_text_hindi": "", "dialogue_speaker": "मंथरा", "dialogue_hindi": "महारानी! राम राजा बने तो भरत उनका दास बनेगा! अब अपने पुत्र का अधिकार मांगो!", "visual_description_english": "Shrewd palace maidservant Manthara whispering urgently to Queen Kaikeyi inside gilded chamber"},
+                {"scene_index": 3, "scene_name": "Kaikeyi Talking Head in Kopabhavan", "duration_sec": 15.0, "render_mode": "vertex_omni_t2v", "is_pure_narrator": False, "narrator_text_hindi": "", "dialogue_speaker": "रानी कैकेयी", "dialogue_hindi": "महाराज! भरत को राजगद्दी और राम को चौदह वर्ष का वनवास दीजिए!", "visual_description_english": "Queen Kaikeyi sitting defiantly on the bare floor of Kopabhavan demanding the two fatal boons from heartbroken Emperor Dasharatha"},
+                {"scene_index": 4, "scene_name": "Dasharatha Pleading", "duration_sec": 12.0, "render_mode": "vertex_omni_t2v", "is_pure_narrator": False, "narrator_text_hindi": "", "dialogue_speaker": "महाराज दशरथ", "dialogue_hindi": "कैकेयी! मेरे प्राण ले लो, पर मेरी आँखों के तारे राम को वन मत भेजो!", "visual_description_english": "Aged silver-bearded Emperor Dasharatha weeping silently with folded hands in devastation"},
+                {"scene_index": 5, "scene_name": "Shri Rama Serenity", "duration_sec": 15.0, "render_mode": "vertex_omni_t2v", "is_pure_narrator": False, "narrator_text_hindi": "", "dialogue_speaker": "प्रभु श्री राम", "dialogue_hindi": "पिताजी! आपका सत्य वचन व्यर्थ नहीं जाएगा—मैं आज ही वन जाऊँगा!", "visual_description_english": "Serene Prince Rama wearing golden Surya-vamsha Kirita Mukuta crown bowing humbly with calm resolve"},
+                {"scene_index": 6, "scene_name": "Outro & Exile Hook", "duration_sec": 12.0, "render_mode": "vertex_omni_t2v", "is_pure_narrator": True, "narrator_text_hindi": conclusion, "visual_description_english": "Shri Rama in saffron hermit robes walking out of Ayodhya gates as Sita and Lakshmana follow amidst crying citizens"}
+            ]
+            duration = 78.0
+        elif "एकलव्य" in topic_title or "गुरु-दक्षिणा" in topic_title:
+            opening_hook = "जब गुरु द्रोणाचार्य ने वनवासी बालक एकलव्य को धनुर्विद्या सिखाने से मना किया, तो उसने हार नहीं मानी!"
+            narrative_body = "जंगल में गुरु द्रोण की मिट्टी की मूर्ति बनाकर एकलव्य ने ऐसी साधना की कि संसार का सर्वश्रेष्ठ धनुर्धर बन गया!"
+            climax = "गुरु द्रोण ने वचन पूरा करने को गुरु-दक्षिणा में उसका दायां अंगूठा मांग लिया—और एकलव्य मुस्कुरा उठा!"
+            resolution = "बिना एक क्षण सोचे, एकलव्य ने अपना दायां अंगूठा काटकर गुरु चरणों में अर्पित कर दिया!"
+            conclusion = "ऐसी अद्वितीय गुरु-भक्ति अमर हो गई! आगे रंगभूमि में किसने अर्जुन को चुनौती दी? जानिए भाग 4 में!"
+            dialogue = [
+                {"speaker": "एकलव्य", "line": "गुरुदेव! यह अंगूठा क्या, आपकी सेवा में मेरे प्राण भी समर्पित हैं!"}
+            ]
+            scenes = [
+                {"scene_index": 1, "scene_name": "Eklavya Rejected Hook", "duration_sec": 12.0, "render_mode": "vertex_omni_t2v", "is_pure_narrator": True, "narrator_text_hindi": opening_hook, "visual_description_english": "Young humble forest tribal youth Eklavya bowing before royal Guru Dronacharya at Hastinapur ashram courtyard"},
+                {"scene_index": 2, "scene_name": "Clay Idol Devotion", "duration_sec": 12.0, "render_mode": "vertex_omni_t2v", "is_pure_narrator": True, "narrator_text_hindi": narrative_body, "visual_description_english": "Forest clearing illuminated by sacred fire where Eklavya practices archery before a flower-garlanded clay idol of Guru Drona"},
+                {"scene_index": 3, "scene_name": "Arjuna Astounded", "duration_sec": 12.0, "render_mode": "vertex_omni_t2v", "is_pure_narrator": False, "narrator_text_hindi": "", "dialogue_speaker": "गुरु द्रोणाचार्य", "dialogue_hindi": "एकलव्य! यदि मैं तुम्हारा गुरु हूँ, तो मुझे अपनी गुरु-दक्षिणा दो!", "visual_description_english": "Sage Guru Dronacharya standing in the twilight forest with Arjuna watching Eklavya calmly"},
+                {"scene_index": 4, "scene_name": "The Demand", "duration_sec": 12.0, "render_mode": "vertex_omni_t2v", "is_pure_narrator": False, "narrator_text_hindi": "", "dialogue_speaker": "गुरु द्रोणाचार्य", "dialogue_hindi": "हे वीर! गुरु-दक्षिणा में मुझे अपने दाहिने हाथ का अंगूठा दे दो!", "visual_description_english": "Close-up of grave white-bearded Guru Dronacharya speaking solemnly in forest torchlight"},
+                {"scene_index": 5, "scene_name": "Eklavya Supreme Sacrifice", "duration_sec": 15.0, "render_mode": "vertex_omni_t2v", "is_pure_narrator": False, "narrator_text_hindi": "", "dialogue_speaker": "एकलव्य", "dialogue_hindi": "गुरुदेव! आपने मुझे शिष्य माना, यही मेरा सौभाग्य है—लीजिए मेरी गुरु-दक्षिणा!", "visual_description_english": "Heroic radiant Eklavya smiling tearfully with deep spiritual devotion as he offers his right thumb without hesitation"},
+                {"scene_index": 6, "scene_name": "Tribute & Karna Hook", "duration_sec": 12.0, "render_mode": "vertex_omni_t2v", "is_pure_narrator": True, "narrator_text_hindi": conclusion, "visual_description_english": "Sacred temple Shankh resonance over Hastinapur arena glowing at sunrise teasing warrior Karna's arrival"}
+            ]
+            duration = 75.0
+        elif "धनुष" in topic_title or "जनक" in topic_title or "राम" in topic_title or "सीता" in topic_title:
             opening_hook = "सोचिए! राजा जनक की भरी सभा में जब त्रैलोक्य-विजयी महारथियों का अहंकार धूल में मिल चुका था! आठ पहियों वाले लोहे के संदूक में रखा महादेव पिनाक का वह महाधनुष जिसे पांच हजार बलशाली वीर भी नहीं हिला पाए!"
             narrative_body = "सभा में छा गया था गहरा सन्नाटा! राजा जनक विलाप कर उठे क्या यह पृथ्वी वीरों से शून्य हो गई? तभी महर्षि विश्वामित्र का सिंहनाद गूंजा—उत्तिष्ठ राम! उठो वत्स, और इस धनुष पर प्रत्यंचा चढ़ाओ!"
             climax = "आगे बढ़े मर्यादा पुरुषोत्तम प्रभु श्री राम, मुख पर वही शांत अलौकिक मुस्कान! एक ही हाथ से उस महाधनुष को पुष्प की भांति उठाया, कान तक प्रत्यंचा खींची और तड़ाक की प्रलयंकारी गर्जना के साथ धनुष बीच से टूट गया!"
