@@ -11,6 +11,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))
 ENV_LOCAL_PATH = BASE_DIR / ".env.local"
 CLIENT_SECRET_FILE = BASE_DIR / "client_secret.json"
 
@@ -101,8 +103,16 @@ def main():
     except Exception as e:
         print("Note on verification:", e)
 
+    # Automatically sync refreshed YouTube OAuth credentials to GitHub Actions Secrets
+    try:
+        from scripts.sync_github_secrets import sync_secrets
+        sync_secrets(["YOUTUBE_CLIENT_ID", "YOUTUBE_CLIENT_SECRET", "YOUTUBE_REFRESH_TOKEN"])
+        print("✅ GitHub Actions Secrets updated cleanly with the new YouTube token!")
+    except Exception as e:
+        print("⚠️ Note syncing GitHub Secrets:", e)
+
     print("="*60)
-    print("🚀 Channel is now connected! You can now push videos automatically.")
+    print("🚀 Channel is now connected locally AND on GitHub Actions Cloud!")
 
 if __name__ == "__main__":
     main()

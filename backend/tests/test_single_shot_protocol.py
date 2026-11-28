@@ -174,8 +174,11 @@ def test_autonomous_pipeline_tracks_and_youtube_smart_schedule():
     eklavya_src = SourceLibrary.get_canonical_source("एकलव्य की गुरु-दक्षिणा: जब निष्ठावान शिष्य ने मुस्कुराते हुए काट दिया अपना अंगूठा")
     assert eklavya_src is not None and "Mahabharata" in eklavya_src["epic_name"]
 
-    # Pixel-width Devanagari wrap helper produces non-empty clean lines
-    lines = ProductionDirectorAgent.wrap_hindi_lines("सुनिए निषादराज! आज ही मैं हस्तिनापुर के राजसिंहासन का त्याग करता हूँ—सत्यवती का पुत्र ही सम्राट होगा!")
+    # Pixel-width Devanagari wrap helper produces clean non-empty lines and wraps when width is constrained
+    lines = ProductionDirectorAgent.wrap_hindi_lines(
+        "सुनिए निषादराज! आज ही मैं हस्तिनापुर के राजसिंहासन का त्याग करता हूँ—सत्यवती का पुत्र ही सम्राट होगा!",
+        max_width=250,
+    )
     assert len(lines) >= 2 and all(l.strip() for l in lines)
 
     # Simulate YouTube uploader future vs immediate slot threshold
